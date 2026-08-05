@@ -21,7 +21,7 @@ export function CurrentTime() {
   return (
     <time
       dateTime={time ?? undefined}
-      className="text-sm font-normal tabular-nums tracking-[-0.01em] text-white/35 opacity-0 animate-fade-in"
+      className="text-sm font-normal tabular-nums tracking-[-0.01em] text-white/35"
     >
       {time ?? "\u00a0"}
     </time>
