@@ -11,7 +11,7 @@ export function NosotrosModule() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`motion-safe:transition-opacity motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
         weddingData ? "opacity-100" : "opacity-0"
       }`}
     >

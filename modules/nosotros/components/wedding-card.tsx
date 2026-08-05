@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AnimatedCounter } from "@/components/motion/animated-counter";
 import type { WeddingData } from "@/lib/services";
 import {
   formatWeddingDate,
@@ -41,13 +42,14 @@ export function WeddingCard({ data }: WeddingCardProps) {
 
       <div className="mt-10 min-h-[5.5rem] sm:mt-12">
         <div
-          className={`transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          className={`transition-opacity duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
             countdownDays !== null ? "opacity-100" : "opacity-0"
           }`}
         >
-          <span className="block text-6xl font-light tabular-nums tracking-[-0.04em] text-white/95 sm:text-7xl">
-            {countdownDays ?? "—"}
-          </span>
+          <AnimatedCounter
+            value={countdownDays}
+            className="block text-6xl font-light tabular-nums tracking-[-0.04em] text-white/95 sm:text-7xl"
+          />
           <p className="mt-2 text-base font-light leading-snug tracking-[-0.01em] text-white/40 sm:text-lg">
             {data.countdownLabel}
           </p>
@@ -68,7 +70,7 @@ export function WeddingCard({ data }: WeddingCardProps) {
           className="h-[3px] w-full overflow-hidden rounded-full bg-white/[0.06]"
         >
           <div
-            className="h-full rounded-full bg-gradient-to-r from-white/25 via-white/40 to-white/25 transition-[width] duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            className="h-full rounded-full bg-gradient-to-r from-white/25 via-white/40 to-white/25 motion-safe:transition-[width] motion-safe:duration-700 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)]"
             style={{ width: `${progress}%` }}
           />
         </div>

@@ -1,10 +1,17 @@
 "use client";
 
+import { useCallback, useEffect, useState } from "react";
 import { CurrentTime } from "@/components/current-time";
 import { useModuleNavigation } from "@/lib/navigation/module-context";
+import { getModuleHeader } from "@/lib/services";
 
 export function AppHeader() {
-  const { activeModule } = useModuleNavigation();
+  const { activeModule, activeModuleId } = useModuleNavigation();
+  const loadHeader = useCallback(
+    () => getModuleHeader(activeModuleId),
+    [activeModuleId],
+  );
+  const headerMessage = useModuleHeader(loadHeader, activeModule.title);
 
   return (
     <header className="grid grid-cols-[1fr_auto_1fr] items-center px-6 py-5 sm:px-10">
@@ -14,8 +21,11 @@ export function AppHeader() {
         </span>
       </div>
 
-      <h1 className="text-sm font-medium tracking-[-0.01em] text-white/80 transition-opacity duration-300">
-        {activeModule.title}
+      <h1
+        key={activeModuleId}
+        className="text-center text-sm font-medium tracking-[-0.01em] text-white/80 motion-safe:transition-opacity motion-safe:duration-[250ms] motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] animate-fade-in"
+      >
+        {headerMessage}
       </h1>
 
       <div className="justify-self-end">
@@ -23,6 +33,31 @@ export function AppHeader() {
       </div>
     </header>
   );
+}
+
+function useModuleHeader(
+  loader: () => ReturnType<typeof getModuleHeader>,
+  fallback: string,
+) {
+  const [message, setMessage] = useState(fallback);
+
+  useEffect(() => {
+    setMessage(fallback);
+
+    let cancelled = false;
+
+    void loader().then((header) => {
+      if (!cancelled) {
+        setMessage(header.message);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [loader, fallback]);
+
+  return message;
 }
 
 function HeaderActions() {

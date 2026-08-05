@@ -38,13 +38,15 @@ function DockItem({ module }: DockItemProps) {
       className="group relative flex flex-col items-center px-1.5 py-1 sm:px-2"
     >
       <span
-        className={`flex items-center justify-center rounded-xl transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-y-1 group-hover:scale-110 ${
-          isActive ? "scale-110 -translate-y-0.5" : "scale-100"
+        className={`flex items-center justify-center rounded-xl motion-safe:transition-[transform,opacity] motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] motion-safe:group-hover:-translate-y-0.5 ${
+          isActive
+            ? "-translate-y-0.5 scale-[1.04]"
+            : "translate-y-0 scale-100 opacity-80"
         }`}
       >
         <span
-          className={`text-[1.65rem] leading-none sm:text-[1.85rem] ${
-            isActive ? "drop-shadow-[0_0_12px_rgba(255,255,255,0.25)]" : ""
+          className={`text-[1.65rem] leading-none motion-safe:transition-[filter] motion-safe:duration-300 sm:text-[1.85rem] ${
+            isActive ? "brightness-110" : "brightness-100"
           }`}
           role="img"
           aria-hidden
@@ -55,10 +57,10 @@ function DockItem({ module }: DockItemProps) {
 
       <span
         aria-hidden
-        className={`mt-1.5 h-1 w-1 rounded-full transition-all duration-300 ${
+        className={`mt-1.5 h-1 w-1 rounded-full motion-safe:transition-[transform,opacity,background-color] motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
           isActive
-            ? "bg-white/70 scale-100 opacity-100"
-            : "bg-white/0 scale-0 opacity-0 group-hover:bg-white/30 group-hover:scale-75 group-hover:opacity-100"
+            ? "scale-100 bg-white/60 opacity-100"
+            : "scale-75 bg-white/0 opacity-0 motion-safe:group-hover:bg-white/25 motion-safe:group-hover:opacity-60"
         }`}
       />
     </button>

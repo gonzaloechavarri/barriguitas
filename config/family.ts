@@ -25,7 +25,8 @@ export const familyConfig = {
   goals: [] as const,
 
   today: {
-    attentionIntro: "Hoy hay 4 cosas que merecen vuestra atención.",
+    /** Placeholder hasta que los módulos reporten su estado real. */
+    attentionState: "calm" as const,
     nosotrosAttention: {
       icon: "❤️",
       title: "Nosotros",
@@ -66,6 +67,61 @@ export const familyConfig = {
       title: "Patrimonio",
       description: "Los mano rotas ahorrando",
     },
+  },
+
+  moduleHeaders: {
+    documentos: "Todo está bajo control.",
+    nosotros: "Quedan {days} días para decir sí.",
+    casa: "Todo está en calma.",
+    patrimonio: "Todo evoluciona según el plan.",
+    agenda: "No hay nada urgente.",
+    ia: "Hoy puedes olvidarte de mí.",
+    ajustes: "Cómo funciona Barriguitas para nosotros.",
+  },
+
+  copilot: {
+    celebrate: {
+      active: false,
+    },
+    copy: {
+      action: {
+        header: "Hoy hay una cosa importante.",
+        subtext: "Es lo único que merece vuestra atención esta semana.",
+      },
+      calm: {
+        header: "Todo está bajo control.",
+        content: "Hoy puedes olvidarte de mí.",
+        subtext: "Todo evoluciona según lo previsto.",
+      },
+      celebrate: {
+        header: "❤️ Buen momento.",
+        content: "Ya queda menos para decir sí.",
+        subtext: "Disfrutad del proceso.",
+      },
+    },
+    tasks: [
+      {
+        id: "invitados",
+        title: "Confirmar la lista de invitados",
+        status: "pending",
+        priority: 1,
+        origin: "wedding",
+      },
+      {
+        id: "coreografo",
+        title: "Elegir coreógrafo para el baile",
+        status: "pending",
+        priority: 2,
+        origin: "wedding",
+      },
+      {
+        id: "dj",
+        title: "Confirmar DJ",
+        status: "pending",
+        priority: 3,
+        origin: "wedding",
+      },
+    ] as const,
   },
 } as const;
 
