@@ -7,10 +7,34 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const description =
+  "Barriguitas es el sistema operativo familiar de Victoria y Gonzalo. Un lugar para tomar mejores decisiones juntos.";
+
 export const metadata: Metadata = {
-  title: "Barriguitas OS",
-  description:
-    "Atlas es tu sistema operativo personal para gestionar patrimonio, inversiones, objetivos y decisiones.",
+  title: {
+    default: "Barriguitas",
+    template: "%s · Barriguitas",
+  },
+  description,
+  applicationName: "Barriguitas",
+  appleWebApp: {
+    title: "Barriguitas",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    title: "Barriguitas",
+    description,
+    siteName: "Barriguitas",
+    locale: "es_ES",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Barriguitas",
+    description,
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

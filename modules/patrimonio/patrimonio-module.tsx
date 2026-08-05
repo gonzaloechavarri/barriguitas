@@ -1,23 +1,31 @@
 "use client";
 
 import { useCallback } from "react";
-import { ModuleShell } from "@/components/modules/module-shell";
+import type { WealthView } from "@/lib/data/types";
 import { useAsyncData } from "@/lib/hooks/use-async-data";
-import { getWealthSummary } from "@/lib/services";
+import { PatrimonioView } from "./patrimonio-view";
 
-export function PatrimonioModule() {
-  const loadWealth = useCallback(() => getWealthSummary(), []);
-  const wealth = useAsyncData(loadWealth);
+async function fetchWealthView(): Promise<WealthView> {
+  const response = await fetch("/api/patrimonio");
 
-  if (!wealth) {
-    return null;
+  if (!response.ok) {
+    throw new Error("No se pudo obtener el ahorro.");
   }
 
+  return response.json() as Promise<WealthView>;
+}
+
+export function PatrimonioModule() {
+  const loadWealth = useCallback(() => fetchWealthView(), []);
+  const wealth = useAsyncData(loadWealth);
+
   return (
-    <ModuleShell
-      icon={wealth.icon}
-      title={wealth.title}
-      description={wealth.description}
-    />
+    <div
+      className={`motion-safe:transition-opacity motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+        wealth ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      {wealth ? <PatrimonioView data={wealth} /> : null}
+    </div>
   );
 }

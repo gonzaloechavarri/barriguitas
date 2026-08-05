@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-atlas-bg: #09090b;
+  --color-barriguitas-bg: #09090b;
   --font-sans: var(--font-inter);
 
   --ease-calm: cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -67,7 +67,7 @@
 }
 
 body {
-  background-color: var(--color-atlas-bg);
+  background-color: var(--color-barriguitas-bg);
   color: #fafafa;
   font-family: var(--font-sans), system-ui, sans-serif;
 }

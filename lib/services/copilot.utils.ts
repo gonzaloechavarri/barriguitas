@@ -3,7 +3,7 @@ import type { CopilotState, CopilotTask, CopilotTaskOrigin } from "@/lib/data/ty
 const ORIGIN_ICONS: Record<CopilotTaskOrigin, string> = {
   wedding: "❤️",
   home: "🏡",
-  finance: "💰",
+  finance: "🌱",
   agenda: "📅",
   system: "🤖",
 };

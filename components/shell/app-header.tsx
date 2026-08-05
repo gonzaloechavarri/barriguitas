@@ -14,7 +14,7 @@ export function AppHeader() {
   const headerMessage = useModuleHeader(loadHeader, activeModule.title);
 
   return (
-    <header className="grid grid-cols-[1fr_auto_1fr] items-center px-6 py-5 sm:px-10">
+    <header className="grid grid-cols-2 items-center px-6 py-5 sm:grid-cols-[1fr_auto_1fr] sm:px-10">
       <div className="justify-self-start">
         <span className="text-sm font-medium tracking-[-0.01em] text-white/55">
           Barriguitas
@@ -23,12 +23,14 @@ export function AppHeader() {
 
       <h1
         key={activeModuleId}
-        className="text-center text-sm font-medium tracking-[-0.01em] text-white/80 motion-safe:transition-opacity motion-safe:duration-[250ms] motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] animate-fade-in"
+        className={`hidden text-center text-sm font-medium tracking-[-0.01em] text-white/80 motion-safe:transition-opacity motion-safe:duration-[250ms] motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] animate-fade-in sm:block ${
+          headerMessage.trim() ? "" : "sm:!hidden"
+        }`}
       >
         {headerMessage}
       </h1>
 
-      <div className="justify-self-end">
+      <div className="col-start-2 justify-self-end sm:col-auto">
         <HeaderActions />
       </div>
     </header>

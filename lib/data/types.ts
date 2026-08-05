@@ -51,6 +51,32 @@ export type ModuleViewData = {
   description: string;
 };
 
+export type PerformanceMetric = {
+  label: string;
+  change: string;
+};
+
+export type StrategyAllocationLine = {
+  icon: string;
+  label: string;
+  percentage: string;
+};
+
+export type WealthView = {
+  cardTitle: string;
+  subtitle: string;
+  performance: PerformanceMetric[];
+  strategy: {
+    cardTitle: string;
+    allocations: StrategyAllocationLine[];
+    target: StrategyAllocationLine[];
+    statusMessage: string;
+    deviation: string;
+    isAligned: boolean;
+  };
+};
+
+/** @deprecated Usar WealthView. */
 export type WealthSummary = ModuleViewData;
 
 export type AgendaData = ModuleViewData;

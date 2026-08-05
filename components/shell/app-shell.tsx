@@ -8,7 +8,7 @@ import { ModuleNavigationProvider } from "@/lib/navigation/module-context";
 export function AppShell() {
   return (
     <ModuleNavigationProvider>
-      <div className="relative flex min-h-screen flex-col overflow-hidden bg-atlas-bg">
+      <div className="relative flex min-h-screen flex-col overflow-hidden bg-barriguitas-bg">
         <Background />
 
         <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col pb-28">

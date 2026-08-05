@@ -39,8 +39,8 @@ export const familyConfig = {
         subtitle: "No hay tareas pendientes.",
       },
       {
-        icon: "💰",
-        title: "Patrimonio",
+        icon: "🌱",
+        title: "Ahorro",
         subtitle: "Todo evoluciona según el plan.",
       },
       {
@@ -56,6 +56,42 @@ export const familyConfig = {
     ] as const,
   },
 
+  patrimonio: {
+    cardTitle: "Ahorro",
+    subtitle: "Todo evoluciona según el plan.",
+    /** Años de histórico para la métrica de largo plazo. */
+    performanceLookbackYears: 5,
+    marketAssets: {
+      acwi: {
+        isin: "IE00B44Z5B48",
+        yahooSymbol: "ISAC.L",
+      },
+      oro: {
+        isin: "IE00B579F325",
+        yahooSymbol: "SGLN.L",
+      },
+    },
+    strategy: {
+      cardTitle: "Estrategia",
+      target: { acwi: 80, oro: 20 },
+      deviationThreshold: 3,
+      alignedMessage: "✓ Estrategia alineada con el objetivo.",
+      driftMessage: "La estrategia empieza a desviarse ligeramente.",
+      assets: {
+        acwi: { icon: "🌍", label: "ACWI" },
+        oro: { icon: "🥇", label: "Oro" },
+      },
+    },
+    /** Posiciones internas — nunca se muestran en la interfaz. */
+    holdings: [
+      { assetClass: "acwi", value: 280_246.36, source: "indexa" },
+      { assetClass: "acwi", value: 22_397.4, source: "IE00B44Z5B48" },
+      { assetClass: "oro", value: 69_447.02, source: "IE00B579F325" },
+    ] as const,
+    /** Futuro Copiloto: sugerir aportaciones, nunca ventas. */
+    rebalancePhilosophy: "contributions-only" as const,
+  },
+
   modules: {
     agenda: {
       icon: "📅",
@@ -63,8 +99,8 @@ export const familyConfig = {
       description: "Organización y alivio de carga mental",
     },
     patrimonio: {
-      icon: "💰",
-      title: "Patrimonio",
+      icon: "🌱",
+      title: "Ahorro",
       description: "Los mano rotas ahorrando",
     },
   },
@@ -72,8 +108,8 @@ export const familyConfig = {
   moduleHeaders: {
     documentos: "Todo está bajo control.",
     nosotros: "Quedan {days} días para decir sí.",
-    casa: "Todo está en calma.",
-    patrimonio: "Todo evoluciona según el plan.",
+    casa: "El cuidado de nuestra casa.",
+    patrimonio: "",
     agenda: "No hay nada urgente.",
     ia: "Hoy puedes olvidarte de mí.",
     ajustes: "Cómo funciona Barriguitas para nosotros.",

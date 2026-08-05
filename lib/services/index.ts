@@ -13,7 +13,7 @@ export {
 } from "./greeting.service";
 export { getModuleHeader } from "./header.service";
 export { getTodaySummary } from "./today.service";
-export { getWealthSummary } from "./wealth.service";
+export { calculateStrategyAllocation } from "./wealth.utils";
 export { getWeddingData } from "./wedding.service";
 export { getOriginIcon, resolveCopilotState, resolveTopPendingTask } from "./copilot.utils";
 
@@ -32,6 +32,6 @@ export type {
   SmartGreeting,
   TodayAttentionState,
   TodaySummary,
-  WealthSummary,
+  WealthView,
   WeddingData,
 } from "@/lib/data/types";

@@ -31,8 +31,8 @@ export const modules: ModuleDefinition[] = [
   },
   {
     id: "patrimonio",
-    icon: "💰",
-    title: "Patrimonio",
+    icon: "🌱",
+    title: "Ahorro",
     description: "Los mano rotas ahorrando",
     component: PatrimonioModule,
   },
