@@ -1,7 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { getLastCleaningDate } from "@/lib/services/casa.service";
+import {
+  getDefaultCleaningDate,
+  getLastCleaningDate,
+} from "@/lib/services/casa.service";
 
 const STORAGE_KEY = "barriguitas:casa";
 const UPDATED_FEEDBACK_MS = 1000;
@@ -14,7 +17,7 @@ export type CasaCareFeedback = "idle" | "updated";
 
 export function useCasaCare(defaultDaysAgo: number) {
   const [completedAt, setCompletedAt] = useState(() =>
-    getLastCleaningDate(defaultDaysAgo),
+    getDefaultCleaningDate(defaultDaysAgo),
   );
   const [feedback, setFeedback] = useState<CasaCareFeedback>("idle");
   const [, setTick] = useState(0);

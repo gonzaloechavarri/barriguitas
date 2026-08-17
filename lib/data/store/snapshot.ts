@@ -9,12 +9,7 @@ import {
 const SERVER_SNAPSHOT = createDefaultSnapshot();
 
 let snapshot: BarriguitasSnapshot = SERVER_SNAPSHOT;
-
-export function initBarriguitasSnapshot(): void {
-  if (typeof window !== "undefined") {
-    snapshot = mergeSnapshot(readOverrides());
-  }
-}
+let hydrated = false;
 
 export function getBarriguitasSnapshot(): BarriguitasSnapshot {
   return snapshot;
@@ -24,8 +19,21 @@ export function getServerBarriguitasSnapshot(): BarriguitasSnapshot {
   return SERVER_SNAPSHOT;
 }
 
-export function setBarriguitasSnapshot(next: BarriguitasSnapshot): void {
+export function hydrateBarriguitasSnapshot(): boolean {
+  if (typeof window === "undefined" || hydrated) {
+    return false;
+  }
+
+  hydrated = true;
+
+  const next = mergeSnapshot(readOverrides(), SERVER_SNAPSHOT);
+
+  if (Object.is(next, snapshot)) {
+    return false;
+  }
+
   snapshot = next;
+  return true;
 }
 
 export function persistBarriguitasSnapshot(next: BarriguitasSnapshot): void {
@@ -35,5 +43,3 @@ export function persistBarriguitasSnapshot(next: BarriguitasSnapshot): void {
     writeOverrides(extractOverrides(next));
   }
 }
-
-initBarriguitasSnapshot();

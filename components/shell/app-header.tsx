@@ -32,7 +32,7 @@ export function AppHeader() {
 }
 
 function useHeaderMessage() {
-  const [message, setMessage] = useState(() => getHeaderMessage());
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const refresh = () => setMessage(getHeaderMessage());

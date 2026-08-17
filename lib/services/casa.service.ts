@@ -6,7 +6,7 @@ type CasaStorage = {
   limpiezaExteriorCompletedAt?: string;
 };
 
-function getDefaultCompletedAt(defaultDaysAgo: number): Date {
+export function getDefaultCleaningDate(defaultDaysAgo: number): Date {
   const date = new Date();
   date.setDate(date.getDate() - defaultDaysAgo);
   return date;
@@ -14,21 +14,21 @@ function getDefaultCompletedAt(defaultDaysAgo: number): Date {
 
 export function getLastCleaningDate(defaultDaysAgo: number): Date {
   if (typeof window === "undefined") {
-    return getDefaultCompletedAt(defaultDaysAgo);
+    return getDefaultCleaningDate(defaultDaysAgo);
   }
 
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return getDefaultCompletedAt(defaultDaysAgo);
+    if (!raw) return getDefaultCleaningDate(defaultDaysAgo);
 
     const parsed = JSON.parse(raw) as CasaStorage;
     if (!parsed.limpiezaExteriorCompletedAt) {
-      return getDefaultCompletedAt(defaultDaysAgo);
+      return getDefaultCleaningDate(defaultDaysAgo);
     }
 
     return new Date(parsed.limpiezaExteriorCompletedAt);
   } catch {
-    return getDefaultCompletedAt(defaultDaysAgo);
+    return getDefaultCleaningDate(defaultDaysAgo);
   }
 }
 

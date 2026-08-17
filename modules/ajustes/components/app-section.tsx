@@ -1,8 +1,10 @@
-import { getFamilyConfig } from "@/lib/data/providers/local";
+"use client";
+
+import { useFamilyConfig } from "@/lib/data/store/barriguitas-store";
 import { SettingsSection } from "./settings-section";
 
 export function AppSettingsSection() {
-  const { ajustes } = getFamilyConfig();
+  const { ajustes } = useFamilyConfig();
 
   return (
     <SettingsSection

@@ -1,9 +1,11 @@
-import { getFamilyConfig } from "@/lib/data/providers/local";
+"use client";
+
+import { useFamilyConfig } from "@/lib/data/store/barriguitas-store";
 import { AgendaSettingsSection } from "./components/agenda-section";
 import { AppSettingsSection } from "./components/app-section";
 
 export function AjustesView() {
-  const { ajustes } = getFamilyConfig();
+  const { ajustes } = useFamilyConfig();
 
   return (
     <div className="mx-auto w-full max-w-2xl px-6 pb-6 pt-2 sm:px-10 sm:pb-8 sm:pt-4">

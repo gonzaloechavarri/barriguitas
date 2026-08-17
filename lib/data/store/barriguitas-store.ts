@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import type { FamilyConfig } from "@/config/family";
 import {
   getBarriguitasSnapshot,
   getServerBarriguitasSnapshot,
@@ -13,7 +14,7 @@ type Listener = () => void;
 let version = 0;
 const listeners = new Set<Listener>();
 
-function emitChange() {
+export function notifyBarriguitasStoreChange(): void {
   version += 1;
   listeners.forEach((listener) => listener());
 }
@@ -28,7 +29,7 @@ export function updateBarriguitas(
 ): void {
   const next = updater(getBarriguitasSnapshot());
   persistBarriguitasSnapshot(next);
-  emitChange();
+  notifyBarriguitasStoreChange();
 }
 
 function getSnapshotVersion(): number {
@@ -41,6 +42,10 @@ export function useBarriguitasStore(): BarriguitasSnapshot {
     getBarriguitasSnapshot,
     getServerBarriguitasSnapshot,
   );
+}
+
+export function useFamilyConfig(): FamilyConfig {
+  return useBarriguitasStore().config;
 }
 
 export function useBarriguitasVersion(): number {
