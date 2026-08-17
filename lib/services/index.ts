@@ -11,7 +11,7 @@ export {
   getTimeBasedGreeting,
   resolveTodayAttentionState,
 } from "./greeting.service";
-export { getModuleHeader } from "./header.service";
+export { getHeaderMessage, getModuleHeader } from "./header.service";
 export { getTodaySummary } from "./today.service";
 export { calculateStrategyAllocation } from "./wealth.utils";
 export { getMilestoneTitles, getMilestones, getTopMilestone } from "./milestones.service";

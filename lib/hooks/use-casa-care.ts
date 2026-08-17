@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { getLastCleaningDate } from "@/lib/services/casa.service";
 
 const STORAGE_KEY = "barriguitas:casa";
 const UPDATED_FEEDBACK_MS = 1000;
@@ -11,49 +12,15 @@ type CasaStorage = {
 
 export type CasaCareFeedback = "idle" | "updated";
 
-function getDefaultCompletedAt(defaultDaysAgo: number): Date {
-  const date = new Date();
-  date.setDate(date.getDate() - defaultDaysAgo);
-  return date;
-}
-
-function readStoredCompletedAt(defaultDaysAgo: number): Date {
-  if (typeof window === "undefined") {
-    return getDefaultCompletedAt(defaultDaysAgo);
-  }
-
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return getDefaultCompletedAt(defaultDaysAgo);
-
-    const parsed = JSON.parse(raw) as CasaStorage;
-    if (!parsed.limpiezaExteriorCompletedAt) {
-      return getDefaultCompletedAt(defaultDaysAgo);
-    }
-
-    return new Date(parsed.limpiezaExteriorCompletedAt);
-  } catch {
-    return getDefaultCompletedAt(defaultDaysAgo);
-  }
-}
-
-function persistCompletedAt(date: Date): void {
-  const payload: CasaStorage = {
-    limpiezaExteriorCompletedAt: date.toISOString(),
-  };
-
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-}
-
 export function useCasaCare(defaultDaysAgo: number) {
   const [completedAt, setCompletedAt] = useState(() =>
-    readStoredCompletedAt(defaultDaysAgo),
+    getLastCleaningDate(defaultDaysAgo),
   );
   const [feedback, setFeedback] = useState<CasaCareFeedback>("idle");
   const [, setTick] = useState(0);
 
   useEffect(() => {
-    setCompletedAt(readStoredCompletedAt(defaultDaysAgo));
+    setCompletedAt(getLastCleaningDate(defaultDaysAgo));
   }, [defaultDaysAgo]);
 
   useEffect(() => {
@@ -80,4 +47,12 @@ export function useCasaCare(defaultDaysAgo: number) {
     feedback,
     markLimpiezaExteriorDone,
   };
+}
+
+function persistCompletedAt(date: Date): void {
+  const payload: CasaStorage = {
+    limpiezaExteriorCompletedAt: date.toISOString(),
+  };
+
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }

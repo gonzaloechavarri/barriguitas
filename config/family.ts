@@ -148,6 +148,34 @@ export const familyConfig = {
     },
   },
 
+  ajustes: {
+    subtitle: "Manteniendo Barriguitas al día.",
+    agenda: {
+      placeholder: "Aquí aparecerán nuestros próximos planes.",
+      summary: "En camino",
+    },
+    app: {
+      version: "0.1.0",
+      tagline: "Construida con ❤️ para nosotros.",
+      exportLabel: "Guardar una copia",
+      importLabel: "Recuperar una copia",
+    },
+    copy: {
+      milestonesTitle: "Hitos",
+      addMilestone: "Añadir",
+      addMilestonePlaceholder: "Algo que tengamos entre mano",
+      completeMilestone: "✓ Hecho",
+      deleteMilestone: "Quitar",
+      lastCleaning: "Última limpieza",
+      targetTitle: "Nuestro objetivo",
+      currentTitle: "Como está ahora",
+      tripTitle: "Viaje · nombre",
+      tripDestination: "Viaje · destinos",
+      tripStartDate: "Viaje · cuándo empieza",
+      weddingDate: "Fecha de la boda",
+    },
+  },
+
   moduleHeaders: {
     documentos: "",
     nosotros: "Quedan {days} días para decir sí.",
@@ -155,7 +183,7 @@ export const familyConfig = {
     patrimonio: "",
     agenda: "No hay nada urgente.",
     ia: "Hoy puedes olvidarte de mí.",
-    ajustes: "Cómo funciona Barriguitas para nosotros.",
+    ajustes: "Ajustes",
   },
 
   copilot: {
