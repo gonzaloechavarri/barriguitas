@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getFamilyConfig } from "@/lib/data/providers/local";
+import { getWealthData } from "@/lib/data/providers/local";
 import type { AssetHistory } from "./types";
 import { fetchHistoricalPrices } from "./providers/yahoo.provider";
 
@@ -13,11 +13,11 @@ export async function getAssetHistory(
   from: Date,
   to: Date = new Date(),
 ): Promise<AssetHistory> {
-  const config = getFamilyConfig();
+  const { marketAssets } = getWealthData();
   const asset =
-    config.patrimonio.marketAssets.acwi.isin === isin
-      ? config.patrimonio.marketAssets.acwi
-      : config.patrimonio.marketAssets.oro;
+    marketAssets.acwi.isin === isin
+      ? marketAssets.acwi
+      : marketAssets.oro;
 
   if (asset.isin !== isin) {
     throw new Error(`Activo desconocido: ${isin}`);
@@ -32,8 +32,8 @@ export async function getPortfolioAssetHistories(
   from: Date,
   to: Date = new Date(),
 ): Promise<{ acwi: AssetHistory; oro: AssetHistory }> {
-  const config = getFamilyConfig();
-  const { acwi, oro } = config.patrimonio.marketAssets;
+  const { marketAssets } = getWealthData();
+  const { acwi, oro } = marketAssets;
 
   const [acwiHistory, oroHistory] = await Promise.all([
     getAssetHistory(acwi.isin, from, to),

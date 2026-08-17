@@ -84,31 +84,12 @@ export type ModuleHeader = {
   message: string;
 };
 
-export type CopilotState = "action" | "calm" | "celebrate";
-
-export type CopilotTaskStatus = "pending" | "completed";
-
-export type CopilotTaskOrigin =
-  | "wedding"
-  | "home"
-  | "finance"
-  | "agenda"
-  | "system";
-
-export type CopilotTask = {
-  id: string;
+export type CopilotRecommendation = {
+  icon: string;
   title: string;
-  status: CopilotTaskStatus;
-  /** Menor número = mayor prioridad. */
+  subtitle: string;
+  /** Menor número = mayor prioridad. 0 indica estado tranquilo. */
   priority: number;
-  origin: CopilotTaskOrigin;
 };
 
-export type CopilotView = {
-  state: CopilotState;
-  header: string;
-  content: string;
-  subtext: string;
-  taskId?: string;
-  originIcon?: string;
-};
+export type CopilotState = "action" | "calm" | "celebrate";

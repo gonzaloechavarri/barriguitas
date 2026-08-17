@@ -4,9 +4,8 @@ import type {
   SmartGreeting,
   TodayAttentionState,
 } from "@/lib/data/types";
-import { getFamilyConfig } from "@/lib/data/providers/local";
-import { getCopilotTasks } from "./copilot.service";
-import { resolveCopilotState } from "./copilot.utils";
+import { getAppData, getCoupleData } from "@/lib/data/providers/local";
+import { getCopilotState } from "./copilot";
 
 const TIME_GREETINGS = {
   morning: "Buenos días ☀️",
@@ -29,7 +28,7 @@ function resolveGreetingPeriod(
 }
 
 export function getFamilyNames(): string {
-  const members = [...getFamilyConfig().members];
+  const members = [...getCoupleData().members];
 
   if (members.length === 0) return "";
   if (members.length === 1) return members[0];
@@ -72,7 +71,7 @@ function pickRotatingMessage(
 }
 
 function resolveHeaderMessagePool(state: CopilotState): readonly string[] {
-  const { headerMessages } = getFamilyConfig().today;
+  const { headerMessages } = getAppData().today;
 
   if (state === "action") return headerMessages.action;
   if (state === "celebrate") return headerMessages.celebrate;
@@ -84,15 +83,10 @@ function resolveHeaderMessagePool(state: CopilotState): readonly string[] {
  * Encabezado superior de la pantalla Hoy.
  * Rota mensajes tranquilos según el estado global de Barriguitas.
  */
-export async function getTodayHeaderMessage(
+export function getTodayHeaderMessage(
   referenceDate: Date = new Date(),
-): Promise<string> {
-  const config = getFamilyConfig();
-  const tasks = await getCopilotTasks();
-  const { state } = resolveCopilotState(
-    tasks,
-    config.copilot.celebrate.active,
-  );
+): string {
+  const state = getCopilotState();
 
   return pickRotatingMessage(
     resolveHeaderMessagePool(state),
@@ -105,11 +99,11 @@ export async function getTodayHeaderMessage(
  * Por ahora lee un valor estático de config.
  * En el futuro agregará señales reales de cada módulo.
  */
-export async function resolveTodayAttentionState(): Promise<TodayAttentionState> {
-  const config = getFamilyConfig();
+export function resolveTodayAttentionState(): TodayAttentionState {
+  const { today } = getAppData();
 
   return {
-    level: config.today.attentionState,
+    level: today.attentionState,
     signals: [],
   };
 }

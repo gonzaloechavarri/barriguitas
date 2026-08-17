@@ -1,34 +1,27 @@
-import { getFamilyConfig } from "@/lib/data/providers/local";
-import type { CopilotTaskOrigin } from "@/lib/data/types";
+import { getCoupleData } from "@/lib/data/providers/local";
+import type { MilestoneEntry } from "@/lib/data/types/editable";
 
 export type Milestone = {
   id: string;
   title: string;
   priority: number;
-  origin: CopilotTaskOrigin;
 };
 
-function milestoneIdFromTitle(title: string): string {
-  return title
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+function getPendingMilestones(milestones: MilestoneEntry[]): MilestoneEntry[] {
+  return milestones.filter((milestone) => !milestone.completed);
 }
 
 /**
- * Fuente única de hitos para Nosotros y Copiloto.
+ * Fuente única de hitos pendientes para Nosotros y Copiloto.
  * El orden en config define la prioridad.
  */
 export function getMilestones(): Milestone[] {
-  const { milestones } = getFamilyConfig();
+  const { milestones } = getCoupleData();
 
-  return milestones.map((title, index) => ({
-    id: milestoneIdFromTitle(title),
-    title,
+  return getPendingMilestones(milestones).map((milestone, index) => ({
+    id: milestone.id,
+    title: milestone.title,
     priority: index + 1,
-    origin: "wedding",
   }));
 }
 

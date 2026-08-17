@@ -1,9 +1,9 @@
 export { getAgenda } from "./agenda.service";
 export {
-  getCopilotTasks,
-  getCopilotView,
-  getDailyRecommendation,
-} from "./copilot.service";
+  getCopilotRecommendation,
+  getCopilotModuleHeader,
+  getCopilotState,
+} from "./copilot";
 export {
   deriveAttentionLevel,
   getAttentionSubtitle,
@@ -16,17 +16,13 @@ export { getTodaySummary } from "./today.service";
 export { calculateStrategyAllocation } from "./wealth.utils";
 export { getMilestoneTitles, getMilestones, getTopMilestone } from "./milestones.service";
 export { getWeddingData } from "./wedding.service";
-export { getOriginIcon, resolveCopilotState, resolveTopPendingTask } from "./copilot.utils";
 
 export type {
   AgendaData,
   AttentionItem,
   AttentionLevel,
+  CopilotRecommendation,
   CopilotState,
-  CopilotTask,
-  CopilotTaskOrigin,
-  CopilotTaskStatus,
-  CopilotView,
   ModuleAttentionSignal,
   ModuleHeader,
   ModuleViewData,

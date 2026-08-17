@@ -1,21 +1,21 @@
 import type { WeddingData } from "@/lib/data/types";
-import { getFamilyConfig } from "@/lib/data/providers/local";
+import { getCoupleData } from "@/lib/data/providers/local";
 import { getMilestoneTitles } from "./milestones.service";
 
-export async function getWeddingData(): Promise<WeddingData> {
-  const config = getFamilyConfig();
+export function getWeddingData(): WeddingData {
+  const { wedding, nextTrip } = getCoupleData();
 
   return {
-    date: config.wedding.date,
-    journeyStartDate: config.wedding.journeyStartDate,
-    cardTitle: config.wedding.cardTitle,
-    countdownLabel: config.wedding.countdownLabel,
-    progressMessage: config.wedding.progressMessage,
+    date: wedding.date,
+    journeyStartDate: wedding.journeyStartDate,
+    cardTitle: wedding.cardTitle,
+    countdownLabel: wedding.countdownLabel,
+    progressMessage: wedding.progressMessage,
     milestones: getMilestoneTitles(),
     nextPlan: {
-      cardTitle: config.nextTrip.cardTitle,
-      destination: config.nextTrip.destination,
-      startDate: config.nextTrip.startDate,
+      cardTitle: nextTrip.cardTitle,
+      destination: nextTrip.destination,
+      startDate: nextTrip.startDate,
     },
   };
 }

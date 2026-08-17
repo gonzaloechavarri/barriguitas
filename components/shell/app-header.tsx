@@ -1,17 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useMemo } from "react";
 import { CurrentTime } from "@/components/current-time";
+import { useBarriguitasStore } from "@/lib/data/store/barriguitas-store";
 import { useModuleNavigation } from "@/lib/navigation/module-context";
 import { getModuleHeader } from "@/lib/services";
 
 export function AppHeader() {
   const { activeModule, activeModuleId } = useModuleNavigation();
-  const loadHeader = useCallback(
-    () => getModuleHeader(activeModuleId),
-    [activeModuleId],
+  const snapshot = useBarriguitasStore();
+  const headerMessage = useMemo(
+    () => getModuleHeader(activeModuleId).message,
+    [activeModuleId, snapshot],
   );
-  const headerMessage = useModuleHeader(loadHeader, activeModule.title);
 
   return (
     <header className="grid grid-cols-2 items-center px-6 py-5 sm:grid-cols-[1fr_auto_1fr] sm:px-10">
@@ -35,31 +36,6 @@ export function AppHeader() {
       </div>
     </header>
   );
-}
-
-function useModuleHeader(
-  loader: () => ReturnType<typeof getModuleHeader>,
-  fallback: string,
-) {
-  const [message, setMessage] = useState(fallback);
-
-  useEffect(() => {
-    setMessage(fallback);
-
-    let cancelled = false;
-
-    void loader().then((header) => {
-      if (!cancelled) {
-        setMessage(header.message);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [loader, fallback]);
-
-  return message;
 }
 
 function HeaderActions() {

@@ -1,6 +1,7 @@
 import "server-only";
 
-import { getFamilyConfig } from "@/lib/data/providers/local";
+import type { WealthView } from "@/lib/data/types";
+import { getWealthData } from "@/lib/data/providers/local";
 import {
   calculateStrategyAllocation,
   type InternalHolding,
@@ -28,6 +29,8 @@ export type PortfolioSnapshot = {
     fiveYears: string;
   };
 };
+
+export type WealthPerformance = PortfolioSnapshot["performance"];
 
 function subtractDays(date: Date, days: number): Date {
   const result = new Date(date);
@@ -110,24 +113,13 @@ function hasMinimumHistory(
   return endDate.getTime() - startDate.getTime() >= minimumMs * 0.95;
 }
 
-export async function getPortfolioSnapshot(
+export async function getPortfolioPerformance(
   referenceDate: Date = new Date(),
-): Promise<PortfolioSnapshot> {
-  const config = getFamilyConfig();
-  const { patrimonio } = config;
-  const holdings: InternalHolding[] = patrimonio.holdings.map((holding) => ({
-    assetClass: holding.assetClass,
-    value: holding.value,
-  }));
-
-  const allocation = calculateStrategyAllocation(
-    holdings,
-    patrimonio.strategy.target,
-    patrimonio.strategy.deviationThreshold,
-  );
-
-  const { acwiPercentage, oroPercentage, momentumPercentage, maxDeviation } =
-    allocation;
+): Promise<WealthPerformance> {
+  const wealth = getWealthData();
+  const { currentDistribution } = wealth;
+  const acwiPercentage = currentDistribution.acwi;
+  const oroPercentage = currentDistribution.oro;
 
   let lastSessionReturn: number | null = null;
   let days30Return: number | null = null;
@@ -138,7 +130,7 @@ export async function getPortfolioSnapshot(
   let oroPrices: PricePoint[] | undefined;
 
   try {
-    const lookbackYears = patrimonio.performanceLookbackYears;
+    const lookbackYears = wealth.performanceLookbackYears;
     const fetchFrom = subtractDays(subtractYears(referenceDate, lookbackYears), 14);
 
     const histories = await getPortfolioAssetHistories(fetchFrom, referenceDate);
@@ -206,19 +198,39 @@ export async function getPortfolioSnapshot(
   }
 
   return {
+    lastSession: formatReturn(lastSessionReturn),
+    days30: formatReturn(days30Return),
+    yearToDate: formatReturn(ytdReturn),
+    fiveYears: formatReturn(fiveYearsReturn),
+  };
+}
+
+export async function getPortfolioSnapshot(
+  referenceDate: Date = new Date(),
+): Promise<PortfolioSnapshot> {
+  const wealth = getWealthData();
+  const holdings: InternalHolding[] = wealth.holdings.map((holding) => ({
+    assetClass: holding.assetClass,
+    value: holding.value,
+  }));
+
+  const allocation = calculateStrategyAllocation(
+    holdings,
+    wealth.strategy.target,
+    wealth.strategy.deviationThreshold,
+  );
+
+  const performance = await getPortfolioPerformance(referenceDate);
+
+  return {
     weights: {
-      acwi: acwiPercentage,
-      oro: oroPercentage,
-      momentum: momentumPercentage,
+      acwi: wealth.currentDistribution.acwi,
+      oro: wealth.currentDistribution.oro,
+      momentum: wealth.currentDistribution.momentum,
     },
-    maxDeviation,
+    maxDeviation: allocation.maxDeviation,
     isInTransition: true,
-    performance: {
-      lastSession: formatReturn(lastSessionReturn),
-      days30: formatReturn(days30Return),
-      yearToDate: formatReturn(ytdReturn),
-      fiveYears: formatReturn(fiveYearsReturn),
-    },
+    performance,
   };
 }
 

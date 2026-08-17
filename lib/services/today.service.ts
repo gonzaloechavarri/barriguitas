@@ -1,5 +1,5 @@
 import type { TodaySummary } from "@/lib/data/types";
-import { getFamilyConfig } from "@/lib/data/providers/local";
+import { getAppData } from "@/lib/data/providers/local";
 import { daysUntil } from "@/lib/data/utils";
 import {
   getAttentionSubtitle,
@@ -9,16 +9,16 @@ import {
 } from "./greeting.service";
 import { getWeddingData } from "./wedding.service";
 
-export async function getTodaySummary(
+export function getTodaySummary(
   referenceDate: Date = new Date(),
-): Promise<TodaySummary> {
-  const config = getFamilyConfig();
-  const wedding = await getWeddingData();
+): TodaySummary {
+  const { today } = getAppData();
+  const wedding = getWeddingData();
   const days = daysUntil(wedding.date, referenceDate);
-  const attentionState = await resolveTodayAttentionState();
+  const attentionState = resolveTodayAttentionState();
   const greeting = getTimeBasedGreeting(referenceDate);
 
-  const nosotrosSubtitle = config.today.nosotrosAttention.subtitleTemplate.replace(
+  const nosotrosSubtitle = today.nosotrosAttention.subtitleTemplate.replace(
     "{days}",
     String(days),
   );
@@ -30,11 +30,11 @@ export async function getTodaySummary(
     attentionState,
     items: [
       {
-        icon: config.today.nosotrosAttention.icon,
-        title: config.today.nosotrosAttention.title,
+        icon: today.nosotrosAttention.icon,
+        title: today.nosotrosAttention.title,
         subtitle: nosotrosSubtitle,
       },
-      ...config.today.attentionItems.map((item) => ({ ...item })),
+      ...today.attentionItems.map((item) => ({ ...item })),
     ],
   };
 }
