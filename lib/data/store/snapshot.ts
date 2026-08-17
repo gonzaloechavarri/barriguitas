@@ -1,17 +1,20 @@
 import { extractOverrides, mergeSnapshot } from "./merge";
 import { readOverrides, writeOverrides } from "./storage";
 import {
-  createDefaultSnapshot,
+  SERVER_SNAPSHOT,
   type BarriguitasSnapshot,
 } from "./types";
-
-/** Snapshot estable para SSR — React exige la misma referencia en cada llamada. */
-const SERVER_SNAPSHOT = createDefaultSnapshot();
 
 let snapshot: BarriguitasSnapshot = SERVER_SNAPSHOT;
 let hydrated = false;
 
+export { SERVER_SNAPSHOT };
+
 export function getBarriguitasSnapshot(): BarriguitasSnapshot {
+  if (!hydrated) {
+    return SERVER_SNAPSHOT;
+  }
+
   return snapshot;
 }
 
@@ -27,17 +30,13 @@ export function hydrateBarriguitasSnapshot(): boolean {
   hydrated = true;
 
   const next = mergeSnapshot(readOverrides(), SERVER_SNAPSHOT);
-
-  if (Object.is(next, snapshot)) {
-    return false;
-  }
-
   snapshot = next;
-  return true;
+  return !Object.is(next, SERVER_SNAPSHOT);
 }
 
 export function persistBarriguitasSnapshot(next: BarriguitasSnapshot): void {
   snapshot = next;
+  hydrated = true;
 
   if (typeof window !== "undefined") {
     writeOverrides(extractOverrides(next));

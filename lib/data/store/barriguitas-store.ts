@@ -7,12 +7,17 @@ import {
   getServerBarriguitasSnapshot,
   persistBarriguitasSnapshot,
 } from "./snapshot";
+import { SERVER_SNAPSHOT } from "./types";
 import type { BarriguitasSnapshot } from "./types";
 
 type Listener = () => void;
 
 let version = 0;
 const listeners = new Set<Listener>();
+
+function getServerSnapshot(): BarriguitasSnapshot {
+  return SERVER_SNAPSHOT;
+}
 
 export function notifyBarriguitasStoreChange(): void {
   version += 1;
@@ -40,7 +45,7 @@ export function useBarriguitasStore(): BarriguitasSnapshot {
   return useSyncExternalStore(
     subscribeBarriguitas,
     getBarriguitasSnapshot,
-    getServerBarriguitasSnapshot,
+    getServerSnapshot,
   );
 }
 
@@ -55,3 +60,6 @@ export function useBarriguitasVersion(): number {
     () => 0,
   );
 }
+
+// Compatibilidad explícita para SSR.
+export { getServerBarriguitasSnapshot, getServerSnapshot };

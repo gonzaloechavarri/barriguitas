@@ -16,13 +16,17 @@ export function AppHeader() {
         </span>
       </div>
 
-      <h1
-        className={`hidden text-center text-sm font-medium tracking-[-0.01em] text-white/80 motion-safe:transition-opacity motion-safe:duration-[250ms] motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] sm:block ${
-          headerMessage.trim() ? "" : "sm:!hidden"
-        }`}
-      >
-        {headerMessage}
-      </h1>
+      {headerMessage === null ? (
+        <div className="hidden sm:block" aria-hidden />
+      ) : (
+        <h1
+          className={`hidden text-center text-sm font-medium tracking-[-0.01em] text-white/80 motion-safe:transition-opacity motion-safe:duration-[250ms] motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] sm:block ${
+            headerMessage.trim() ? "" : "sm:!hidden"
+          }`}
+        >
+          {headerMessage}
+        </h1>
+      )}
 
       <div className="col-start-2 justify-self-end sm:col-auto">
         <HeaderActions />
@@ -32,7 +36,7 @@ export function AppHeader() {
 }
 
 function useHeaderMessage() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const refresh = () => setMessage(getHeaderMessage());
