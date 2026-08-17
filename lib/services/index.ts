@@ -14,6 +14,7 @@ export {
 export { getModuleHeader } from "./header.service";
 export { getTodaySummary } from "./today.service";
 export { calculateStrategyAllocation } from "./wealth.utils";
+export { getMilestoneTitles, getMilestones, getTopMilestone } from "./milestones.service";
 export { getWeddingData } from "./wedding.service";
 export { getOriginIcon, resolveCopilotState, resolveTopPendingTask } from "./copilot.utils";
 

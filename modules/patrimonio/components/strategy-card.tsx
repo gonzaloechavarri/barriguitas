@@ -54,11 +54,7 @@ export function StrategyCard({ strategy }: StrategyCardProps) {
         </ul>
       </div>
 
-      <p
-        className={`mt-8 text-xs font-light tracking-[-0.01em] ${
-          strategy.isAligned ? "text-white/40" : "text-white/50"
-        }`}
-      >
+      <p className="mt-8 text-xs font-light tracking-[-0.01em] text-white/40">
         {strategy.statusMessage}
       </p>
 

@@ -1,4 +1,4 @@
-export type AssetClass = "acwi" | "oro";
+export type AssetClass = "acwi" | "oro" | "momentum";
 
 export type InternalHolding = {
   assetClass: AssetClass;
@@ -8,6 +8,7 @@ export type InternalHolding = {
 export type StrategyTarget = {
   acwi: number;
   oro: number;
+  momentum: number;
 };
 
 export function calculateStrategyAllocation(
@@ -20,21 +21,24 @@ export function calculateStrategyAllocation(
       acc[holding.assetClass] += holding.value;
       return acc;
     },
-    { acwi: 0, oro: 0 },
+    { acwi: 0, oro: 0, momentum: 0 },
   );
 
-  const total = totals.acwi + totals.oro;
+  const total = totals.acwi + totals.oro + totals.momentum;
   const acwiPercentage = Math.round((totals.acwi / total) * 100);
-  const oroPercentage = 100 - acwiPercentage;
+  const oroPercentage = Math.round((totals.oro / total) * 100);
+  const momentumPercentage = 100 - acwiPercentage - oroPercentage;
 
   const maxDeviation = Math.max(
     Math.abs(acwiPercentage - target.acwi),
     Math.abs(oroPercentage - target.oro),
+    Math.abs(momentumPercentage - target.momentum),
   );
 
   return {
     acwiPercentage,
     oroPercentage,
+    momentumPercentage,
     isAligned: maxDeviation <= deviationThreshold,
     maxDeviation,
   };

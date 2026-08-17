@@ -1,5 +1,6 @@
 import type { WeddingData } from "@/lib/data/types";
 import { getFamilyConfig } from "@/lib/data/providers/local";
+import { getMilestoneTitles } from "./milestones.service";
 
 export async function getWeddingData(): Promise<WeddingData> {
   const config = getFamilyConfig();
@@ -10,12 +11,11 @@ export async function getWeddingData(): Promise<WeddingData> {
     cardTitle: config.wedding.cardTitle,
     countdownLabel: config.wedding.countdownLabel,
     progressMessage: config.wedding.progressMessage,
-    milestones: [...config.milestones],
+    milestones: getMilestoneTitles(),
     nextPlan: {
       cardTitle: config.nextTrip.cardTitle,
-      label: config.nextTrip.label,
       destination: config.nextTrip.destination,
-      subtitle: config.nextTrip.subtitle,
+      startDate: config.nextTrip.startDate,
     },
   };
 }

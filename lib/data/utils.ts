@@ -8,6 +8,15 @@ export function daysUntil(targetDate: string, referenceDate: Date): number {
   return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
 }
 
+export function formatTripCountdown(startDate: string, referenceDate: Date): string {
+  const days = daysUntil(startDate, referenceDate);
+
+  if (days === 0) return "Empieza hoy";
+  if (days === 1) return "Empieza mañana";
+
+  return `Empieza en ${days} días`;
+}
+
 export function formatWeddingDate(isoDate: string): string {
   const formatted = parseLocalDate(isoDate).toLocaleDateString("es-ES", {
     weekday: "long",

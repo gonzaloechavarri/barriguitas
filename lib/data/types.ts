@@ -39,9 +39,8 @@ export type WeddingData = {
   milestones: string[];
   nextPlan: {
     cardTitle: string;
-    label: string;
     destination: string;
-    subtitle: string;
+    startDate: string;
   };
 };
 
@@ -72,7 +71,7 @@ export type WealthView = {
     target: StrategyAllocationLine[];
     statusMessage: string;
     deviation: string;
-    isAligned: boolean;
+    isInTransition: boolean;
   };
 };
 

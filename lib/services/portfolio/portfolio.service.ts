@@ -18,9 +18,9 @@ import {
 } from "./portfolio.utils";
 
 export type PortfolioSnapshot = {
-  weights: { acwi: number; oro: number };
+  weights: { acwi: number; oro: number; momentum: number };
   maxDeviation: number;
-  isAligned: boolean;
+  isInTransition: boolean;
   performance: {
     lastSession: string;
     days30: string;
@@ -126,7 +126,8 @@ export async function getPortfolioSnapshot(
     patrimonio.strategy.deviationThreshold,
   );
 
-  const { acwiPercentage, oroPercentage, maxDeviation, isAligned } = allocation;
+  const { acwiPercentage, oroPercentage, momentumPercentage, maxDeviation } =
+    allocation;
 
   let lastSessionReturn: number | null = null;
   let days30Return: number | null = null;
@@ -205,9 +206,13 @@ export async function getPortfolioSnapshot(
   }
 
   return {
-    weights: { acwi: acwiPercentage, oro: oroPercentage },
+    weights: {
+      acwi: acwiPercentage,
+      oro: oroPercentage,
+      momentum: momentumPercentage,
+    },
     maxDeviation,
-    isAligned,
+    isInTransition: true,
     performance: {
       lastSession: formatReturn(lastSessionReturn),
       days30: formatReturn(days30Return),

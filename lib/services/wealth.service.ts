@@ -7,10 +7,13 @@ import {
   getPortfolioSnapshot,
 } from "@/lib/services/portfolio/portfolio.service";
 
+const STRATEGY_ASSET_KEYS = ["acwi", "oro", "momentum"] as const;
+
 export async function getWealthView(): Promise<WealthView> {
   const config = getFamilyConfig();
   const { patrimonio } = config;
   const snapshot = await getPortfolioSnapshot();
+  const { assets, target } = patrimonio.strategy;
 
   return {
     cardTitle: patrimonio.cardTitle,
@@ -26,35 +29,19 @@ export async function getWealthView(): Promise<WealthView> {
     ],
     strategy: {
       cardTitle: patrimonio.strategy.cardTitle,
-      allocations: [
-        {
-          icon: patrimonio.strategy.assets.acwi.icon,
-          label: patrimonio.strategy.assets.acwi.label,
-          percentage: `${snapshot.weights.acwi} %`,
-        },
-        {
-          icon: patrimonio.strategy.assets.oro.icon,
-          label: patrimonio.strategy.assets.oro.label,
-          percentage: `${snapshot.weights.oro} %`,
-        },
-      ],
-      target: [
-        {
-          icon: patrimonio.strategy.assets.acwi.icon,
-          label: patrimonio.strategy.assets.acwi.label,
-          percentage: `${patrimonio.strategy.target.acwi} %`,
-        },
-        {
-          icon: patrimonio.strategy.assets.oro.icon,
-          label: patrimonio.strategy.assets.oro.label,
-          percentage: `${patrimonio.strategy.target.oro} %`,
-        },
-      ],
-      statusMessage: snapshot.isAligned
-        ? patrimonio.strategy.alignedMessage
-        : patrimonio.strategy.driftMessage,
+      allocations: STRATEGY_ASSET_KEYS.map((key) => ({
+        icon: assets[key].icon,
+        label: assets[key].label,
+        percentage: `${snapshot.weights[key]} %`,
+      })),
+      target: STRATEGY_ASSET_KEYS.map((key) => ({
+        icon: assets[key].icon,
+        label: assets[key].label,
+        percentage: `${target[key]} %`,
+      })),
+      statusMessage: patrimonio.strategy.transitionMessage,
       deviation: formatPortfolioDeviation(snapshot.maxDeviation),
-      isAligned: snapshot.isAligned,
+      isInTransition: snapshot.isInTransition,
     },
   };
 }

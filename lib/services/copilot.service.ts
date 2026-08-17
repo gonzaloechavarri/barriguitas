@@ -1,13 +1,22 @@
 import type { CopilotTask, CopilotView } from "@/lib/data/types";
 import { getFamilyConfig } from "@/lib/data/providers/local";
-import { getOriginIcon, resolveCopilotState, resolveTopPendingTask } from "./copilot.utils";
+import { getMilestones } from "./milestones.service";
+import { getOriginIcon, resolveCopilotState } from "./copilot.utils";
 
 export { getOriginIcon, resolveCopilotState, resolveTopPendingTask } from "./copilot.utils";
 
+/**
+ * Deriva las sugerencias del Copiloto desde los hitos de Nosotros.
+ * No mantiene una lista propia de tareas.
+ */
 export async function getCopilotTasks(): Promise<CopilotTask[]> {
-  const config = getFamilyConfig();
-
-  return config.copilot.tasks.map((task) => ({ ...task }));
+  return getMilestones().map((milestone) => ({
+    id: milestone.id,
+    title: milestone.title,
+    status: "pending",
+    priority: milestone.priority,
+    origin: milestone.origin,
+  }));
 }
 
 /**

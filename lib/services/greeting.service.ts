@@ -1,9 +1,12 @@
 import type {
   AttentionLevel,
+  CopilotState,
   SmartGreeting,
   TodayAttentionState,
 } from "@/lib/data/types";
 import { getFamilyConfig } from "@/lib/data/providers/local";
+import { getCopilotTasks } from "./copilot.service";
+import { resolveCopilotState } from "./copilot.utils";
 
 const TIME_GREETINGS = {
   morning: "Buenos días ☀️",
@@ -48,6 +51,53 @@ export function getTimeBasedGreeting(
 
 export function getAttentionSubtitle(state: TodayAttentionState): string {
   return ATTENTION_SUBTITLES[state.level];
+}
+
+function pickRotatingMessage(
+  messages: readonly string[],
+  referenceDate: Date,
+): string {
+  if (messages.length === 0) return "";
+  if (messages.length === 1) return messages[0];
+
+  const dayIndex = Math.floor(
+    Date.UTC(
+      referenceDate.getFullYear(),
+      referenceDate.getMonth(),
+      referenceDate.getDate(),
+    ) / 86_400_000,
+  );
+
+  return messages[dayIndex % messages.length];
+}
+
+function resolveHeaderMessagePool(state: CopilotState): readonly string[] {
+  const { headerMessages } = getFamilyConfig().today;
+
+  if (state === "action") return headerMessages.action;
+  if (state === "celebrate") return headerMessages.celebrate;
+
+  return headerMessages.calm;
+}
+
+/**
+ * Encabezado superior de la pantalla Hoy.
+ * Rota mensajes tranquilos según el estado global de Barriguitas.
+ */
+export async function getTodayHeaderMessage(
+  referenceDate: Date = new Date(),
+): Promise<string> {
+  const config = getFamilyConfig();
+  const tasks = await getCopilotTasks();
+  const { state } = resolveCopilotState(
+    tasks,
+    config.copilot.celebrate.active,
+  );
+
+  return pickRotatingMessage(
+    resolveHeaderMessagePool(state),
+    referenceDate,
+  );
 }
 
 /**

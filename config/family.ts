@@ -10,14 +10,13 @@ export const familyConfig = {
   },
 
   nextTrip: {
-    cardTitle: "Nuestro próximo plan",
-    label: "Escapada",
-    destination: "San Sebastián",
-    subtitle: "Pintxos, el Julensito y desconexión.",
+    cardTitle: "Luna de miel",
+    destination: "Camboya · Singapur · Maldivas",
+    startDate: "2026-10-27",
   },
 
   milestones: [
-    "Confirmación de invitados",
+    "Expediente matrimonial",
     "Selección del baile",
     "Elección del DJ",
   ] as const,
@@ -27,6 +26,22 @@ export const familyConfig = {
   today: {
     /** Placeholder hasta que los módulos reporten su estado real. */
     attentionState: "calm" as const,
+    headerMessages: {
+      calm: [
+        "Todo está bajo control.",
+        "Un día tranquilo.",
+        "Seguimos según el plan.",
+        "Todo sigue en orden.",
+      ] as const,
+      action: [
+        "Hoy solo hay una cosa importante.",
+        "Una cosa merece vuestra atención hoy.",
+      ] as const,
+      celebrate: [
+        "Buen momento.",
+        "Disfrutad del proceso.",
+      ] as const,
+    },
     nosotrosAttention: {
       icon: "❤️",
       title: "Nosotros",
@@ -41,7 +56,7 @@ export const familyConfig = {
       {
         icon: "🌱",
         title: "Ahorro",
-        subtitle: "Todo evoluciona según el plan.",
+        subtitle: "La estrategia sigue su camino.",
       },
       {
         icon: "📅",
@@ -58,7 +73,7 @@ export const familyConfig = {
 
   patrimonio: {
     cardTitle: "Ahorro",
-    subtitle: "Todo evoluciona según el plan.",
+    subtitle: "La estrategia sigue su camino.",
     /** Años de histórico para la métrica de largo plazo. */
     performanceLookbackYears: 5,
     marketAssets: {
@@ -73,13 +88,14 @@ export const familyConfig = {
     },
     strategy: {
       cardTitle: "Estrategia",
-      target: { acwi: 80, oro: 20 },
+      target: { acwi: 85, oro: 10, momentum: 5 },
       deviationThreshold: 3,
-      alignedMessage: "✓ Estrategia alineada con el objetivo.",
-      driftMessage: "La estrategia empieza a desviarse ligeramente.",
+      transitionMessage:
+        "La estrategia está evolucionando hacia el nuevo objetivo.",
       assets: {
-        acwi: { icon: "🌍", label: "ACWI" },
+        acwi: { icon: "🌍", label: "Global" },
         oro: { icon: "🥇", label: "Oro" },
+        momentum: { icon: "⚡", label: "Momentum" },
       },
     },
     /** Posiciones internas — nunca se muestran en la interfaz. */
@@ -105,8 +121,35 @@ export const familyConfig = {
     },
   },
 
+  casa: {
+    cuidado: {
+      icon: "🧹",
+      title: "Cuidado",
+      itemLabel: "Limpieza interior",
+      defaultDaysAgo: 7,
+      markDoneLabel: "Registrar limpieza",
+      updatedLabel: "✓ Actualizado",
+    },
+    nuevoHogar: {
+      icon: "🏠",
+      title: "Nuevo hogar",
+      statusLines: ["Buscando con calma.", "Sin visitas esta semana."] as const,
+    },
+    mantenimiento: {
+      icon: "🔧",
+      title: "Mantenimiento",
+      statusLines: ["Sin revisiones pendientes."] as const,
+    },
+    menu: {
+      markDone: "✓ Marcar realizado",
+      edit: "Editar",
+      hide: "Ocultar",
+      delete: "Eliminar",
+    },
+  },
+
   moduleHeaders: {
-    documentos: "Todo está bajo control.",
+    documentos: "",
     nosotros: "Quedan {days} días para decir sí.",
     casa: "El cuidado de nuestra casa.",
     patrimonio: "",
@@ -121,7 +164,7 @@ export const familyConfig = {
     },
     copy: {
       action: {
-        header: "Hoy hay una cosa importante.",
+        header: "Hoy solo hay una cosa importante.",
         subtext: "Es lo único que merece vuestra atención esta semana.",
       },
       calm: {
@@ -135,29 +178,6 @@ export const familyConfig = {
         subtext: "Disfrutad del proceso.",
       },
     },
-    tasks: [
-      {
-        id: "invitados",
-        title: "Confirmar la lista de invitados",
-        status: "pending",
-        priority: 1,
-        origin: "wedding",
-      },
-      {
-        id: "coreografo",
-        title: "Elegir coreógrafo para el baile",
-        status: "pending",
-        priority: 2,
-        origin: "wedding",
-      },
-      {
-        id: "dj",
-        title: "Confirmar DJ",
-        status: "pending",
-        priority: 3,
-        origin: "wedding",
-      },
-    ] as const,
   },
 } as const;
 

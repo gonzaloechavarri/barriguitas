@@ -3,6 +3,7 @@ import { getFamilyConfig } from "@/lib/data/providers/local";
 import { daysUntil } from "@/lib/data/utils";
 import type { ModuleId } from "@/lib/modules/types";
 import { getCopilotView } from "./copilot.service";
+import { getTodayHeaderMessage } from "./greeting.service";
 
 function resolveHeaderMessage(
   moduleId: ModuleId,
@@ -25,6 +26,10 @@ export async function getModuleHeader(
   if (moduleId === "ia") {
     const view = await getCopilotView();
     return { message: view.header };
+  }
+
+  if (moduleId === "documentos") {
+    return { message: await getTodayHeaderMessage(referenceDate) };
   }
 
   const config = getFamilyConfig();
