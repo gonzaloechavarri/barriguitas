@@ -1,6 +1,6 @@
 import "server-only";
 
-import { getFamilyConfig } from "@/lib/data/providers/local";
+import { getFamilyConfig, getWealthData } from "@/lib/data/providers/local";
 import {
   calculateStrategyAllocation,
   type InternalHolding,
@@ -113,6 +113,7 @@ function hasMinimumHistory(
 export async function getPortfolioSnapshot(
   referenceDate: Date = new Date(),
 ): Promise<PortfolioSnapshot> {
+  const wealth = getWealthData();
   const config = getFamilyConfig();
   const { patrimonio } = config;
   const holdings: InternalHolding[] = patrimonio.holdings.map((holding) => ({
@@ -122,12 +123,14 @@ export async function getPortfolioSnapshot(
 
   const allocation = calculateStrategyAllocation(
     holdings,
-    patrimonio.strategy.target,
+    wealth.strategy.target,
     patrimonio.strategy.deviationThreshold,
   );
 
-  const { acwiPercentage, oroPercentage, momentumPercentage, maxDeviation } =
-    allocation;
+  const { maxDeviation } = allocation;
+  const acwiPercentage = wealth.currentDistribution.acwi;
+  const oroPercentage = wealth.currentDistribution.oro;
+  const momentumPercentage = wealth.currentDistribution.momentum;
 
   let lastSessionReturn: number | null = null;
   let days30Return: number | null = null;
@@ -207,12 +210,12 @@ export async function getPortfolioSnapshot(
 
   return {
     weights: {
-      acwi: acwiPercentage,
-      oro: oroPercentage,
-      momentum: momentumPercentage,
+      acwi: wealth.currentDistribution.acwi,
+      oro: wealth.currentDistribution.oro,
+      momentum: wealth.currentDistribution.momentum,
     },
     maxDeviation,
-    isInTransition: true,
+    isInTransition: maxDeviation > patrimonio.strategy.deviationThreshold,
     performance: {
       lastSession: formatReturn(lastSessionReturn),
       days30: formatReturn(days30Return),

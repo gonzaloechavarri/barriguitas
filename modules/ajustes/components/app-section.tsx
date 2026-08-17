@@ -1,14 +1,23 @@
-import { getFamilyConfig } from "@/lib/data/providers/local";
+﻿"use client";
+
+import type { SettingsAppView } from "@/lib/services/settings.service";
+import {
+  exportDataPlaceholder,
+  importDataPlaceholder,
+} from "@/lib/services/settings.service";
+import { SettingsButton } from "./settings-field";
 import { SettingsSection } from "./settings-section";
 
-export function AppSettingsSection() {
-  const { ajustes } = getFamilyConfig();
+type AppSettingsSectionProps = {
+  data: SettingsAppView;
+};
 
+export function AppSettingsSection({ data }: AppSettingsSectionProps) {
   return (
     <SettingsSection
       icon="⚙️"
       title="Aplicación"
-      summary={`Versión ${ajustes.app.version}`}
+      summary={data.summary}
       delay={400}
     >
       <div className="flex flex-col gap-4">
@@ -17,13 +26,22 @@ export function AppSettingsSection() {
             Versión
           </p>
           <p className="mt-2 text-sm font-light tracking-[-0.01em] text-white/55">
-            {ajustes.app.version}
+            {data.version}
           </p>
         </div>
 
         <p className="text-xs font-light tracking-[-0.01em] text-white/25">
-          {ajustes.app.tagline}
+          {data.tagline}
         </p>
+
+        <div className="flex flex-wrap gap-3">
+          <SettingsButton onClick={exportDataPlaceholder}>
+            {data.exportLabel}
+          </SettingsButton>
+          <SettingsButton onClick={importDataPlaceholder}>
+            {data.importLabel}
+          </SettingsButton>
+        </div>
       </div>
     </SettingsSection>
   );

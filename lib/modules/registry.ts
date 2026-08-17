@@ -1,4 +1,4 @@
-import { familyConfig } from "@/config/family";
+import { appData } from "@/data/app";
 import { AjustesModule } from "@/modules/ajustes/ajustes-module";
 import { AgendaModule } from "@/modules/agenda/agenda-module";
 import { CasaModule } from "@/modules/casa/casa-module";
@@ -55,7 +55,7 @@ export const modules: ModuleDefinition[] = [
     id: "ajustes",
     icon: "⚙️",
     title: "Ajustes",
-    description: familyConfig.ajustes.subtitle,
+    description: appData.ajustes.subtitle,
     component: AjustesModule,
   },
 ];

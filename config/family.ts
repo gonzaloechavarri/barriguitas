@@ -149,14 +149,30 @@ export const familyConfig = {
   },
 
   ajustes: {
-    subtitle: "Manteniendo Barriguitas al día.",
+    title: "Nuestro cuaderno",
+    subtitle: "Todo lo que mantiene Barriguitas al día.",
+    notice:
+      "Todo lo que cambiemos aquí se guarda automáticamente y se refleja en toda Barriguitas.",
+    nosotros: {
+      summary: "Los momentos que estamos construyendo.",
+    },
+    casa: {
+      summary: "El cuidado de nuestro hogar.",
+    },
+    ahorro: {
+      summary: "Nuestro plan para el futuro.",
+    },
     agenda: {
       placeholder: "Aquí aparecerán nuestros próximos planes.",
-      summary: "En camino",
+      summary: "Aquí aparecerán nuestros próximos planes.",
+    },
+    copiloto: {
+      summary: "La ayuda inteligente de Barriguitas.",
     },
     app: {
       version: "0.1.0",
       tagline: "Construida con ❤️ para nosotros.",
+      summary: "Construida con ❤️ para nosotros.",
       exportLabel: "Guardar una copia",
       importLabel: "Recuperar una copia",
     },
