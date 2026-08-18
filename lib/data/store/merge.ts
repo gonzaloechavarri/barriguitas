@@ -1,4 +1,24 @@
 import type { BarriguitasOverrides, BarriguitasSnapshot } from "./types";
+<<<<<<< Updated upstream
+import { SERVER_SNAPSHOT, createDefaultSnapshot } from "./types";
+=======
+<<<<<<< HEAD
+import { createDefaultSnapshot } from "./types";
+>>>>>>> Stashed changes
+
+export function mergeSnapshot(
+  overrides: BarriguitasOverrides | null,
+  base: BarriguitasSnapshot = SERVER_SNAPSHOT,
+): BarriguitasSnapshot {
+  if (!overrides) {
+    return base;
+  }
+
+<<<<<<< Updated upstream
+  const defaults = createDefaultSnapshot();
+
+=======
+=======
 import { SERVER_SNAPSHOT, createDefaultSnapshot } from "./types";
 
 export function mergeSnapshot(
@@ -11,6 +31,8 @@ export function mergeSnapshot(
 
   const defaults = createDefaultSnapshot();
 
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   return {
     couple: {
       ...defaults.couple,

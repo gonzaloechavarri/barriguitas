@@ -5,7 +5,15 @@ export const coupleData = {
     date: "2026-10-24",
     journeyStartDate: "2025-10-24",
     cardTitle: "Nuestra boda",
+<<<<<<< Updated upstream
     countdownLabel: 'días para decir "sí quiero"',
+=======
+<<<<<<< HEAD
+    countdownLabel: "días para decir \"sí quiero\"",
+=======
+    countdownLabel: 'días para decir "sí quiero"',
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
     progressMessage: "Se acerca el mejor día de nuestra vida❤️",
   },
 

@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 ﻿"use client";
+=======
+<<<<<<< HEAD
+"use client";
+=======
+﻿"use client";
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 
 import type { SettingsCasaView } from "@/lib/services/settings.service";
 import { registerCleaning } from "@/lib/services/settings.service";
@@ -14,7 +22,15 @@ export function CasaSettingsSection({ data }: CasaSettingsSectionProps) {
     <SettingsSection
       icon="🏡"
       title="Villa Barriguita"
+<<<<<<< Updated upstream
       summary={data.summary}
+=======
+<<<<<<< HEAD
+      summary={`${data.itemLabel} · ${data.lastCleaningLabel}`}
+=======
+      summary={data.summary}
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
       delay={160}
     >
       <div className="flex flex-col gap-2">
@@ -23,7 +39,15 @@ export function CasaSettingsSection({ data }: CasaSettingsSectionProps) {
         </p>
 
         <p className="text-xs font-light tracking-[-0.01em] text-white/35">
+<<<<<<< Updated upstream
           {data.copy.lastCleaning}
+=======
+<<<<<<< HEAD
+          Última limpieza
+=======
+          {data.copy.lastCleaning}
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
         </p>
 
         <p className="text-sm font-light tracking-[-0.01em] text-white/55">

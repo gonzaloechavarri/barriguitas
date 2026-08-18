@@ -1,6 +1,15 @@
 import "server-only";
 
+<<<<<<< Updated upstream
 import { getFamilyConfig, getWealthData } from "@/lib/data/providers/local";
+=======
+<<<<<<< HEAD
+import type { WealthView } from "@/lib/data/types";
+import { getWealthData } from "@/lib/data/providers/local";
+=======
+import { getFamilyConfig, getWealthData } from "@/lib/data/providers/local";
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 import {
   calculateStrategyAllocation,
   type InternalHolding,
@@ -112,8 +121,20 @@ function hasMinimumHistory(
 
 export async function getPortfolioSnapshot(
   referenceDate: Date = new Date(),
+<<<<<<< Updated upstream
 ): Promise<PortfolioSnapshot> {
   const wealth = getWealthData();
+=======
+<<<<<<< HEAD
+): Promise<WealthPerformance> {
+  const wealth = getWealthData();
+  const { currentDistribution } = wealth;
+  const acwiPercentage = currentDistribution.acwi;
+  const oroPercentage = currentDistribution.oro;
+=======
+): Promise<PortfolioSnapshot> {
+  const wealth = getWealthData();
+>>>>>>> Stashed changes
   const config = getFamilyConfig();
   const { patrimonio } = config;
   const holdings: InternalHolding[] = patrimonio.holdings.map((holding) => ({
@@ -131,6 +152,10 @@ export async function getPortfolioSnapshot(
   const acwiPercentage = wealth.currentDistribution.acwi;
   const oroPercentage = wealth.currentDistribution.oro;
   const momentumPercentage = wealth.currentDistribution.momentum;
+<<<<<<< Updated upstream
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 
   let lastSessionReturn: number | null = null;
   let days30Return: number | null = null;
@@ -214,6 +239,14 @@ export async function getPortfolioSnapshot(
       oro: wealth.currentDistribution.oro,
       momentum: wealth.currentDistribution.momentum,
     },
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+    maxDeviation: allocation.maxDeviation,
+    isInTransition: true,
+    performance,
+=======
+>>>>>>> Stashed changes
     maxDeviation,
     isInTransition: maxDeviation > patrimonio.strategy.deviationThreshold,
     performance: {
@@ -222,6 +255,10 @@ export async function getPortfolioSnapshot(
       yearToDate: formatReturn(ytdReturn),
       fiveYears: formatReturn(fiveYearsReturn),
     },
+<<<<<<< Updated upstream
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   };
 }
 

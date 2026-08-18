@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 ﻿import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+=======
+<<<<<<< HEAD
+import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+=======
+﻿import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 
 const fieldClassName =
   "w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm font-light tracking-[-0.01em] text-white/75 outline-none transition-colors duration-200 placeholder:text-white/25 focus:border-white/[0.14] focus:bg-white/[0.04]";

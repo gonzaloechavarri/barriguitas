@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 ﻿"use client";
+=======
+<<<<<<< HEAD
+"use client";
+=======
+﻿"use client";
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 
 import type { SettingsAhorroView } from "@/lib/services/settings.service";
 import type { StrategyDistribution } from "@/lib/data/types/editable";
@@ -89,11 +97,27 @@ export function AhorroSettingsSection({ data }: AhorroSettingsSectionProps) {
     <SettingsSection
       icon="🌱"
       title="Ahorro"
+<<<<<<< Updated upstream
       summary={data.summary}
       delay={240}
     >
       <DistributionFields
         title={data.copy.targetTitle}
+=======
+<<<<<<< HEAD
+      summary={`Objetivo ${data.target.acwi}/${data.target.oro}/${data.target.momentum}`}
+      delay={240}
+    >
+      <DistributionFields
+        title="Objetivo estratégico"
+=======
+      summary={data.summary}
+      delay={240}
+    >
+      <DistributionFields
+        title={data.copy.targetTitle}
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
         values={data.target}
         labels={data.labels}
         onChange={updateWealthTarget}
@@ -102,7 +126,15 @@ export function AhorroSettingsSection({ data }: AhorroSettingsSectionProps) {
       <SettingsDivider />
 
       <DistributionFields
+<<<<<<< Updated upstream
         title={data.copy.currentTitle}
+=======
+<<<<<<< HEAD
+        title="Distribución actual"
+=======
+        title={data.copy.currentTitle}
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
         values={data.current}
         labels={data.labels}
         onChange={updateWealthCurrentDistribution}

@@ -13,12 +13,20 @@ export type SettingsMilestoneView = MilestoneEntry & {
 };
 
 export type SettingsNosotrosView = {
+<<<<<<< Updated upstream
   summary: string;
+=======
+<<<<<<< HEAD
+=======
+  summary: string;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   weddingDate: string;
   tripTitle: string;
   tripDestination: string;
   tripStartDate: string;
   milestones: SettingsMilestoneView[];
+<<<<<<< Updated upstream
   copy: {
     weddingDate: string;
     tripTitle: string;
@@ -34,10 +42,34 @@ export type SettingsNosotrosView = {
 
 export type SettingsCasaView = {
   summary: string;
+=======
+<<<<<<< HEAD
+};
+
+export type SettingsCasaView = {
+=======
+  copy: {
+    weddingDate: string;
+    tripTitle: string;
+    tripDestination: string;
+    tripStartDate: string;
+    milestonesTitle: string;
+    addMilestone: string;
+    addMilestonePlaceholder: string;
+    completeMilestone: string;
+    deleteMilestone: string;
+  };
+};
+
+export type SettingsCasaView = {
+  summary: string;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   itemLabel: string;
   lastCleaningLabel: string;
   daysElapsedLabel: string;
   markDoneLabel: string;
+<<<<<<< Updated upstream
   copy: {
     lastCleaning: string;
   };
@@ -45,6 +77,21 @@ export type SettingsCasaView = {
 
 export type SettingsAhorroView = {
   summary: string;
+=======
+<<<<<<< HEAD
+};
+
+export type SettingsAhorroView = {
+=======
+  copy: {
+    lastCleaning: string;
+  };
+};
+
+export type SettingsAhorroView = {
+  summary: string;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   target: StrategyDistribution;
   current: StrategyDistribution;
   labels: {
@@ -52,6 +99,7 @@ export type SettingsAhorroView = {
     oro: string;
     momentum: string;
   };
+<<<<<<< Updated upstream
   copy: {
     targetTitle: string;
     currentTitle: string;
@@ -59,32 +107,76 @@ export type SettingsAhorroView = {
 };
 
 export type SettingsAgendaView = {
+=======
+<<<<<<< HEAD
+};
+
+export type SettingsAgendaView = {
+=======
+  copy: {
+    targetTitle: string;
+    currentTitle: string;
+  };
+};
+
+export type SettingsAgendaView = {
+>>>>>>> Stashed changes
   summary: string;
   placeholder: string;
 };
 
 export type SettingsCopilotoView = {
   summary: string;
+<<<<<<< Updated upstream
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   placeholder: string;
 };
 
 export type SettingsAppView = {
+<<<<<<< Updated upstream
   summary: string;
   version: string;
   tagline: string;
+=======
+<<<<<<< HEAD
+  version: string;
+=======
+  summary: string;
+  version: string;
+  tagline: string;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   exportLabel: string;
   importLabel: string;
 };
 
 export type SettingsView = {
+<<<<<<< Updated upstream
   title: string;
   subtitle: string;
   notice: string;
+=======
+<<<<<<< HEAD
+=======
+  title: string;
+  subtitle: string;
+  notice: string;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   nosotros: SettingsNosotrosView;
   casa: SettingsCasaView;
   ahorro: SettingsAhorroView;
   agenda: SettingsAgendaView;
+<<<<<<< Updated upstream
   copiloto: SettingsCopilotoView;
+=======
+<<<<<<< HEAD
+=======
+  copiloto: SettingsCopilotoView;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   app: SettingsAppView;
 };
 
@@ -117,7 +209,14 @@ function withUniqueMilestoneId(
 
 export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
   const { couple, house, wealth, app } = snapshot;
+<<<<<<< Updated upstream
   const { ajustes } = app;
+=======
+<<<<<<< HEAD
+=======
+  const { ajustes } = app;
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   const cleaningDate = resolveCleaningDate(
     house.cuidado.lastCleaningAt,
     house.cuidado.defaultDaysAgo,
@@ -125,11 +224,23 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
   const elapsedDays = daysSince(cleaningDate);
 
   return {
+<<<<<<< Updated upstream
     title: ajustes.title,
     subtitle: ajustes.subtitle,
     notice: ajustes.notice,
     nosotros: {
       summary: ajustes.nosotrosSummary,
+=======
+<<<<<<< HEAD
+    nosotros: {
+=======
+    title: ajustes.title,
+    subtitle: ajustes.subtitle,
+    notice: ajustes.notice,
+    nosotros: {
+      summary: ajustes.nosotrosSummary,
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
       weddingDate: couple.wedding.date,
       tripTitle: couple.nextTrip.cardTitle,
       tripDestination: couple.nextTrip.destination,
@@ -140,6 +251,7 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
           priority: index + 1,
         }),
       ),
+<<<<<<< Updated upstream
       copy: {
         weddingDate: ajustes.copy.weddingDate,
         tripTitle: ajustes.copy.tripTitle,
@@ -154,16 +266,51 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
     },
     casa: {
       summary: ajustes.casaSummary,
+=======
+<<<<<<< HEAD
+    },
+    casa: {
+=======
+      copy: {
+        weddingDate: ajustes.copy.weddingDate,
+        tripTitle: ajustes.copy.tripTitle,
+        tripDestination: ajustes.copy.tripDestination,
+        tripStartDate: ajustes.copy.tripStartDate,
+        milestonesTitle: ajustes.copy.milestonesTitle,
+        addMilestone: ajustes.copy.addMilestone,
+        addMilestonePlaceholder: ajustes.copy.addMilestonePlaceholder,
+        completeMilestone: ajustes.copy.completeMilestone,
+        deleteMilestone: ajustes.copy.deleteMilestone,
+      },
+    },
+    casa: {
+      summary: ajustes.casaSummary,
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
       itemLabel: house.cuidado.itemLabel,
       lastCleaningLabel: formatShortDate(cleaningDate),
       daysElapsedLabel: formatDaysElapsed(elapsedDays),
       markDoneLabel: house.cuidado.markDoneLabel,
+<<<<<<< Updated upstream
       copy: {
         lastCleaning: ajustes.copy.lastCleaning,
       },
     },
     ahorro: {
       summary: ajustes.ahorroSummary,
+=======
+<<<<<<< HEAD
+    },
+    ahorro: {
+=======
+      copy: {
+        lastCleaning: ajustes.copy.lastCleaning,
+      },
+    },
+    ahorro: {
+      summary: ajustes.ahorroSummary,
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
       target: { ...wealth.strategy.target },
       current: { ...wealth.currentDistribution },
       labels: {
@@ -171,6 +318,30 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
         oro: wealth.strategy.assets.oro.label,
         momentum: wealth.strategy.assets.momentum.label,
       },
+<<<<<<< Updated upstream
+      copy: {
+        targetTitle: ajustes.copy.targetTitle,
+        currentTitle: ajustes.copy.currentTitle,
+      },
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
+    },
+    agenda: {
+      summary: ajustes.agendaSummary,
+      placeholder: ajustes.agendaPlaceholder,
+    },
+    copiloto: {
+      summary: ajustes.copilotoSummary,
+      placeholder: ajustes.copilotoPlaceholder,
+    },
+    app: {
+<<<<<<< Updated upstream
+=======
+      version: app.ajustes.version,
+      exportLabel: app.ajustes.exportLabel,
+      importLabel: app.ajustes.importLabel,
+=======
       copy: {
         targetTitle: ajustes.copy.targetTitle,
         currentTitle: ajustes.copy.currentTitle,
@@ -185,11 +356,16 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
       placeholder: ajustes.copilotoPlaceholder,
     },
     app: {
+>>>>>>> Stashed changes
       summary: ajustes.appSummary,
       version: ajustes.version,
       tagline: ajustes.tagline,
       exportLabel: ajustes.exportLabel,
       importLabel: ajustes.importLabel,
+<<<<<<< Updated upstream
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
     },
   };
 }

@@ -1,4 +1,12 @@
+<<<<<<< Updated upstream
 ﻿"use client";
+=======
+<<<<<<< HEAD
+"use client";
+=======
+﻿"use client";
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 
 import { useMemo } from "react";
 import { useBarriguitasStore } from "@/lib/data/store/barriguitas-store";

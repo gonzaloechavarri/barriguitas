@@ -24,6 +24,13 @@ export const houseData = {
     delete: "Eliminar",
   },
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+  /** Señales futuras para el Copiloto. */
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   copilot: {
     icon: "🏡",
   },

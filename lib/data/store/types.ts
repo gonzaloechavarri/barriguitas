@@ -2,10 +2,20 @@ import { appData, type AppData } from "@/data/app";
 import { coupleData } from "@/data/couple";
 import { houseData } from "@/data/house";
 import { wealthData } from "@/data/wealth";
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
+=======
+>>>>>>> Stashed changes
 import type {
   MilestoneEntry,
   StrategyDistribution,
 } from "@/lib/data/types/editable";
+<<<<<<< Updated upstream
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
 
 export type BarriguitasCoupleData = {
   wedding: {
@@ -71,7 +81,15 @@ export type BarriguitasOverrides = {
   }>;
 };
 
+<<<<<<< Updated upstream
 function buildDefaultSnapshot(): BarriguitasSnapshot {
+=======
+<<<<<<< HEAD
+export function createDefaultSnapshot(): BarriguitasSnapshot {
+=======
+function buildDefaultSnapshot(): BarriguitasSnapshot {
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
   return {
     couple: {
       ...coupleData,
@@ -95,9 +113,18 @@ function buildDefaultSnapshot(): BarriguitasSnapshot {
     app: appData,
   };
 }
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
 
 export const SERVER_SNAPSHOT: BarriguitasSnapshot = buildDefaultSnapshot();
 
 export function createDefaultSnapshot(): BarriguitasSnapshot {
   return SERVER_SNAPSHOT;
 }
+<<<<<<< Updated upstream
+=======
+>>>>>>> cursor/text-polish-ajustes-e9c9
+>>>>>>> Stashed changes
