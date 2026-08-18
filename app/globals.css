@@ -66,6 +66,11 @@
   }
 }
 
+html {
+  background-color: var(--color-barriguitas-bg);
+  color-scheme: dark;
+}
+
 body {
   background-color: var(--color-barriguitas-bg);
   color: #fafafa;

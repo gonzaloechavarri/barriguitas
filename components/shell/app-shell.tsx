@@ -3,11 +3,13 @@
 import { AppDock } from "@/components/shell/app-dock";
 import { AppHeader } from "@/components/shell/app-header";
 import { ModuleViewport } from "@/components/shell/module-viewport";
+import { BarriguitasStoreHydrator } from "@/lib/data/store/hydrator";
 import { ModuleNavigationProvider } from "@/lib/navigation/module-context";
 
 export function AppShell() {
   return (
     <ModuleNavigationProvider>
+      <BarriguitasStoreHydrator />
       <div className="relative flex min-h-screen flex-col overflow-hidden bg-barriguitas-bg">
         <Background />
 

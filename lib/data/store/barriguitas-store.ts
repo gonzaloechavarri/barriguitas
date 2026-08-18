@@ -3,17 +3,22 @@
 import { useSyncExternalStore } from "react";
 import {
   getBarriguitasSnapshot,
+  getServerBarriguitasSnapshot,
   persistBarriguitasSnapshot,
-  setBarriguitasSnapshot,
 } from "./snapshot";
-import { createDefaultSnapshot, type BarriguitasSnapshot } from "./types";
+import { SERVER_SNAPSHOT } from "./types";
+import type { BarriguitasSnapshot } from "./types";
 
 type Listener = () => void;
 
 let version = 0;
 const listeners = new Set<Listener>();
 
-function emitChange() {
+function getServerSnapshot(): BarriguitasSnapshot {
+  return SERVER_SNAPSHOT;
+}
+
+export function notifyBarriguitasStoreChange(): void {
   version += 1;
   listeners.forEach((listener) => listener());
 }
@@ -28,10 +33,10 @@ export function updateBarriguitas(
 ): void {
   const next = updater(getBarriguitasSnapshot());
   persistBarriguitasSnapshot(next);
-  emitChange();
+  notifyBarriguitasStoreChange();
 }
 
-function getVersion(): number {
+function getSnapshotVersion(): number {
   return version;
 }
 
@@ -39,19 +44,16 @@ export function useBarriguitasStore(): BarriguitasSnapshot {
   return useSyncExternalStore(
     subscribeBarriguitas,
     getBarriguitasSnapshot,
-    createDefaultSnapshot,
+    getServerSnapshot,
   );
 }
 
 export function useBarriguitasVersion(): number {
   return useSyncExternalStore(
     subscribeBarriguitas,
-    getVersion,
+    getSnapshotVersion,
     () => 0,
   );
 }
 
-// Keep snapshot module in sync when hydrating on the client.
-if (typeof window !== "undefined") {
-  setBarriguitasSnapshot(getBarriguitasSnapshot());
-}
+export { getServerBarriguitasSnapshot, getServerSnapshot };

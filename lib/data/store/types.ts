@@ -68,27 +68,30 @@ export type BarriguitasOverrides = {
   }>;
 };
 
+/** Referencia única — React exige la misma referencia en cada getServerSnapshot. */
+export const SERVER_SNAPSHOT: BarriguitasSnapshot = {
+  couple: {
+    ...coupleData,
+    milestones: coupleData.milestones.map((milestone) => ({ ...milestone })),
+  },
+  house: {
+    ...houseData,
+    cuidado: {
+      ...houseData.cuidado,
+      lastCleaningAt: null,
+    },
+  },
+  wealth: {
+    ...wealthData,
+    strategy: {
+      ...wealthData.strategy,
+      target: { ...wealthData.strategy.target },
+    },
+    currentDistribution: { ...wealthData.currentDistribution },
+  },
+  app: appData,
+};
+
 export function createDefaultSnapshot(): BarriguitasSnapshot {
-  return {
-    couple: {
-      ...coupleData,
-      milestones: coupleData.milestones.map((milestone) => ({ ...milestone })),
-    },
-    house: {
-      ...houseData,
-      cuidado: {
-        ...houseData.cuidado,
-        lastCleaningAt: null,
-      },
-    },
-    wealth: {
-      ...wealthData,
-      strategy: {
-        ...wealthData.strategy,
-        target: { ...wealthData.strategy.target },
-      },
-      currentDistribution: { ...wealthData.currentDistribution },
-    },
-    app: appData,
-  };
+  return SERVER_SNAPSHOT;
 }
