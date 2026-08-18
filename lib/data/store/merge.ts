@@ -1,5 +1,19 @@
 import type { BarriguitasOverrides, BarriguitasSnapshot } from "./types";
 import { createDefaultSnapshot } from "./types";
+import type { SharedList } from "@/lib/data/types/lists";
+
+function resolveLists(
+  overrides: BarriguitasOverrides | null,
+  defaults: BarriguitasSnapshot,
+): SharedList[] {
+  const deletedIds = new Set(overrides?.lists?.deletedListIds ?? []);
+
+  if (overrides?.lists?.lists != null) {
+    return overrides.lists.lists.filter((list) => !deletedIds.has(list.id));
+  }
+
+  return defaults.lists.lists.filter((list) => !deletedIds.has(list.id));
+}
 
 export function mergeSnapshot(
   overrides: BarriguitasOverrides | null,
@@ -45,7 +59,8 @@ export function mergeSnapshot(
     },
     lists: {
       ...defaults.lists,
-      lists: overrides.lists?.lists ?? defaults.lists.lists,
+      lists: resolveLists(overrides, defaults),
+      deletedListIds: overrides.lists?.deletedListIds,
     },
     app: defaults.app,
   };
@@ -73,6 +88,9 @@ export function extractOverrides(
     },
     lists: {
       lists: snapshot.lists.lists,
+      ...(snapshot.lists.deletedListIds?.length
+        ? { deletedListIds: snapshot.lists.deletedListIds }
+        : {}),
     },
   };
 }

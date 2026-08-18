@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useBarriguitasStore } from "@/lib/data/store/barriguitas-store";
-import { createList } from "@/lib/services/lists.service";
+import { createList, deleteList } from "@/lib/services/lists.service";
 import { CreateListSheet } from "./components/create-list-sheet";
 import { ListDetailView } from "./list-detail-view";
 import { ListasView } from "./listas-view";
@@ -20,6 +20,10 @@ export function ListasModule() {
         <ListDetailView
           list={selectedList}
           onBack={() => setSelectedListId(null)}
+          onDeleteList={(listId) => {
+            deleteList(listId);
+            setSelectedListId(null);
+          }}
         />
       </div>
     );

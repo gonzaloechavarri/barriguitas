@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { pressControlClasses, pressTextControlClasses } from "@/components/motion/press-motion";
 
 type DeleteListConfirmProps = {
@@ -15,9 +17,15 @@ export function DeleteListConfirm({
   onCancel,
   onConfirm,
 }: DeleteListConfirmProps) {
-  if (!open) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!open || !mounted) return null;
+
+  return createPortal(
     <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center">
       <button
         type="button"
@@ -31,7 +39,8 @@ export function DeleteListConfirm({
         aria-modal
         aria-labelledby="delete-list-title"
         aria-describedby="delete-list-description"
-        className="relative mx-4 mb-[max(1.5rem,env(safe-area-inset-bottom))] w-full max-w-sm rounded-3xl border border-white/[0.08] bg-[#111113] p-5 shadow-[0_24px_64px_rgba(0,0,0,0.55)] sm:mb-0"
+        onPointerDown={(event) => event.stopPropagation()}
+        className="relative z-10 mx-4 mb-[max(1.5rem,env(safe-area-inset-bottom))] w-full max-w-sm rounded-3xl border border-white/[0.08] bg-[#111113] p-5 shadow-[0_24px_64px_rgba(0,0,0,0.55)] sm:mb-0"
       >
         <h3
           id="delete-list-title"
@@ -56,13 +65,17 @@ export function DeleteListConfirm({
           </button>
           <button
             type="button"
-            onClick={onConfirm}
+            onPointerUp={(event) => {
+              event.stopPropagation();
+              onConfirm();
+            }}
             className={`rounded-full border border-red-400/20 bg-red-400/10 px-4 py-2 text-sm font-light tracking-[-0.01em] text-red-300/90 touch-manipulation ${pressControlClasses}`}
           >
             Eliminar
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

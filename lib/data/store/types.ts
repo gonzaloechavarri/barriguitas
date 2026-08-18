@@ -72,6 +72,7 @@ export type BarriguitasOverrides = {
   }>;
   lists?: Partial<{
     lists: BarriguitasListsData["lists"];
+    deletedListIds: string[];
   }>;
 };
 

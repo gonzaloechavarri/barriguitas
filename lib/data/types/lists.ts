@@ -31,4 +31,6 @@ export type SharedList = {
 export type BarriguitasListsData = {
   houseId: string;
   lists: SharedList[];
+  /** IDs eliminados — evita que listas demo vuelvan al recargar. */
+  deletedListIds?: string[];
 };

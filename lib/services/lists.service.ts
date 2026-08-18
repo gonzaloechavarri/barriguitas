@@ -134,11 +134,18 @@ export function createList(name: string, icon: string): string | null {
 }
 
 export function deleteList(listId: string): void {
-  updateBarriguitas((current) => ({
-    ...current,
-    lists: {
-      ...current.lists,
-      lists: current.lists.lists.filter((list) => list.id !== listId),
-    },
-  }));
+  updateBarriguitas((current) => {
+    const deletedListIds = Array.from(
+      new Set([...(current.lists.deletedListIds ?? []), listId]),
+    );
+
+    return {
+      ...current,
+      lists: {
+        ...current.lists,
+        deletedListIds,
+        lists: current.lists.lists.filter((list) => list.id !== listId),
+      },
+    };
+  });
 }

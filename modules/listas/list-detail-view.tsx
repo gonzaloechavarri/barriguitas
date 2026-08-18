@@ -4,7 +4,6 @@ import { useState } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
 import {
   addListItem,
-  deleteList,
   toggleListItem,
 } from "@/lib/services/lists.service";
 import type { SharedList } from "@/lib/data/types/lists";
@@ -15,17 +14,17 @@ import { ListItemRow } from "./components/list-item-row";
 type ListDetailViewProps = {
   list: SharedList;
   onBack: () => void;
+  onDeleteList: (listId: string) => void;
 };
 
-export function ListDetailView({ list, onBack }: ListDetailViewProps) {
+export function ListDetailView({ list, onBack, onDeleteList }: ListDetailViewProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const pendingItems = list.items.filter((item) => !item.completed);
   const completedItems = list.items.filter((item) => item.completed);
 
   function handleConfirmDelete() {
-    deleteList(list.id);
     setConfirmDelete(false);
-    onBack();
+    onDeleteList(list.id);
   }
 
   return (
