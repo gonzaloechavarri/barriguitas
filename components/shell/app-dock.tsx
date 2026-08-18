@@ -10,7 +10,7 @@ export function AppDock() {
   return (
     <nav
       aria-label="Módulos de Barriguitas"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-5 sm:pb-6"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:pb-[max(1.5rem,env(safe-area-inset-bottom))]"
     >
       <div className="pointer-events-auto flex items-end gap-1 rounded-[22px] border border-white/[0.08] bg-white/[0.04] px-2.5 py-2 shadow-[0_8px_32px_rgba(0,0,0,0.45),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-xl backdrop-saturate-150 sm:gap-1.5 sm:px-3 sm:py-2.5">
         {dockModules.map((module) => (

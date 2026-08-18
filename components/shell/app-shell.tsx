@@ -11,7 +11,7 @@ export function AppShell() {
       <div className="relative flex min-h-screen flex-col overflow-hidden bg-barriguitas-bg">
         <Background />
 
-        <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col pb-28">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col pb-28 pt-[env(safe-area-inset-top)]">
           <AppHeader />
           <ModuleViewport />
         </div>
