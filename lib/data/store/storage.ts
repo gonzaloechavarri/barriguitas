@@ -17,8 +17,24 @@ export function readOverrides(): BarriguitasOverrides | null {
     if (raw) {
       const parsed = JSON.parse(raw) as BarriguitasOverrides & {
         lists?: unknown;
+        wealth?: BarriguitasOverrides["wealth"] & {
+          currentDistribution?: unknown;
+          holdings?: unknown;
+        };
       };
       delete parsed.lists;
+      if (parsed.wealth?.portfolioSnapshot) {
+        const legacy = parsed.wealth.portfolioSnapshot as {
+          holdings?: unknown;
+        };
+        if ("holdings" in legacy) {
+          delete legacy.holdings;
+        }
+      }
+      if (parsed.wealth) {
+        delete parsed.wealth.currentDistribution;
+        delete parsed.wealth.holdings;
+      }
       return parsed;
     }
 

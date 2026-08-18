@@ -1,26 +1,4 @@
-import type {
-  CopilotPortfolio,
-  CopilotPortfolioSnapshot,
-} from "./portfolio-types";
-
-/**
- * Cartera ficticia del Copiloto — SOLO DEMO.
- * No representa cartera, pesos ni valores reales.
- * Sustituir por fuente segura cuando exista persistencia privada.
- */
-export const DEMO_COPILOT_PORTFOLIO: CopilotPortfolio = {
-  isDemo: true,
-  totalValue: 100_000,
-  updatedAt: "2026-08-01",
-  positions: [
-    { id: "acwi", label: "ACWI", weight: 79 },
-    { id: "oro", label: "Oro", weight: 21 },
-  ],
-  target: {
-    acwi: 80,
-    oro: 20,
-  },
-};
+import type { CopilotPortfolioSnapshot } from "./portfolio-types";
 
 /** Histórico demo desactivado hasta contar con persistencia segura. */
 export const DEMO_COPILOT_PORTFOLIO_SNAPSHOT: CopilotPortfolioSnapshot | null =

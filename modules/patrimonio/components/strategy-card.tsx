@@ -10,7 +10,11 @@ export function StrategyCard({ strategy }: StrategyCardProps) {
     <GlassCard className="p-6 sm:p-7" delay={160}>
       <CardTitle icon="📊">{strategy.cardTitle}</CardTitle>
 
-      <ul className="mt-8 flex flex-col gap-4">
+      <p className="mt-8 text-xs font-light tracking-[-0.01em] text-white/30">
+        {strategy.allocationsLabel}
+      </p>
+
+      <ul className="mt-4 flex flex-col gap-4">
         {strategy.allocations.map((allocation) => (
           <li
             key={`current-${allocation.label}`}

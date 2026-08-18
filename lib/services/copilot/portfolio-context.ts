@@ -1,6 +1,7 @@
 import type { CopilotObservation } from "@/lib/data/types";
+import { getWealthData } from "@/lib/data/providers/local";
+import { resolveWealthAllocation } from "@/lib/services/wealth-allocation.service";
 import {
-  DEMO_COPILOT_PORTFOLIO,
   DEMO_COPILOT_PORTFOLIO_SNAPSHOT,
   DEMO_PORTFOLIO_NEAR_TARGET_THRESHOLD,
   DEMO_PORTFOLIO_SHIFT_THRESHOLD,
@@ -12,12 +13,34 @@ import type {
   CopilotPortfolioWeightShift,
 } from "./portfolio-types";
 
+const PORTFOLIO_POSITION_KEYS = ["acwi", "oro", "momentum"] as const;
+
 /**
- * Cartera conceptual del Copiloto.
- * Hoy devuelve datos demo; en el futuro puede leerse de una fuente segura.
+ * Cartera conceptual del Copiloto — misma distribución porcentual que Ahorro.
  */
 export function getCopilotPortfolio(): CopilotPortfolio {
-  return DEMO_COPILOT_PORTFOLIO;
+  const wealth = getWealthData();
+  const allocation = resolveWealthAllocation(wealth);
+  const { assets, target } = wealth.strategy;
+
+  const positions: CopilotPortfolioPosition[] = PORTFOLIO_POSITION_KEYS.map(
+    (key) => ({
+      id: key,
+      label: assets[key].label,
+      weight: allocation.current[key],
+    }),
+  ).filter((position) => position.weight > 0);
+
+  return {
+    isDemo: true,
+    updatedAt: wealth.portfolioSnapshot.updatedAt,
+    positions,
+    target: {
+      acwi: target.acwi,
+      oro: target.oro,
+      momentum: target.momentum,
+    },
+  };
 }
 
 /**
@@ -115,7 +138,7 @@ export function buildCopilotPortfolioObservationIfAttentionNeeded(): CopilotObse
     if (hadDistributionChange) {
       return {
         icon: "🌱",
-        text: "Desde la última actualización, la distribución de la cartera ha cambiado.",
+        text: "La distribución de la cartera ha cambiado desde la última actualización.",
         priority: 34,
       };
     }

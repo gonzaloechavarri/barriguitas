@@ -1,5 +1,6 @@
 import type { BarriguitasOverrides, BarriguitasSnapshot } from "./types";
 import { createDefaultSnapshot } from "./types";
+import { normalizePortfolioSnapshot } from "@/lib/services/wealth-allocation.service";
 
 export function mergeSnapshot(
   overrides: BarriguitasOverrides | null,
@@ -39,9 +40,10 @@ export function mergeSnapshot(
           ...overrides.wealth?.strategy?.target,
         },
       },
-      currentDistribution:
-        overrides.wealth?.currentDistribution ??
-        defaults.wealth.currentDistribution,
+      portfolioSnapshot: normalizePortfolioSnapshot(
+        overrides.wealth?.portfolioSnapshot,
+        defaults.wealth.portfolioSnapshot,
+      ),
     },
     // Listas viven en Supabase — el snapshot local solo conserva demo estática.
     lists: defaults.lists,
@@ -67,7 +69,7 @@ export function extractOverrides(
       strategy: {
         target: snapshot.wealth.strategy.target,
       },
-      currentDistribution: snapshot.wealth.currentDistribution,
+      portfolioSnapshot: snapshot.wealth.portfolioSnapshot,
     },
   };
 }

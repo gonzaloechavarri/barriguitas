@@ -61,13 +61,22 @@ export type StrategyAllocationLine = {
   percentage: string;
 };
 
+export type WealthPortfolioSnapshotView = {
+  cardTitle: string;
+  distributionSummary: string;
+  lastUpdatedLabel: string;
+  ageLabel: string | null;
+  updateActionLabel: string;
+};
+
 export type WealthView = {
-  /** Cartera de inversión — no incluye patrimonio inmobiliario ni neto global. */
+  /** Cartera de inversión — solo distribución porcentual. */
   cardTitle: string;
   subtitle: string;
-  performance: PerformanceMetric[];
+  portfolio: WealthPortfolioSnapshotView;
   strategy: {
     cardTitle: string;
+    allocationsLabel: string;
     allocations: StrategyAllocationLine[];
     target: StrategyAllocationLine[];
     statusMessage: string;

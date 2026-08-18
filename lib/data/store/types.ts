@@ -5,6 +5,7 @@ import { listsData } from "@/data/lists";
 import { wealthData } from "@/data/wealth";
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
 import type { BarriguitasListsData } from "@/lib/data/types/lists";
+import type { PortfolioSnapshot } from "@/lib/data/types/portfolio";
 
 export type BarriguitasCoupleData = {
   wedding: {
@@ -35,16 +36,13 @@ export type BarriguitasHouseData = {
 };
 
 export type BarriguitasWealthData = {
-  /** Vista de la cartera de inversión — no patrimonio neto ni activos no líquidos. */
+  /** Vista de la cartera de inversión — solo distribución porcentual. */
   cardTitle: string;
   subtitle: string;
-  performanceLookbackYears: number;
-  marketAssets: (typeof wealthData)["marketAssets"];
   strategy: Omit<(typeof wealthData)["strategy"], "target"> & {
     target: StrategyDistribution;
   };
-  currentDistribution: StrategyDistribution;
-  holdings: (typeof wealthData)["holdings"];
+  portfolioSnapshot: PortfolioSnapshot;
   rebalancePhilosophy: (typeof wealthData)["rebalancePhilosophy"];
   copilot: (typeof wealthData)["copilot"];
 };
@@ -68,7 +66,7 @@ export type BarriguitasOverrides = {
   }>;
   wealth?: Partial<{
     strategy: Partial<{ target: StrategyDistribution }>;
-    currentDistribution: StrategyDistribution;
+    portfolioSnapshot: PortfolioSnapshot;
   }>;
 };
 
@@ -91,7 +89,10 @@ export const SERVER_SNAPSHOT: BarriguitasSnapshot = {
       ...wealthData.strategy,
       target: { ...wealthData.strategy.target },
     },
-    currentDistribution: { ...wealthData.currentDistribution },
+    portfolioSnapshot: {
+      updatedAt: wealthData.portfolioSnapshot.updatedAt,
+      distribution: { ...wealthData.portfolioSnapshot.distribution },
+    },
   },
   lists: {
     lists: listsData.lists.map((list) => ({

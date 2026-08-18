@@ -1,39 +1,38 @@
 import type { WealthView } from "@/lib/data/types";
 import { getWealthData } from "@/lib/data/providers/local";
-import { calculateDeviationFromCurrent } from "@/lib/services/wealth.utils";
-import type { WealthPerformance } from "@/lib/services/portfolio/portfolio.service";
-import { formatDeviation } from "@/lib/services/portfolio/portfolio.utils";
+import { formatDeviation, resolveWealthAllocation } from "@/lib/services/wealth-allocation.service";
+import {
+  buildDistributionSummary,
+  formatSnapshotAgeLabel,
+  formatSnapshotDateLabel,
+} from "@/lib/services/wealth-snapshot.service";
 
-/** Construye la vista de Ahorro a partir de la cartera de inversión. */
 const STRATEGY_ASSET_KEYS = ["acwi", "oro", "momentum"] as const;
 
-export function buildWealthView(performance: WealthPerformance): WealthView {
+/** Construye la vista de Ahorro a partir de la distribución guardada. */
+export function buildWealthView(): WealthView {
   const wealth = getWealthData();
   const { assets, target } = wealth.strategy;
-  const { currentDistribution } = wealth;
-  const maxDeviation = calculateDeviationFromCurrent(
-    currentDistribution,
-    target,
-  );
+  const allocation = resolveWealthAllocation(wealth);
+  const { current } = allocation;
 
   return {
     cardTitle: wealth.cardTitle,
     subtitle: wealth.subtitle,
-    performance: [
-      { label: "Última sesión", change: performance.lastSession },
-      { label: "30 días", change: performance.days30 },
-      { label: "Este año", change: performance.yearToDate },
-      {
-        label: "Últimos 5 años",
-        change: performance.fiveYears,
-      },
-    ],
+    portfolio: {
+      cardTitle: "Cartera",
+      distributionSummary: buildDistributionSummary(wealth, current),
+      lastUpdatedLabel: formatSnapshotDateLabel(wealth.portfolioSnapshot.updatedAt),
+      ageLabel: formatSnapshotAgeLabel(wealth.portfolioSnapshot.updatedAt),
+      updateActionLabel: "Actualizar cartera",
+    },
     strategy: {
       cardTitle: wealth.strategy.cardTitle,
+      allocationsLabel: "Cartera actual",
       allocations: STRATEGY_ASSET_KEYS.map((key) => ({
         icon: assets[key].icon,
         label: assets[key].label,
-        percentage: `${currentDistribution[key]} %`,
+        percentage: `${current[key]} %`,
       })),
       target: STRATEGY_ASSET_KEYS.map((key) => ({
         icon: assets[key].icon,
@@ -41,8 +40,8 @@ export function buildWealthView(performance: WealthPerformance): WealthView {
         percentage: `${target[key]} %`,
       })),
       statusMessage: wealth.strategy.transitionMessage,
-      deviation: formatDeviation(maxDeviation),
-      isInTransition: true,
+      deviation: formatDeviation(allocation.maxDeviation),
+      isInTransition: !allocation.isAligned,
     },
   };
 }

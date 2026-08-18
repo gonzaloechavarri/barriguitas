@@ -35,11 +35,6 @@ export const appData = {
         subtitle: "La estrategia sigue su camino.",
       },
       {
-        icon: "📅",
-        title: "Agenda",
-        subtitle: "Hoy no hay eventos.",
-      },
-      {
         icon: "🤖",
         title: "Copiloto",
         subtitle: "Tengo una sugerencia para vosotros.",

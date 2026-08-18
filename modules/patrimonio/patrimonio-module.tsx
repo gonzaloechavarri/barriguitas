@@ -1,38 +1,34 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useBarriguitasStore } from "@/lib/data/store/barriguitas-store";
-import { useAsyncData } from "@/lib/hooks/use-async-data";
-import type { WealthPerformance } from "@/lib/services/portfolio/portfolio.service";
 import { buildWealthView } from "@/lib/services/wealth-view.service";
+import { getDefaultPortfolioUpdateInput } from "@/lib/services/wealth-snapshot.service";
 import { PatrimonioView } from "./patrimonio-view";
-
-async function fetchWealthPerformance(): Promise<WealthPerformance> {
-  const response = await fetch("/api/patrimonio");
-
-  if (!response.ok) {
-    throw new Error("No se pudo obtener el ahorro.");
-  }
-
-  return response.json() as Promise<WealthPerformance>;
-}
 
 export function PatrimonioModule() {
   const snapshot = useBarriguitasStore();
-  const loadPerformance = useCallback(() => fetchWealthPerformance(), []);
-  const performance = useAsyncData(loadPerformance);
-  const view = useMemo(
-    () => (performance ? buildWealthView(performance) : null),
-    [snapshot, performance],
+  const [updateOpen, setUpdateOpen] = useState(false);
+  const view = useMemo(() => buildWealthView(), [snapshot]);
+  const updateDefaults = useMemo(
+    () => getDefaultPortfolioUpdateInput(snapshot.wealth),
+    [snapshot.wealth],
   );
 
   return (
-    <div
-      className={`motion-safe:transition-opacity motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
-        view ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      {view ? <PatrimonioView data={view} /> : null}
+    <div className="motion-safe:transition-opacity motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] opacity-100">
+      <PatrimonioView
+        data={view}
+        updateOpen={updateOpen}
+        updateDefaults={updateDefaults}
+        assetLabels={{
+          acwi: snapshot.wealth.strategy.assets.acwi.label,
+          oro: snapshot.wealth.strategy.assets.oro.label,
+          momentum: snapshot.wealth.strategy.assets.momentum.label,
+        }}
+        onOpenUpdate={() => setUpdateOpen(true)}
+        onCloseUpdate={() => setUpdateOpen(false)}
+      />
     </div>
   );
 }

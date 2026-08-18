@@ -11,11 +11,10 @@ export type CopilotPortfolioTarget = Record<string, number>;
 
 /**
  * Vista conceptual de cartera para el Copiloto.
- * Los datos demo no representan una cartera real.
+ * Solo porcentajes — sin valores monetarios.
  */
 export type CopilotPortfolio = {
   isDemo: true;
-  totalValue: number;
   positions: CopilotPortfolioPosition[];
   target: CopilotPortfolioTarget;
   updatedAt: string;
@@ -27,7 +26,6 @@ export type CopilotPortfolio = {
  */
 export type CopilotPortfolioSnapshot = {
   capturedAt: string;
-  totalValue: number;
   positions: CopilotPortfolioPosition[];
 };
 

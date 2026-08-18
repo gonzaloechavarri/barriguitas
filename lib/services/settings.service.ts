@@ -1,6 +1,8 @@
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
 import { updateBarriguitas } from "@/lib/data/store/barriguitas-store";
 import type { BarriguitasSnapshot } from "@/lib/data/store/types";
+import { resolveWealthAllocation } from "@/lib/services/wealth-allocation.service";
+import { formatSnapshotDateLabel } from "@/lib/services/wealth-snapshot.service";
 import {
   daysSince,
   formatDaysElapsed,
@@ -30,6 +32,7 @@ export type SettingsCasaView = {
 export type SettingsAhorroView = {
   target: StrategyDistribution;
   current: StrategyDistribution;
+  lastUpdatedLabel: string;
   labels: {
     acwi: string;
     oro: string;
@@ -111,7 +114,8 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
     },
     ahorro: {
       target: { ...wealth.strategy.target },
-      current: { ...wealth.currentDistribution },
+      current: resolveWealthAllocation(wealth).current,
+      lastUpdatedLabel: formatSnapshotDateLabel(wealth.portfolioSnapshot.updatedAt),
       labels: {
         acwi: wealth.strategy.assets.acwi.label,
         oro: wealth.strategy.assets.oro.label,
@@ -268,18 +272,6 @@ export function updateWealthTarget(target: StrategyDistribution): void {
         ...current.wealth.strategy,
         target: { ...target },
       },
-    },
-  }));
-}
-
-export function updateWealthCurrentDistribution(
-  currentDistribution: StrategyDistribution,
-): void {
-  updateBarriguitas((current) => ({
-    ...current,
-    wealth: {
-      ...current.wealth,
-      currentDistribution: { ...currentDistribution },
     },
   }));
 }
