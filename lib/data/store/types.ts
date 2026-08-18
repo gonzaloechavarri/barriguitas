@@ -1,8 +1,10 @@
 import { appData, type AppData } from "@/data/app";
 import { coupleData } from "@/data/couple";
 import { houseData } from "@/data/house";
+import { listsData } from "@/data/lists";
 import { wealthData } from "@/data/wealth";
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
+import type { BarriguitasListsData } from "@/lib/data/types/lists";
 
 export type BarriguitasCoupleData = {
   wedding: {
@@ -51,6 +53,7 @@ export type BarriguitasSnapshot = {
   couple: BarriguitasCoupleData;
   house: BarriguitasHouseData;
   wealth: BarriguitasWealthData;
+  lists: BarriguitasListsData;
   app: AppData;
 };
 
@@ -66,6 +69,9 @@ export type BarriguitasOverrides = {
   wealth?: Partial<{
     strategy: Partial<{ target: StrategyDistribution }>;
     currentDistribution: StrategyDistribution;
+  }>;
+  lists?: Partial<{
+    lists: BarriguitasListsData["lists"];
   }>;
 };
 
@@ -89,6 +95,13 @@ export const SERVER_SNAPSHOT: BarriguitasSnapshot = {
       target: { ...wealthData.strategy.target },
     },
     currentDistribution: { ...wealthData.currentDistribution },
+  },
+  lists: {
+    houseId: listsData.houseId,
+    lists: listsData.lists.map((list) => ({
+      ...list,
+      items: list.items.map((item) => ({ ...item })),
+    })),
   },
   app: appData,
 };

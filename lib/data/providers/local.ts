@@ -17,6 +17,10 @@ export function getWealthData() {
   return getBarriguitasSnapshot().wealth;
 }
 
+export function getListsData() {
+  return getBarriguitasSnapshot().lists;
+}
+
 export function getDefaultSnapshot() {
   return createDefaultSnapshot();
 }

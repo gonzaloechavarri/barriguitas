@@ -43,6 +43,10 @@ export function mergeSnapshot(
         overrides.wealth?.currentDistribution ??
         defaults.wealth.currentDistribution,
     },
+    lists: {
+      ...defaults.lists,
+      lists: overrides.lists?.lists ?? defaults.lists.lists,
+    },
     app: defaults.app,
   };
 }
@@ -66,6 +70,9 @@ export function extractOverrides(
         target: snapshot.wealth.strategy.target,
       },
       currentDistribution: snapshot.wealth.currentDistribution,
+    },
+    lists: {
+      lists: snapshot.lists.lists,
     },
   };
 }

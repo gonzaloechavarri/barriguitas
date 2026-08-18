@@ -53,6 +53,7 @@ export const appData = {
     casa: "El cuidado de nuestra casa.",
     patrimonio: "",
     agenda: "No hay nada urgente.",
+    listas: "Lo que falta por hacer juntos.",
     ia: "Hoy puedes olvidarte de mí.",
     ajustes: "Cómo funciona Barriguitas para nosotros.",
   },

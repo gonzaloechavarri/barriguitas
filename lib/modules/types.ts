@@ -6,6 +6,7 @@ export type ModuleId =
   | "patrimonio"
   | "documentos"
   | "agenda"
+  | "listas"
   | "ia"
   | "ajustes";
 

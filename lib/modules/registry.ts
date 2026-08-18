@@ -3,6 +3,7 @@ import { AgendaModule } from "@/modules/agenda/agenda-module";
 import { CasaModule } from "@/modules/casa/casa-module";
 import { DocumentosModule } from "@/modules/documentos/documentos-module";
 import { IaModule } from "@/modules/ia/ia-module";
+import { ListasModule } from "@/modules/listas/listas-module";
 import { NosotrosModule } from "@/modules/nosotros/nosotros-module";
 import { PatrimonioModule } from "@/modules/patrimonio/patrimonio-module";
 import type { ModuleDefinition, ModuleId } from "./types";
@@ -44,6 +45,13 @@ export const modules: ModuleDefinition[] = [
     component: AgendaModule,
   },
   {
+    id: "listas",
+    icon: "📝",
+    title: "Listas",
+    description: "Listas compartidas de cosas pendientes",
+    component: ListasModule,
+  },
+  {
     id: "ia",
     icon: "🤖",
     title: "Copiloto",
@@ -72,5 +80,5 @@ export function getModule(id: ModuleId): ModuleDefinition {
 }
 
 export function getDockModules(): ModuleDefinition[] {
-  return modules;
+  return modules.filter((module) => module.id !== "ajustes");
 }
