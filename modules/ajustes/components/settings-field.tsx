@@ -1,4 +1,8 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from "react";
+import {
+  pressControlClasses,
+  pressTextControlClasses,
+} from "@/components/motion/press-motion";
 
 const fieldClassName =
   "w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-2.5 text-sm font-light tracking-[-0.01em] text-white/75 outline-none transition-colors duration-200 placeholder:text-white/25 focus:border-white/[0.14] focus:bg-white/[0.04]";
@@ -34,7 +38,7 @@ export function SettingsButton({
   return (
     <button
       type="button"
-      className={`inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 text-xs font-light tracking-[-0.01em] text-white/45 transition-colors duration-200 hover:border-white/[0.12] hover:bg-white/[0.05] hover:text-white/60 ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3.5 py-1.5 text-xs font-light tracking-[-0.01em] text-white/45 transition-colors duration-200 hover:border-white/[0.12] hover:bg-white/[0.05] hover:text-white/60 ${pressControlClasses} ${className}`}
       {...props}
     >
       {children}
@@ -50,7 +54,7 @@ export function SettingsTextButton({
   return (
     <button
       type="button"
-      className={`border-0 bg-transparent p-0 text-xs font-light tracking-[-0.01em] text-white/35 transition-colors duration-200 hover:text-white/50 ${className}`}
+      className={`border-0 bg-transparent p-0 text-xs font-light tracking-[-0.01em] text-white/35 transition-colors duration-200 hover:text-white/50 ${pressTextControlClasses} ${className}`}
       {...props}
     >
       {children}

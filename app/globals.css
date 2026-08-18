@@ -69,12 +69,26 @@
 html {
   background-color: var(--color-barriguitas-bg);
   color-scheme: dark;
+  overscroll-behavior-y: none;
 }
 
 body {
   background-color: var(--color-barriguitas-bg);
   color: #fafafa;
   font-family: var(--font-sans), system-ui, sans-serif;
+  overscroll-behavior-y: none;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 @media (prefers-reduced-motion: reduce) {

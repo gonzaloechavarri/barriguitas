@@ -10,10 +10,10 @@ export function AppShell() {
   return (
     <ModuleNavigationProvider>
       <BarriguitasStoreHydrator />
-      <div className="relative flex min-h-screen flex-col overflow-hidden bg-barriguitas-bg">
+      <div className="relative flex h-dvh min-h-screen flex-col overflow-hidden bg-barriguitas-bg">
         <Background />
 
-        <div className="relative mx-auto flex min-h-screen w-full max-w-6xl flex-col pb-28 pt-[env(safe-area-inset-top)]">
+        <div className="relative mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col pt-[env(safe-area-inset-top)] pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] sm:pb-[calc(6rem+env(safe-area-inset-bottom,0px))]">
           <AppHeader />
           <ModuleViewport />
         </div>

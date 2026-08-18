@@ -1,12 +1,17 @@
-import type { CopilotRecommendation, CopilotState } from "@/lib/data/types";
+import type {
+  CopilotObservation,
+  CopilotRecommendation,
+  CopilotState,
+} from "@/lib/data/types";
 import {
   getCoupleData,
   getHouseData,
-  getWealthData,
 } from "@/lib/data/providers/local";
-import { getMilestones } from "./milestones.service";
+import { daysUntil } from "@/lib/data/utils";
+import { buildCopilotPortfolioObservationIfAttentionNeeded } from "./copilot/portfolio-context";
+import { getMilestones, getTopMilestone } from "./milestones.service";
 
-export type { CopilotRecommendation };
+export type { CopilotObservation, CopilotRecommendation };
 
 type CopilotSignalSource = "nosotros" | "casa" | "ahorro" | "agenda";
 
@@ -41,7 +46,6 @@ function collectHouseSignals(): CopilotSignal[] {
 
 /** Señales futuras de Ahorro. */
 function collectWealthSignals(): CopilotSignal[] {
-  getWealthData();
   return [];
 }
 
@@ -90,10 +94,17 @@ export function getCopilotRecommendation(): CopilotRecommendation {
     return resolveCalmRecommendation();
   }
 
+  const { wedding } = getCoupleData();
+  const daysToWedding = daysUntil(wedding.date, new Date());
+  const subtitle =
+    daysToWedding > 0
+      ? `Quedan ${daysToWedding} días para la boda.`
+      : topSignal.subtitle;
+
   return {
     icon: topSignal.icon,
     title: topSignal.title,
-    subtitle: topSignal.subtitle,
+    subtitle,
     priority: topSignal.priority,
   };
 }
@@ -108,4 +119,40 @@ export function getCopilotModuleHeader(): string {
 /** Estado global para mensajes contextuales en otras pantallas. */
 export function getCopilotState(): CopilotState {
   return resolveTopSignal() ? "action" : "calm";
+}
+
+function hasPendingFocus(): boolean {
+  return getTopMilestone() !== null;
+}
+
+function buildSecondaryObservations(): CopilotObservation[] {
+  const secondary: CopilotObservation[] = [];
+
+  if (hasPendingFocus()) {
+    const house = getHouseData();
+    if (house.cuidado.lastCleaningAt) {
+      secondary.push({
+        icon: house.copilot.icon,
+        text: "Villa Barriguita está al día.",
+        priority: 20,
+        tier: "secondary",
+      });
+    }
+  }
+
+  const portfolioObservation =
+    buildCopilotPortfolioObservationIfAttentionNeeded();
+  if (portfolioObservation) {
+    secondary.push({ ...portfolioObservation, tier: "secondary" });
+  }
+
+  return secondary.slice(0, 2);
+}
+
+/**
+ * Contexto secundario del Copiloto — como mucho dos notas breves.
+ * El foco principal vive en la tarjeta de recomendación.
+ */
+export function getCopilotObservations(): CopilotObservation[] {
+  return buildSecondaryObservations();
 }

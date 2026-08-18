@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { CurrentTime } from "@/components/current-time";
+import { pressIconControlClasses } from "@/components/motion/press-motion";
 import { useBarriguitasStore } from "@/lib/data/store/barriguitas-store";
 import { useModuleNavigation } from "@/lib/navigation/module-context";
 import { getModuleHeader } from "@/lib/services";
@@ -48,7 +49,7 @@ function HeaderActions() {
         type="button"
         onClick={() => setActiveModule("ajustes")}
         aria-label="Abrir ajustes"
-        className="flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.03] text-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-white/[0.1] hover:bg-white/[0.06] hover:text-white/70"
+        className={`flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.06] bg-white/[0.03] text-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-md transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-white/[0.1] hover:bg-white/[0.06] hover:text-white/70 touch-manipulation ${pressIconControlClasses}`}
       >
         <SettingsIcon />
       </button>

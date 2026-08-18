@@ -62,6 +62,7 @@ export type StrategyAllocationLine = {
 };
 
 export type WealthView = {
+  /** Cartera de inversión — no incluye patrimonio inmobiliario ni neto global. */
   cardTitle: string;
   subtitle: string;
   performance: PerformanceMetric[];
@@ -90,6 +91,15 @@ export type CopilotRecommendation = {
   subtitle: string;
   /** Menor número = mayor prioridad. 0 indica estado tranquilo. */
   priority: number;
+};
+
+export type CopilotObservation = {
+  icon: string;
+  text: string;
+  /** Menor número = mayor prioridad. */
+  priority: number;
+  /** primary = foco principal; secondary = contexto opcional breve. */
+  tier?: "primary" | "secondary";
 };
 
 export type CopilotState = "action" | "calm" | "celebrate";

@@ -1,5 +1,6 @@
 export { getAgenda } from "./agenda.service";
 export {
+  getCopilotObservations,
   getCopilotRecommendation,
   getCopilotModuleHeader,
   getCopilotState,
@@ -21,6 +22,7 @@ export type {
   AgendaData,
   AttentionItem,
   AttentionLevel,
+  CopilotObservation,
   CopilotRecommendation,
   CopilotState,
   ModuleAttentionSignal,

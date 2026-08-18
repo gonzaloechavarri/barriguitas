@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { cardMotionClasses } from "@/components/motion/card-motion";
+import {
+  cardMotionClasses,
+  interactiveCardPressClasses,
+} from "@/components/motion/card-motion";
 
 type SettingsSectionProps = {
   icon: string;
@@ -30,7 +33,7 @@ export function SettingsSection({
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
-        className="flex w-full items-start justify-between gap-4 px-6 py-5 text-left sm:px-7"
+        className={`flex w-full items-start justify-between gap-4 rounded-3xl px-6 py-5 text-left sm:px-7 ${interactiveCardPressClasses}`}
         aria-expanded={open}
       >
         <div className="min-w-0">
@@ -49,7 +52,7 @@ export function SettingsSection({
 
         <span
           aria-hidden
-          className={`mt-0.5 shrink-0 text-sm font-light text-white/25 transition-transform duration-200 ${
+          className={`mt-0.5 shrink-0 text-sm font-light text-white/25 motion-safe:transition-transform motion-safe:duration-250 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
             open ? "rotate-180" : ""
           }`}
         >
@@ -57,11 +60,21 @@ export function SettingsSection({
         </span>
       </button>
 
-      {open ? (
-        <div className="border-t border-white/[0.05] px-6 pb-6 pt-5 sm:px-7">
-          {children}
+      <div
+        className={`grid motion-safe:transition-[grid-template-rows] motion-safe:duration-250 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+          open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div
+            className={`border-t border-white/[0.05] px-6 pb-6 pt-5 sm:px-7 motion-safe:transition-opacity motion-safe:duration-200 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+              open ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {children}
+          </div>
         </div>
-      ) : null}
+      </div>
     </article>
   );
 }

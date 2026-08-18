@@ -1,5 +1,6 @@
 "use client";
 
+import { pressDockIconClasses } from "@/components/motion/press-motion";
 import { getDockModules } from "@/lib/modules/registry";
 import { useModuleNavigation } from "@/lib/navigation/module-context";
 import type { ModuleDefinition } from "@/lib/modules/types";
@@ -35,10 +36,10 @@ function DockItem({ module }: DockItemProps) {
       onClick={() => setActiveModule(module.id)}
       aria-label={module.title}
       aria-current={isActive ? "page" : undefined}
-      className="group relative flex flex-col items-center px-1.5 py-1 sm:px-2"
+      className="group relative flex flex-col items-center px-1.5 py-1 touch-manipulation sm:px-2"
     >
       <span
-        className={`flex items-center justify-center rounded-xl motion-safe:transition-[transform,opacity] motion-safe:duration-300 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] motion-safe:group-hover:-translate-y-0.5 ${
+        className={`flex items-center justify-center rounded-xl ${pressDockIconClasses} motion-safe:group-hover:-translate-y-0.5 ${
           isActive
             ? "-translate-y-0.5 scale-[1.04]"
             : "translate-y-0 scale-100 opacity-80"

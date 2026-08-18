@@ -1,6 +1,11 @@
+/**
+ * Cartera de inversión de Ahorro.
+ * Solo posiciones líquidas gestionadas aquí — no patrimonio inmobiliario,
+ * no activos familiares externos ni patrimonio neto global.
+ */
 export const wealthData = {
   cardTitle: "Ahorro",
-  subtitle: "La estrategia sigue su camino.",
+  subtitle: "La cartera sigue su camino.",
   /** Años de histórico para la métrica de largo plazo. */
   performanceLookbackYears: 5,
   marketAssets: {
@@ -26,7 +31,7 @@ export const wealthData = {
     },
   },
   currentDistribution: { acwi: 81, oro: 19, momentum: 0 },
-  /** Posiciones internas — nunca se muestran en la interfaz. */
+  /** Posiciones de la cartera — uso interno para rendimiento; no patrimonio total. */
   holdings: [
     { assetClass: "acwi", value: 280_246.36, source: "indexa" },
     { assetClass: "acwi", value: 22_397.4, source: "IE00B44Z5B48" },

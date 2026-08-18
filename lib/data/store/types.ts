@@ -33,6 +33,7 @@ export type BarriguitasHouseData = {
 };
 
 export type BarriguitasWealthData = {
+  /** Vista de la cartera de inversión — no patrimonio neto ni activos no líquidos. */
   cardTitle: string;
   subtitle: string;
   performanceLookbackYears: number;

@@ -4,6 +4,7 @@ import { calculateDeviationFromCurrent } from "@/lib/services/wealth.utils";
 import type { WealthPerformance } from "@/lib/services/portfolio/portfolio.service";
 import { formatDeviation } from "@/lib/services/portfolio/portfolio.utils";
 
+/** Construye la vista de Ahorro a partir de la cartera de inversión. */
 const STRATEGY_ASSET_KEYS = ["acwi", "oro", "momentum"] as const;
 
 export function buildWealthView(performance: WealthPerformance): WealthView {
