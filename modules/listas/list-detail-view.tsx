@@ -2,29 +2,36 @@
 
 import { useState } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
-import {
-  addListItem,
-  toggleListItem,
-} from "@/lib/services/lists.service";
 import type { SharedList } from "@/lib/data/types/lists";
+import type { SharedListsStatus } from "@/lib/hooks/use-shared-lists";
 import { AddItemControl } from "./components/add-item-control";
 import { DeleteListConfirm } from "./components/delete-list-confirm";
 import { ListItemRow } from "./components/list-item-row";
 
 type ListDetailViewProps = {
   list: SharedList;
+  syncError: string | null;
   onBack: () => void;
-  onDeleteList: (listId: string) => void;
+  onDeleteList: (listId: string) => Promise<void>;
+  onAddItem: (text: string) => Promise<void>;
+  onToggleItem: (itemId: string) => Promise<void>;
 };
 
-export function ListDetailView({ list, onBack, onDeleteList }: ListDetailViewProps) {
+export function ListDetailView({
+  list,
+  syncError,
+  onBack,
+  onDeleteList,
+  onAddItem,
+  onToggleItem,
+}: ListDetailViewProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const pendingItems = list.items.filter((item) => !item.completed);
   const completedItems = list.items.filter((item) => item.completed);
 
-  function handleConfirmDelete() {
+  async function handleConfirmDelete() {
     setConfirmDelete(false);
-    onDeleteList(list.id);
+    await onDeleteList(list.id);
   }
 
   return (
@@ -48,16 +55,28 @@ export function ListDetailView({ list, onBack, onDeleteList }: ListDetailViewPro
           </h2>
         </div>
 
+        {syncError ? (
+          <p className="mb-4 text-sm font-light tracking-[-0.01em] text-amber-300/70">
+            {syncError}
+          </p>
+        ) : null}
+
         <div className="flex flex-col">
           {pendingItems.map((item) => (
             <ListItemRow
               key={item.id}
               item={item}
-              onToggle={() => toggleListItem(list.id, item.id)}
+              onToggle={() => {
+                void onToggleItem(item.id);
+              }}
             />
           ))}
 
-          <AddItemControl onAdd={(text) => addListItem(list.id, text)} />
+          <AddItemControl
+            onAdd={(text) => {
+              void onAddItem(text);
+            }}
+          />
 
           {completedItems.length > 0 ? (
             <div className="mt-6 border-t border-white/[0.06] pt-4">
@@ -65,7 +84,9 @@ export function ListDetailView({ list, onBack, onDeleteList }: ListDetailViewPro
                 <ListItemRow
                   key={item.id}
                   item={item}
-                  onToggle={() => toggleListItem(list.id, item.id)}
+                  onToggle={() => {
+                    void onToggleItem(item.id);
+                  }}
                 />
               ))}
             </div>
@@ -87,7 +108,9 @@ export function ListDetailView({ list, onBack, onDeleteList }: ListDetailViewPro
         open={confirmDelete}
         listName={list.name}
         onCancel={() => setConfirmDelete(false)}
-        onConfirm={handleConfirmDelete}
+        onConfirm={() => {
+          void handleConfirmDelete();
+        }}
       />
     </>
   );

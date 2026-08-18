@@ -15,7 +15,11 @@ export function readOverrides(): BarriguitasOverrides | null {
   try {
     const raw = window.localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      return JSON.parse(raw) as BarriguitasOverrides;
+      const parsed = JSON.parse(raw) as BarriguitasOverrides & {
+        lists?: unknown;
+      };
+      delete parsed.lists;
+      return parsed;
     }
 
     return migrateLegacyCasaStorage();

@@ -70,10 +70,6 @@ export type BarriguitasOverrides = {
     strategy: Partial<{ target: StrategyDistribution }>;
     currentDistribution: StrategyDistribution;
   }>;
-  lists?: Partial<{
-    lists: BarriguitasListsData["lists"];
-    deletedListIds: string[];
-  }>;
 };
 
 /** Referencia única — React exige la misma referencia en cada getServerSnapshot. */
@@ -98,7 +94,6 @@ export const SERVER_SNAPSHOT: BarriguitasSnapshot = {
     currentDistribution: { ...wealthData.currentDistribution },
   },
   lists: {
-    houseId: listsData.houseId,
     lists: listsData.lists.map((list) => ({
       ...list,
       items: list.items.map((item) => ({ ...item })),
