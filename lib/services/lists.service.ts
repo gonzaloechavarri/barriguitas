@@ -25,6 +25,13 @@ function createItemId(): string {
   return `item-${Date.now()}`;
 }
 
+function createListId(): string {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `list-${crypto.randomUUID()}`;
+  }
+  return `list-${Date.now()}`;
+}
+
 export function toggleListItem(
   listId: string,
   itemId: string,
@@ -95,6 +102,43 @@ export function addListItem(
               ],
             },
       ),
+    },
+  }));
+}
+
+export function createList(name: string, icon: string): string | null {
+  const trimmed = name.trim();
+  if (!trimmed) return null;
+
+  const id = createListId();
+  const now = new Date().toISOString();
+
+  updateBarriguitas((current) => ({
+    ...current,
+    lists: {
+      ...current.lists,
+      lists: [
+        ...current.lists.lists,
+        {
+          id,
+          name: trimmed,
+          icon: icon.trim() || "📝",
+          createdAt: now,
+          items: [],
+        },
+      ],
+    },
+  }));
+
+  return id;
+}
+
+export function deleteList(listId: string): void {
+  updateBarriguitas((current) => ({
+    ...current,
+    lists: {
+      ...current.lists,
+      lists: current.lists.lists.filter((list) => list.id !== listId),
     },
   }));
 }

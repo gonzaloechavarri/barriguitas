@@ -80,5 +80,7 @@ export function getModule(id: ModuleId): ModuleDefinition {
 }
 
 export function getDockModules(): ModuleDefinition[] {
-  return modules.filter((module) => module.id !== "ajustes");
+  return modules.filter(
+    (module) => module.id !== "ajustes" && module.id !== "agenda",
+  );
 }
