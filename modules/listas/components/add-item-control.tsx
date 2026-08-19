@@ -2,7 +2,8 @@
 
 import { useRef, useState, type KeyboardEvent } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
-import { formatListItemDueDate, LIST_DATE_LOCALE } from "@/lib/data/utils/dates";
+import { formatListItemDueDate } from "@/lib/data/utils/dates";
+import { ListDatePickerTrigger } from "./list-date-picker-trigger";
 
 type AddItemControlProps = {
   onAdd: (text: string, dueDate?: string | null) => void;
@@ -13,23 +14,10 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
   const [value, setValue] = useState("");
   const [dueDate, setDueDate] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const dateInputRef = useRef<HTMLInputElement>(null);
 
   function openInput() {
     setExpanded(true);
     requestAnimationFrame(() => inputRef.current?.focus());
-  }
-
-  function openDatePicker() {
-    const input = dateInputRef.current;
-    if (!input) return;
-
-    if (typeof input.showPicker === "function") {
-      input.showPicker();
-      return;
-    }
-
-    input.click();
   }
 
   function reset() {
@@ -99,31 +87,10 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
           className="min-w-0 flex-1 bg-transparent text-[0.9375rem] font-light tracking-[-0.01em] text-white/80 outline-none placeholder:text-white/30"
         />
 
-        <button
-          type="button"
-          onPointerDown={(event) => event.preventDefault()}
-          onClick={openDatePicker}
-          aria-label={dueDate ? "Cambiar fecha" : "Añadir fecha"}
-          className={`shrink-0 px-1 text-base leading-none touch-manipulation ${pressTextControlClasses} ${
-            dueDate ? "text-white/55" : "text-white/30"
-          }`}
-        >
-          <span role="img" aria-hidden>
-            📅
-          </span>
-        </button>
-
-        <input
-          ref={dateInputRef}
-          type="date"
-          lang={LIST_DATE_LOCALE}
+        <ListDatePickerTrigger
           value={dueDate ?? ""}
-          onChange={(event) => {
-            setDueDate(event.target.value || null);
-          }}
-          tabIndex={-1}
-          aria-hidden
-          className="sr-only"
+          onChange={(iso) => setDueDate(iso || null)}
+          active={dueDate != null}
         />
 
         <button
