@@ -1,5 +1,6 @@
 "use client";
 
+import { type Ref, useRef } from "react";
 import { LIST_DATE_LOCALE } from "@/lib/data/utils/dates";
 
 type ListDatePickerTriggerProps = {
@@ -7,6 +8,7 @@ type ListDatePickerTriggerProps = {
   onChange: (isoValue: string) => void;
   active?: boolean;
   className?: string;
+  inputRef?: Ref<HTMLInputElement>;
 };
 
 /**
@@ -19,7 +21,15 @@ export function ListDatePickerTrigger({
   onChange,
   active = false,
   className = "",
+  inputRef: externalRef,
 }: ListDatePickerTriggerProps) {
+  const internalRef = useRef<HTMLInputElement>(null);
+  const inputRef = externalRef ?? internalRef;
+
+  function commitFromInput(input: HTMLInputElement) {
+    onChange(input.value);
+  }
+
   return (
     <label
       className={`relative inline-flex h-6 w-6 shrink-0 cursor-pointer items-center justify-center text-base leading-none touch-manipulation ${
@@ -30,10 +40,13 @@ export function ListDatePickerTrigger({
         📅
       </span>
       <input
+        ref={inputRef}
         type="date"
         lang={LIST_DATE_LOCALE}
         value={value}
-        onChange={(event) => onChange(event.target.value)}
+        onChange={(event) => commitFromInput(event.currentTarget)}
+        onInput={(event) => commitFromInput(event.currentTarget)}
+        onBlur={(event) => commitFromInput(event.currentTarget)}
         aria-label={value ? "Cambiar fecha" : "Añadir fecha"}
         className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
       />

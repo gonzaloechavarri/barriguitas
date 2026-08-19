@@ -14,6 +14,8 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
   const [value, setValue] = useState("");
   const [dueDate, setDueDate] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
+  const dueDateRef = useRef<string | null>(null);
 
   function openInput() {
     setExpanded(true);
@@ -23,13 +25,30 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
   function reset() {
     setValue("");
     setDueDate(null);
+    dueDateRef.current = null;
+  }
+
+  function updateDueDate(iso: string) {
+    const next = iso || null;
+    dueDateRef.current = next;
+    setDueDate(next);
+  }
+
+  function resolveDueDate(): string | null {
+    const fromInput = dateInputRef.current?.value;
+    if (fromInput) {
+      dueDateRef.current = fromInput;
+      return fromInput;
+    }
+
+    return dueDateRef.current ?? dueDate;
   }
 
   function submit() {
     const trimmed = value.trim();
     if (!trimmed) return;
 
-    onAdd(trimmed, dueDate);
+    onAdd(trimmed, resolveDueDate());
     reset();
     inputRef.current?.focus();
   }
@@ -70,10 +89,19 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
             return;
           }
 
-          if (!value.trim()) {
-            setExpanded(false);
-            reset();
-          }
+          // iOS confirma la fecha al cerrar el picker; change/blur del input
+          // pueden llegar después del blur del contenedor.
+          window.setTimeout(() => {
+            const hasText = Boolean(inputRef.current?.value.trim());
+            const hasDate = Boolean(
+              dateInputRef.current?.value || dueDateRef.current,
+            );
+
+            if (!hasText && !hasDate) {
+              setExpanded(false);
+              reset();
+            }
+          }, 0);
         }}
       >
         <input
@@ -88,8 +116,9 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
         />
 
         <ListDatePickerTrigger
+          inputRef={dateInputRef}
           value={dueDate ?? ""}
-          onChange={(iso) => setDueDate(iso || null)}
+          onChange={updateDueDate}
           active={dueDate != null}
         />
 

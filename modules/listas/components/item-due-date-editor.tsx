@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
 import { formatListItemDueDate } from "@/lib/data/utils/dates";
 import {
@@ -20,13 +20,15 @@ export function ItemDueDateEditor({
   onClose,
 }: ItemDueDateEditorProps) {
   const [value, setValue] = useState(dueDate ?? "");
+  const pickerInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setValue(dueDate ?? "");
   }, [dueDate]);
 
   function handleSave() {
-    onSave(value || null);
+    const resolved = pickerInputRef.current?.value || value;
+    onSave(resolved || null);
     onClose();
   }
 
@@ -40,12 +42,14 @@ export function ItemDueDateEditor({
       <ListDueDateInput
         value={value}
         onChange={setValue}
+        pickerInputRef={pickerInputRef}
         className={DATE_INPUT_CLASS}
         autoFocus
       />
 
       <button
         type="button"
+        onPointerDown={(event) => event.preventDefault()}
         onClick={handleSave}
         disabled={!value}
         className={`rounded-full px-3 py-1.5 text-xs font-light tracking-[-0.01em] text-white/70 disabled:opacity-30 touch-manipulation ${pressTextControlClasses}`}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type Ref } from "react";
 import {
   formatIsoDateForListInput,
   LIST_DATE_LOCALE,
@@ -16,6 +16,7 @@ type ListDueDateInputProps = {
   onChange: (isoValue: string) => void;
   className?: string;
   autoFocus?: boolean;
+  pickerInputRef?: Ref<HTMLInputElement>;
 };
 
 export function ListDueDateInput({
@@ -23,9 +24,24 @@ export function ListDueDateInput({
   onChange,
   className = DATE_INPUT_CLASS,
   autoFocus = false,
+  pickerInputRef,
 }: ListDueDateInputProps) {
   const [display, setDisplay] = useState("");
   const textRef = useRef<HTMLInputElement>(null);
+  const pickerRef = useRef<HTMLInputElement>(null);
+
+  function assignPickerRef(node: HTMLInputElement | null) {
+    pickerRef.current = node;
+
+    if (!pickerInputRef) return;
+
+    if (typeof pickerInputRef === "function") {
+      pickerInputRef(node);
+      return;
+    }
+
+    pickerInputRef.current = node;
+  }
 
   useEffect(() => {
     setDisplay(value ? formatIsoDateForListInput(value) : "");
@@ -40,6 +56,12 @@ export function ListDueDateInput({
     const trimmed = raw.trim();
 
     if (!trimmed) {
+      const pickerValue = pickerRef.current?.value;
+      if (pickerValue) {
+        handlePickerChange(pickerValue);
+        return;
+      }
+
       onChange("");
       setDisplay("");
       return;
@@ -83,6 +105,7 @@ export function ListDueDateInput({
       />
 
       <ListDatePickerTrigger
+        inputRef={assignPickerRef}
         value={value}
         onChange={handlePickerChange}
         active={Boolean(value)}
