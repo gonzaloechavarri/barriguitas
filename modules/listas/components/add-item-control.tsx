@@ -130,8 +130,8 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
       </div>
 
       {dueDate ? (
-        <p className="px-1 text-xs font-light tracking-[-0.01em] text-white/35">
-          📅 {formatListItemDueDate(dueDate)}
+        <p className="px-1 text-xs font-light tabular-nums tracking-[-0.01em] text-white/35">
+          {formatListItemDueDate(dueDate)}
         </p>
       ) : null}
     </div>

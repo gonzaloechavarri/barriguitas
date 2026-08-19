@@ -87,9 +87,9 @@ export function ItemDueDateLabel({ dueDate, onEdit }: ItemDueDateLabelProps) {
         event.stopPropagation();
         onEdit();
       }}
-      className={`shrink-0 text-sm font-light tracking-[-0.01em] text-white/35 touch-manipulation ${pressTextControlClasses}`}
+      className={`shrink-0 text-sm font-light tabular-nums tracking-[-0.01em] text-white/35 touch-manipulation ${pressTextControlClasses}`}
     >
-      · 📅 {formatListItemDueDate(dueDate)}
+      {formatListItemDueDate(dueDate)}
     </button>
   );
 }

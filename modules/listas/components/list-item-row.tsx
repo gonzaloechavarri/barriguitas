@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { pressControlClasses, pressTextControlClasses } from "@/components/motion/press-motion";
 import type { SharedListItem } from "@/lib/data/types/lists";
 import { ItemDueDateEditor, ItemDueDateLabel } from "./item-due-date-editor";
 
@@ -66,23 +65,12 @@ export function ListItemRow({
           </span>
         </button>
 
-        {item.dueDate ? (
+        {item.dueDate != null && item.dueDate !== "" ? (
           <ItemDueDateLabel
             dueDate={item.dueDate}
             onEdit={() => setEditingDate(true)}
           />
-        ) : (
-          <button
-            type="button"
-            onClick={() => setEditingDate(true)}
-            aria-label="Añadir fecha"
-            className={`shrink-0 px-1 text-sm leading-none text-white/25 opacity-100 touch-manipulation motion-safe:transition-opacity sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 ${pressTextControlClasses}`}
-          >
-            <span role="img" aria-hidden>
-              📅
-            </span>
-          </button>
-        )}
+        ) : null}
       </div>
 
       {editingDate ? (
