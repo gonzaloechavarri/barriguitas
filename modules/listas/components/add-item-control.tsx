@@ -2,8 +2,7 @@
 
 import { useRef, useState, type KeyboardEvent } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
-import { formatListItemDueDate } from "@/lib/data/utils/dates";
-import { ListDatePickerTrigger } from "./list-date-picker-trigger";
+import { ListDueDateInput } from "./list-due-date-input";
 
 type AddItemControlProps = {
   onAdd: (text: string, dueDate?: string | null) => void;
@@ -12,10 +11,9 @@ type AddItemControlProps = {
 export function AddItemControl({ onAdd }: AddItemControlProps) {
   const [expanded, setExpanded] = useState(false);
   const [value, setValue] = useState("");
-  const [dueDate, setDueDate] = useState<string | null>(null);
+  const [dueDate, setDueDate] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const dateInputRef = useRef<HTMLInputElement>(null);
-  const dueDateRef = useRef<string | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   function openInput() {
     setExpanded(true);
@@ -24,31 +22,14 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
 
   function reset() {
     setValue("");
-    setDueDate(null);
-    dueDateRef.current = null;
-  }
-
-  function updateDueDate(iso: string) {
-    const next = iso || null;
-    dueDateRef.current = next;
-    setDueDate(next);
-  }
-
-  function resolveDueDate(): string | null {
-    const fromInput = dateInputRef.current?.value;
-    if (fromInput) {
-      dueDateRef.current = fromInput;
-      return fromInput;
-    }
-
-    return dueDateRef.current ?? dueDate;
+    setDueDate("");
   }
 
   function submit() {
     const trimmed = value.trim();
     if (!trimmed) return;
 
-    onAdd(trimmed, resolveDueDate());
+    onAdd(trimmed, dueDate || null);
     reset();
     inputRef.current?.focus();
   }
@@ -60,6 +41,18 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
     }
 
     if (event.key === "Escape") {
+      setExpanded(false);
+      reset();
+    }
+  }
+
+  function handleFormBlur(event: React.FocusEvent<HTMLDivElement>) {
+    const next = event.relatedTarget as Node | null;
+    if (next && formRef.current?.contains(next)) {
+      return;
+    }
+
+    if (!value.trim() && !dueDate) {
       setExpanded(false);
       reset();
     }
@@ -81,29 +74,8 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
   }
 
   return (
-    <div className="mt-2 flex flex-col gap-2">
-      <div
-        className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5"
-        onBlur={(event) => {
-          if (event.currentTarget.contains(event.relatedTarget as Node)) {
-            return;
-          }
-
-          // iOS confirma la fecha al cerrar el picker; change/blur del input
-          // pueden llegar después del blur del contenedor.
-          window.setTimeout(() => {
-            const hasText = Boolean(inputRef.current?.value.trim());
-            const hasDate = Boolean(
-              dateInputRef.current?.value || dueDateRef.current,
-            );
-
-            if (!hasText && !hasDate) {
-              setExpanded(false);
-              reset();
-            }
-          }, 0);
-        }}
-      >
+    <div ref={formRef} className="mt-2 flex flex-col gap-2" onBlur={handleFormBlur}>
+      <div className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5">
         <input
           ref={inputRef}
           type="text"
@@ -115,16 +87,8 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
           className="min-w-0 flex-1 bg-transparent text-[0.9375rem] font-light tracking-[-0.01em] text-white/80 outline-none placeholder:text-white/30"
         />
 
-        <ListDatePickerTrigger
-          inputRef={dateInputRef}
-          value={dueDate ?? ""}
-          onChange={updateDueDate}
-          active={dueDate != null}
-        />
-
         <button
           type="button"
-          onPointerDown={(event) => event.preventDefault()}
           onClick={submit}
           disabled={!value.trim()}
           className={`shrink-0 rounded-full px-3 py-1 text-sm font-light tracking-[-0.01em] text-white/70 disabled:opacity-30 touch-manipulation ${pressTextControlClasses}`}
@@ -133,11 +97,11 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
         </button>
       </div>
 
-      {dueDate ? (
-        <p className="px-1 text-xs font-light tabular-nums tracking-[-0.01em] text-white/35">
-          {formatListItemDueDate(dueDate)}
-        </p>
-      ) : null}
+      <ListDueDateInput
+        value={dueDate}
+        onChange={setDueDate}
+        className="px-1"
+      />
     </div>
   );
 }

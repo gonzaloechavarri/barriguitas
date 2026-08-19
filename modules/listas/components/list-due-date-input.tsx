@@ -1,118 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState, type Ref } from "react";
 import {
   formatIsoDateForListInput,
   LIST_DATE_LOCALE,
-  parseSpanishListDateInput,
 } from "@/lib/data/utils/dates";
-import { ListDatePickerTrigger } from "./list-date-picker-trigger";
 
-const DATE_INPUT_CLASS =
-  "rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm font-light tracking-[-0.01em] text-white/80 outline-none focus:border-white/[0.14]";
+export const DATE_INPUT_CLASS =
+  "max-w-[11.5rem] rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-sm font-light tabular-nums tracking-[-0.01em] text-white/80 outline-none [color-scheme:dark] focus:border-white/[0.14] touch-manipulation";
 
 type ListDueDateInputProps = {
   value: string;
   onChange: (isoValue: string) => void;
   className?: string;
-  autoFocus?: boolean;
-  pickerInputRef?: Ref<HTMLInputElement>;
 };
 
+/**
+ * Control de fecha directo: input[type=date] nativo, sin overlays ni triggers.
+ * value/onChange usan YYYY-MM-DD como fecha civil.
+ */
 export function ListDueDateInput({
   value,
   onChange,
-  className = DATE_INPUT_CLASS,
-  autoFocus = false,
-  pickerInputRef,
+  className = "",
 }: ListDueDateInputProps) {
-  const [display, setDisplay] = useState("");
-  const textRef = useRef<HTMLInputElement>(null);
-  const pickerRef = useRef<HTMLInputElement>(null);
-
-  function assignPickerRef(node: HTMLInputElement | null) {
-    pickerRef.current = node;
-
-    if (!pickerInputRef) return;
-
-    if (typeof pickerInputRef === "function") {
-      pickerInputRef(node);
-      return;
-    }
-
-    pickerInputRef.current = node;
-  }
-
-  useEffect(() => {
-    setDisplay(value ? formatIsoDateForListInput(value) : "");
-  }, [value]);
-
-  useEffect(() => {
-    if (!autoFocus) return;
-    requestAnimationFrame(() => textRef.current?.focus());
-  }, [autoFocus]);
-
-  function commitDisplay(raw: string) {
-    const trimmed = raw.trim();
-
-    if (!trimmed) {
-      const pickerValue = pickerRef.current?.value;
-      if (pickerValue) {
-        handlePickerChange(pickerValue);
-        return;
-      }
-
-      onChange("");
-      setDisplay("");
-      return;
-    }
-
-    const parsed = parseSpanishListDateInput(trimmed);
-
-    if (parsed) {
-      onChange(parsed);
-      setDisplay(formatIsoDateForListInput(parsed));
-      return;
-    }
-
-    setDisplay(value ? formatIsoDateForListInput(value) : "");
-  }
-
-  function handlePickerChange(iso: string) {
-    onChange(iso);
-    setDisplay(iso ? formatIsoDateForListInput(iso) : "");
-  }
-
   return (
-    <div lang={LIST_DATE_LOCALE} className="relative">
+    <div lang={LIST_DATE_LOCALE} className={`flex flex-col gap-1 ${className}`}>
+      <span className="text-xs font-light tracking-[-0.01em] text-white/30">
+        {value ? formatIsoDateForListInput(value) : "Añadir fecha"}
+      </span>
       <input
-        ref={textRef}
-        type="text"
-        inputMode="numeric"
+        type="date"
         lang={LIST_DATE_LOCALE}
-        placeholder="DD/MM/AAAA"
-        value={display}
-        onChange={(event) => setDisplay(event.target.value)}
-        onBlur={() => commitDisplay(display)}
-        onKeyDown={(event) => {
-          if (event.key === "Enter") {
-            event.preventDefault();
-            commitDisplay(display);
-          }
-        }}
-        aria-label="Fecha"
-        className={`${className} w-full pr-9`}
-      />
-
-      <ListDatePickerTrigger
-        inputRef={assignPickerRef}
         value={value}
-        onChange={handlePickerChange}
-        active={Boolean(value)}
-        className="absolute right-2 top-1/2 -translate-y-1/2"
+        onChange={(event) => onChange(event.target.value)}
+        aria-label={value ? "Fecha de la tarea" : "Añadir fecha"}
+        className={DATE_INPUT_CLASS}
       />
     </div>
   );
 }
-
-export { DATE_INPUT_CLASS };
