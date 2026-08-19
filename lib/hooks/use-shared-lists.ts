@@ -14,7 +14,9 @@ import {
   deleteSharedList,
   fetchSharedLists,
   setSharedListItemCompleted,
+  setSharedListItemDueDate,
 } from "@/lib/services/lists/remote.repository";
+import { normalizeSharedLists } from "@/lib/services/lists.service";
 
 export type SharedListsStatus = "loading" | "ready" | "offline" | "error";
 
@@ -25,8 +27,13 @@ export type UseSharedListsResult = {
   lastSyncedAt: string | null;
   createList: (name: string, icon: string) => Promise<void>;
   deleteList: (listId: string) => Promise<void>;
-  addListItem: (listId: string, text: string) => Promise<void>;
+  addListItem: (listId: string, text: string, dueDate?: string | null) => Promise<void>;
   toggleListItem: (listId: string, itemId: string) => Promise<void>;
+  setListItemDueDate: (
+    listId: string,
+    itemId: string,
+    dueDate: string | null,
+  ) => Promise<void>;
   refresh: () => Promise<void>;
 };
 
@@ -50,7 +57,7 @@ export function useSharedLists(): UseSharedListsResult {
       if (!client) {
         const cached = readListsCache();
         if (cached) {
-          setLists(cached.lists);
+          setLists(normalizeSharedLists(cached.lists));
           setLastSyncedAt(cached.fetchedAt);
         }
 
@@ -64,7 +71,7 @@ export function useSharedLists(): UseSharedListsResult {
       }
 
       const remoteLists = await fetchSharedLists(client);
-      setLists(remoteLists);
+      setLists(normalizeSharedLists(remoteLists));
       writeListsCache(remoteLists);
       const syncedAt = new Date().toISOString();
       setLastSyncedAt(syncedAt);
@@ -73,7 +80,7 @@ export function useSharedLists(): UseSharedListsResult {
     } catch (error) {
       const cached = readListsCache();
       if (cached) {
-        setLists(cached.lists);
+        setLists(normalizeSharedLists(cached.lists));
         setLastSyncedAt(cached.fetchedAt);
         setStatus("offline");
       } else {
@@ -95,7 +102,7 @@ export function useSharedLists(): UseSharedListsResult {
 
     const cached = readListsCache();
     if (cached) {
-      setLists(cached.lists);
+      setLists(normalizeSharedLists(cached.lists));
       setLastSyncedAt(cached.fetchedAt);
     }
 
@@ -196,7 +203,7 @@ export function useSharedLists(): UseSharedListsResult {
   );
 
   const addListItem = useCallback(
-    async (listId: string, text: string) => {
+    async (listId: string, text: string, dueDate: string | null = null) => {
       const trimmed = text.trim();
       if (!trimmed) {
         return;
@@ -208,10 +215,31 @@ export function useSharedLists(): UseSharedListsResult {
           throw new Error("Supabase no está disponible.");
         }
 
-        await addSharedListItem(client, listId, trimmed);
+        await addSharedListItem(client, listId, trimmed, dueDate);
       });
     },
     [runMutation],
+  );
+
+  const setListItemDueDate = useCallback(
+    async (listId: string, itemId: string, dueDate: string | null) => {
+      const list = lists.find((entry) => entry.id === listId);
+      const item = list?.items.find((entry) => entry.id === itemId);
+
+      if (!item) {
+        return;
+      }
+
+      await runMutation(async () => {
+        const client = getSupabaseClient();
+        if (!client) {
+          throw new Error("Supabase no está disponible.");
+        }
+
+        await setSharedListItemDueDate(client, itemId, dueDate);
+      });
+    },
+    [lists, runMutation],
   );
 
   const toggleListItem = useCallback(
@@ -244,6 +272,7 @@ export function useSharedLists(): UseSharedListsResult {
     deleteList,
     addListItem,
     toggleListItem,
+    setListItemDueDate,
     refresh,
   };
 }

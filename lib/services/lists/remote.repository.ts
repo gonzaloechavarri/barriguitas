@@ -71,6 +71,7 @@ export async function addSharedListItem(
   client: SupabaseClient<Database>,
   listId: string,
   text: string,
+  dueDate: string | null = null,
 ): Promise<string> {
   const id = createId("item");
   const now = new Date().toISOString();
@@ -82,6 +83,7 @@ export async function addSharedListItem(
     completed: false,
     created_at: now,
     completed_at: null,
+    due_date: dueDate,
     updated_at: now,
   });
 
@@ -90,6 +92,26 @@ export async function addSharedListItem(
   }
 
   return id;
+}
+
+export async function setSharedListItemDueDate(
+  client: SupabaseClient<Database>,
+  itemId: string,
+  dueDate: string | null,
+): Promise<void> {
+  const now = new Date().toISOString();
+
+  const { error } = await client
+    .from("shared_list_items")
+    .update({
+      due_date: dueDate,
+      updated_at: now,
+    })
+    .eq("id", itemId);
+
+  if (error) {
+    throw error;
+  }
 }
 
 export async function setSharedListItemCompleted(

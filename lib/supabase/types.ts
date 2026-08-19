@@ -14,6 +14,7 @@ export type SharedListItemRow = {
   created_at: string;
   completed_at: string | null;
   updated_at: string;
+  due_date: string | null;
 };
 
 export type SharedListInsert = {
@@ -38,6 +39,7 @@ export type SharedListItemInsert = {
   created_at?: string;
   completed_at?: string | null;
   updated_at?: string;
+  due_date?: string | null;
 };
 
 export type SharedListItemUpdate = {
@@ -45,6 +47,7 @@ export type SharedListItemUpdate = {
   completed?: boolean;
   completed_at?: string | null;
   updated_at?: string;
+  due_date?: string | null;
 };
 
 export type Database = {

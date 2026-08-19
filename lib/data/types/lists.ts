@@ -4,6 +4,8 @@ export type SharedListItem = {
   completed: boolean;
   createdAt: string;
   completedAt: string | null;
+  /** Fecha de vencimiento opcional — formato YYYY-MM-DD. */
+  dueDate: string | null;
 };
 
 export type SharedList = {

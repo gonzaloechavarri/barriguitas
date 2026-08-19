@@ -15,6 +15,7 @@ export function ListasModule() {
     deleteList,
     addListItem,
     toggleListItem,
+    setListItemDueDate,
   } = useSharedLists();
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [showCreateSheet, setShowCreateSheet] = useState(false);
@@ -32,8 +33,13 @@ export function ListasModule() {
             await deleteList(listId);
             setSelectedListId(null);
           }}
-          onAddItem={(text) => addListItem(selectedList.id, text)}
+          onAddItem={(text, dueDate) =>
+            addListItem(selectedList.id, text, dueDate ?? null)
+          }
           onToggleItem={(itemId) => toggleListItem(selectedList.id, itemId)}
+          onDueDateChange={(itemId, dueDate) =>
+            setListItemDueDate(selectedList.id, itemId, dueDate)
+          }
         />
       </div>
     );

@@ -3,7 +3,9 @@
 ## 1. Crear proyecto en Supabase
 
 1. [supabase.com](https://supabase.com) → nuevo proyecto.
-2. **SQL Editor** → ejecutar `migrations/001_shared_lists.sql`.
+2. **SQL Editor** → ejecutar:
+   - `migrations/001_shared_lists.sql`
+   - `migrations/002_shared_list_items_due_date.sql`
 3. **Database → Replication** → activar Realtime en:
    - `shared_lists`
    - `shared_list_items`

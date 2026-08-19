@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
 import type { SharedList } from "@/lib/data/types/lists";
-import type { SharedListsStatus } from "@/lib/hooks/use-shared-lists";
 import { AddItemControl } from "./components/add-item-control";
 import { DeleteListConfirm } from "./components/delete-list-confirm";
 import { ListItemRow } from "./components/list-item-row";
@@ -13,8 +12,9 @@ type ListDetailViewProps = {
   syncError: string | null;
   onBack: () => void;
   onDeleteList: (listId: string) => Promise<void>;
-  onAddItem: (text: string) => Promise<void>;
+  onAddItem: (text: string, dueDate?: string | null) => Promise<void>;
   onToggleItem: (itemId: string) => Promise<void>;
+  onDueDateChange: (itemId: string, dueDate: string | null) => Promise<void>;
 };
 
 export function ListDetailView({
@@ -24,6 +24,7 @@ export function ListDetailView({
   onDeleteList,
   onAddItem,
   onToggleItem,
+  onDueDateChange,
 }: ListDetailViewProps) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const pendingItems = list.items.filter((item) => !item.completed);
@@ -69,12 +70,15 @@ export function ListDetailView({
               onToggle={() => {
                 void onToggleItem(item.id);
               }}
+              onDueDateChange={(dueDate) => {
+                void onDueDateChange(item.id, dueDate);
+              }}
             />
           ))}
 
           <AddItemControl
-            onAdd={(text) => {
-              void onAddItem(text);
+            onAdd={(text, dueDate) => {
+              void onAddItem(text, dueDate ?? null);
             }}
           />
 
@@ -86,6 +90,9 @@ export function ListDetailView({
                   item={item}
                   onToggle={() => {
                     void onToggleItem(item.id);
+                  }}
+                  onDueDateChange={(dueDate) => {
+                    void onDueDateChange(item.id, dueDate);
                   }}
                 />
               ))}

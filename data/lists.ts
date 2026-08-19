@@ -14,6 +14,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-17T08:00:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
         {
           id: "carrefour-platanos",
@@ -21,6 +22,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-17T08:05:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
         {
           id: "carrefour-cafe",
@@ -28,6 +30,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-17T08:10:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
         {
           id: "carrefour-salmon",
@@ -35,6 +38,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-17T08:15:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
         {
           id: "carrefour-detergente",
@@ -42,6 +46,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-17T08:20:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
       ],
     },
@@ -57,6 +62,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-16T10:00:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
         {
           id: "mercadona-yogur",
@@ -64,6 +70,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-16T10:05:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
         {
           id: "mercadona-arroz",
@@ -71,6 +78,7 @@ export const listsData: BarriguitasListsData = {
           completed: false,
           createdAt: "2026-08-16T10:10:00.000Z",
           completedAt: null,
+          dueDate: null,
         },
       ],
     },

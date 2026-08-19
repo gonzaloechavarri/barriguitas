@@ -47,6 +47,7 @@ export async function seedDemoListsIfEmpty(
         completed: item.completed,
         created_at: item.createdAt,
         completed_at: item.completedAt,
+        due_date: item.dueDate ?? null,
         updated_at: now,
       })),
       { onConflict: "id", ignoreDuplicates: true },

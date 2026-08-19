@@ -8,6 +8,7 @@ export function mapItemRow(row: SharedListItemRow): SharedListItem {
     completed: row.completed,
     createdAt: row.created_at,
     completedAt: row.completed_at,
+    dueDate: row.due_date ?? null,
   };
 }
 
