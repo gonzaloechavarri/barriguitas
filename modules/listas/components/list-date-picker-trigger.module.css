@@ -1,0 +1,17 @@
+.desktopTrigger {
+  display: inline-flex;
+}
+
+.touchTrigger {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .desktopTrigger {
+    display: none;
+  }
+
+  .touchTrigger {
+    display: inline-flex;
+  }
+}
