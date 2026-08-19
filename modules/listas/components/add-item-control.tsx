@@ -75,19 +75,25 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
 
   return (
     <div className="mt-2 flex flex-col gap-2">
-      <div className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5">
+      <div
+        className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5"
+        onBlur={(event) => {
+          if (event.currentTarget.contains(event.relatedTarget as Node)) {
+            return;
+          }
+
+          if (!value.trim()) {
+            setExpanded(false);
+            reset();
+          }
+        }}
+      >
         <input
           ref={inputRef}
           type="text"
           value={value}
           onChange={(event) => setValue(event.target.value)}
           onKeyDown={handleKeyDown}
-          onBlur={() => {
-            if (!value.trim()) {
-              setExpanded(false);
-              reset();
-            }
-          }}
           placeholder="Escribir tarea..."
           aria-label="Escribir tarea"
           className="min-w-0 flex-1 bg-transparent text-[0.9375rem] font-light tracking-[-0.01em] text-white/80 outline-none placeholder:text-white/30"
@@ -95,6 +101,7 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
 
         <button
           type="button"
+          onPointerDown={(event) => event.preventDefault()}
           onClick={openDatePicker}
           aria-label={dueDate ? "Cambiar fecha" : "Añadir fecha"}
           className={`shrink-0 px-1 text-base leading-none touch-manipulation ${pressTextControlClasses} ${
@@ -116,11 +123,12 @@ export function AddItemControl({ onAdd }: AddItemControlProps) {
           }}
           tabIndex={-1}
           aria-hidden
-          className="pointer-events-none absolute h-0 w-0 opacity-0"
+          className="sr-only"
         />
 
         <button
           type="button"
+          onPointerDown={(event) => event.preventDefault()}
           onClick={submit}
           disabled={!value.trim()}
           className={`shrink-0 rounded-full px-3 py-1 text-sm font-light tracking-[-0.01em] text-white/70 disabled:opacity-30 touch-manipulation ${pressTextControlClasses}`}
