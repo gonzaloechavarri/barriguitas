@@ -1,6 +1,6 @@
 "use client";
 
-import { type Ref, useRef } from "react";
+import { type Ref, useEffect, useRef, useState } from "react";
 import { LIST_DATE_LOCALE } from "@/lib/data/utils/dates";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
 import styles from "./list-date-picker-trigger.module.css";
@@ -29,10 +29,98 @@ const triggerEmojiClass = (active: boolean) =>
     active ? "text-white/55" : "text-white/30"
   }`;
 
+type TouchDatePickerTriggerProps = {
+  value: string;
+  onChange: (isoValue: string) => void;
+  active: boolean;
+  className: string;
+  ariaLabel: string;
+};
+
+/**
+ * iOS/touch: monta input[type=date] solo mientras el picker está abierto.
+ * Tras onChange el input se desmonta — Safari no puede reenfocarlo ni reabrirlo.
+ */
+function TouchDatePickerTrigger({
+  value,
+  onChange,
+  active,
+  className,
+  ariaLabel,
+}: TouchDatePickerTriggerProps) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!pickerOpen) return;
+
+    const input = inputRef.current;
+    if (!input) return;
+
+    function handleCancel() {
+      setPickerOpen(false);
+    }
+
+    input.addEventListener("cancel", handleCancel);
+
+    const frame = requestAnimationFrame(() => {
+      if (typeof input.showPicker === "function") {
+        try {
+          input.showPicker();
+          return;
+        } catch {
+          // Safari/iOS: focus tras montar el input en el mismo gesto del usuario.
+        }
+      }
+
+      input.focus();
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      input.removeEventListener("cancel", handleCancel);
+    };
+  }, [pickerOpen]);
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const next = event.currentTarget.value;
+    onChange(next);
+    setPickerOpen(false);
+  }
+
+  return (
+    <span
+      className={`${styles.touchTrigger} relative items-center justify-center ${className}`}
+    >
+      <button
+        type="button"
+        onClick={() => setPickerOpen(true)}
+        aria-label={ariaLabel}
+        className={`${triggerEmojiClass(active)} ${pressTextControlClasses}`}
+      >
+        <span aria-hidden>📅</span>
+      </button>
+
+      {pickerOpen ? (
+        <input
+          ref={inputRef}
+          type="date"
+          lang={LIST_DATE_LOCALE}
+          tabIndex={-1}
+          aria-hidden
+          defaultValue={value}
+          onChange={handleChange}
+          className="fixed left-[-9999px] top-auto h-px w-px opacity-0"
+        />
+      ) : null}
+    </span>
+  );
+}
+
 /**
  * Trigger nativo responsive:
- * - Desktop (hover + fine pointer): input date transparente sobre 📅 — interacción directa.
- * - Touch/iOS (coarse pointer): botón 📅 + input fuera de pantalla — evita reapertura del picker.
+ * - Desktop: input date transparente sobre 📅 (sin cambios).
+ * - Touch/iOS: input date efímero — existe solo mientras el picker está abierto.
  */
 export function ListDatePickerTrigger({
   value,
@@ -41,55 +129,18 @@ export function ListDatePickerTrigger({
   className = "",
   inputRef: externalRef,
 }: ListDatePickerTriggerProps) {
-  const touchInputRef = useRef<HTMLInputElement>(null);
-
   function setDesktopInputRef(node: HTMLInputElement | null) {
     assignRef(node, externalRef);
   }
 
-  function setTouchInputRef(node: HTMLInputElement | null) {
-    touchInputRef.current = node;
-  }
-
-  function commitValue(input: HTMLInputElement) {
-    onChange(input.value);
-  }
-
   function handleDesktopChange(event: React.ChangeEvent<HTMLInputElement>) {
-    commitValue(event.currentTarget);
-  }
-
-  function handleTouchChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const input = event.currentTarget;
-    const next = input.value;
-
-    // iOS mantiene el foco en input[type=date] tras "Listo" y reabre el picker.
-    input.blur();
-
-    onChange(next);
-  }
-
-  function openTouchPicker() {
-    const input = touchInputRef.current;
-    if (!input) return;
-
-    if (typeof input.showPicker === "function") {
-      try {
-        input.showPicker();
-        return;
-      } catch {
-        // Safari/iOS: focus desde gesto directo del usuario.
-      }
-    }
-
-    input.focus();
+    onChange(event.currentTarget.value);
   }
 
   const ariaLabel = value ? "Cambiar fecha" : "Añadir fecha";
 
   return (
     <>
-      {/* Desktop: overlay directo — calendario nativo + entrada manual del navegador. */}
       <label
         className={`${styles.desktopTrigger} relative ${triggerEmojiClass(active)} ${className}`}
       >
@@ -107,29 +158,13 @@ export function ListDatePickerTrigger({
         />
       </label>
 
-      {/* Touch/iOS: botón separado; input fuera del flujo táctil del formulario. */}
-      <span
-        className={`${styles.touchTrigger} relative items-center justify-center ${className}`}
-      >
-        <button
-          type="button"
-          onClick={openTouchPicker}
-          aria-label={ariaLabel}
-          className={`${triggerEmojiClass(active)} ${pressTextControlClasses}`}
-        >
-          <span aria-hidden>📅</span>
-        </button>
-        <input
-          ref={setTouchInputRef}
-          type="date"
-          lang={LIST_DATE_LOCALE}
-          tabIndex={-1}
-          aria-hidden
-          value={value}
-          onChange={handleTouchChange}
-          className="pointer-events-none fixed left-[-9999px] top-auto h-px w-px opacity-0"
-        />
-      </span>
+      <TouchDatePickerTrigger
+        value={value}
+        onChange={onChange}
+        active={active}
+        className={className}
+        ariaLabel={ariaLabel}
+      />
     </>
   );
 }
