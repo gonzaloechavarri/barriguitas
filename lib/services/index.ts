@@ -1,10 +1,22 @@
 export { getAgenda } from "./agenda.service";
 export {
+  getCopilotModuleHeader,
   getCopilotObservations,
   getCopilotRecommendation,
-  getCopilotModuleHeader,
   getCopilotState,
 } from "./copilot";
+export {
+  answerCopilotQuestion,
+  buildCopilotBrief,
+  buildCopilotContext,
+  COPILOT_QUICK_QUESTIONS,
+  hasCopilotFocus,
+} from "./copilot/context.service";
+export type {
+  CopilotBrief,
+  CopilotContext,
+  CopilotQuickQuestion,
+} from "./copilot/context.service";
 export {
   deriveAttentionLevel,
   getAttentionSubtitle,

@@ -10,7 +10,7 @@ type GlassCardProps = {
 export function GlassCard({ children, className = "", delay = 0 }: GlassCardProps) {
   return (
     <article
-      className={`rounded-3xl border border-white/[0.06] bg-white/[0.03] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.2)] backdrop-blur-md backdrop-saturate-150 ${cardMotionClasses} ${className}`}
+      className={`rounded-[1.375rem] border border-white/[0.06] bg-white/[0.03] shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_2px_rgba(0,0,0,0.2)] backdrop-blur-md backdrop-saturate-150 sm:rounded-3xl ${cardMotionClasses} ${className}`}
       style={{ animationDelay: `${delay}ms` }}
     >
       {children}
@@ -25,7 +25,7 @@ type CardTitleProps = {
 
 export function CardTitle({ icon, children }: CardTitleProps) {
   return (
-    <h2 className="flex items-center gap-2.5 text-sm font-medium tracking-[-0.01em] text-white/55">
+    <h2 className="flex items-center gap-2.5 text-[0.8125rem] font-medium tracking-[-0.01em] text-white/52">
       <span role="img" aria-hidden>
         {icon}
       </span>

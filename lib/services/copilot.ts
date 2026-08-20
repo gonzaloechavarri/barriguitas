@@ -3,156 +3,77 @@ import type {
   CopilotRecommendation,
   CopilotState,
 } from "@/lib/data/types";
+import { readListsCache } from "@/lib/services/lists/cache";
+import { normalizeSharedLists } from "@/lib/services/lists.service";
 import {
-  getCoupleData,
-  getHouseData,
-} from "@/lib/data/providers/local";
-import { daysUntil } from "@/lib/data/utils";
-import { buildCopilotPortfolioObservationIfAttentionNeeded } from "./copilot/portfolio-context";
-import { getMilestones, getTopMilestone } from "./milestones.service";
+  buildCopilotContext,
+  buildCopilotObservations,
+  hasCopilotFocus,
+} from "./copilot/context.service";
 
 export type { CopilotObservation, CopilotRecommendation };
 
-type CopilotSignalSource = "nosotros" | "casa" | "ahorro" | "agenda";
-
-type CopilotSignal = {
-  source: CopilotSignalSource;
-  icon: string;
-  title: string;
-  subtitle: string;
-  priority: number;
-};
-
-type SignalCollector = () => CopilotSignal[];
-
-/** Hitos pendientes de Nosotros. */
-function collectCoupleSignals(): CopilotSignal[] {
-  const { copilot } = getCoupleData();
-
-  return getMilestones().map((milestone) => ({
-    source: "nosotros",
-    icon: copilot.icon,
-    title: milestone.title,
-    subtitle: copilot.subtitle,
-    priority: milestone.priority,
-  }));
-}
-
-/** Señales futuras de Villa Barriguita. */
-function collectHouseSignals(): CopilotSignal[] {
-  getHouseData();
-  return [];
-}
-
-/** Señales futuras de Ahorro. */
-function collectWealthSignals(): CopilotSignal[] {
-  return [];
-}
-
-/** Señales futuras de Agenda. */
-function collectAgendaSignals(): CopilotSignal[] {
-  return [];
-}
-
-const SIGNAL_COLLECTORS: SignalCollector[] = [
-  collectCoupleSignals,
-  collectHouseSignals,
-  collectWealthSignals,
-  collectAgendaSignals,
-];
-
-function collectSignals(): CopilotSignal[] {
-  return SIGNAL_COLLECTORS.flatMap((collect) => collect()).sort(
-    (a, b) => a.priority - b.priority,
-  );
-}
-
-function resolveTopSignal(): CopilotSignal | null {
-  const signals = collectSignals();
-  return signals[0] ?? null;
-}
-
-function resolveCalmRecommendation(): CopilotRecommendation {
-  const { calm } = getCoupleData().copilot;
-
-  return {
-    icon: "",
-    title: calm.title,
-    subtitle: calm.subtitle,
-    priority: 0,
-  };
-}
-
-/**
- * Decide qué debe mostrar el Copiloto.
- * Interpreta el estado actual de Barriguitas sin inventar información.
- */
-export function getCopilotRecommendation(): CopilotRecommendation {
-  const topSignal = resolveTopSignal();
-
-  if (!topSignal) {
-    return resolveCalmRecommendation();
+function getCopilotLists() {
+  const cached = readListsCache();
+  if (!cached) {
+    return [];
   }
 
-  const { wedding } = getCoupleData();
-  const daysToWedding = daysUntil(wedding.date, new Date());
-  const subtitle =
-    daysToWedding > 0
-      ? `Quedan ${daysToWedding} días para la boda.`
-      : topSignal.subtitle;
+  return normalizeSharedLists(cached.lists);
+}
 
-  return {
-    icon: topSignal.icon,
-    title: topSignal.title,
-    subtitle,
-    priority: topSignal.priority,
-  };
+function getContextFromCache() {
+  return buildCopilotContext(getCopilotLists());
 }
 
 /** Encabezado del módulo Copiloto en el shell. */
 export function getCopilotModuleHeader(): string {
-  const { shell } = getCoupleData().copilot;
+  const context = getContextFromCache();
 
-  return resolveTopSignal() ? shell.actionHeader : shell.calmHeader;
+  if (context.hoy.today.length > 0 || context.hoy.overdue.length > 0) {
+    return "Hay cosas que merecen vuestra atención.";
+  }
+
+  if (context.upcomingEvents.length > 0) {
+    return "Se acerca algo importante.";
+  }
+
+  return "Todo tranquilo por aquí.";
 }
 
 /** Estado global para mensajes contextuales en otras pantallas. */
 export function getCopilotState(): CopilotState {
-  return resolveTopSignal() ? "action" : "calm";
+  return hasCopilotFocus(getContextFromCache()) ? "action" : "calm";
 }
 
-function hasPendingFocus(): boolean {
-  return getTopMilestone() !== null;
-}
+/** @deprecated Usar buildCopilotBrief con datos reales en el módulo IA. */
+export function getCopilotRecommendation(): CopilotRecommendation {
+  const context = getContextFromCache();
 
-function buildSecondaryObservations(): CopilotObservation[] {
-  const secondary: CopilotObservation[] = [];
-
-  if (hasPendingFocus()) {
-    const house = getHouseData();
-    if (house.cuidado.lastCleaningAt) {
-      secondary.push({
-        icon: house.copilot.icon,
-        text: "Villa Barriguita está al día.",
-        priority: 20,
-        tier: "secondary",
-      });
-    }
+  if (!hasCopilotFocus(context)) {
+    return {
+      icon: "",
+      title: "Todo tranquilo por aquí 🦦",
+      subtitle: "No hay nada urgente ahora mismo.",
+      priority: 0,
+    };
   }
 
-  const portfolioObservation =
-    buildCopilotPortfolioObservationIfAttentionNeeded();
-  if (portfolioObservation) {
-    secondary.push({ ...portfolioObservation, tier: "secondary" });
-  }
+  const topToday = context.hoy.today[0]?.item.text;
+  const topOverdue = context.hoy.overdue[0]?.item.text;
+  const nextEvent = context.upcomingEvents[0];
 
-  return secondary.slice(0, 2);
+  return {
+    icon: "🤖",
+    title: topToday ?? topOverdue ?? nextEvent?.title ?? "Revisad vuestras listas",
+    subtitle: "Abrid Copiloto para ver el resumen completo.",
+    priority: 1,
+  };
 }
 
-/**
- * Contexto secundario del Copiloto — como mucho dos notas breves.
- * El foco principal vive en la tarjeta de recomendación.
- */
+/** Observaciones de alta confianza para el shell y otros consumidores. */
 export function getCopilotObservations(): CopilotObservation[] {
-  return buildSecondaryObservations();
+  const lists = getCopilotLists();
+  const context = buildCopilotContext(lists);
+  return buildCopilotObservations(context, lists);
 }

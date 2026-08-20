@@ -30,7 +30,7 @@ export function DocumentosView({
   const isEmpty = !hasHoyContent(summary);
 
   return (
-    <div className="mx-auto w-full max-w-xl px-6 pb-6 pt-2 sm:px-10 sm:pb-8 sm:pt-4">
+    <div className="mx-auto w-full max-w-xl px-5 pb-8 pt-2 sm:px-10 sm:pb-10 sm:pt-4">
       <HoyHeader dateLabel={summary.dateLabel} />
 
       {syncError && status !== "ready" ? (
@@ -39,32 +39,37 @@ export function DocumentosView({
         </p>
       ) : null}
 
-      <div className="mt-10 flex flex-col gap-8 sm:mt-12 sm:gap-10">
-        <HoyTaskSection
-          title="Hoy"
-          tasks={summary.today}
-          onToggle={onToggleTask}
-          onOpenList={onOpenList}
-        />
+      {isEmpty ? (
+        <HoyEmptyState />
+      ) : (
+        <div className="mt-8 flex flex-col gap-7 sm:mt-10 sm:gap-9">
+          <HoyTaskSection
+            title="Vencidas"
+            variant="overdue"
+            tasks={summary.overdue}
+            dateSuffixForTask={hoyOverdueSuffix}
+            onToggle={onToggleTask}
+            onOpenList={onOpenList}
+          />
 
-        <HoyTaskSection
-          title="Vencidas"
-          tasks={summary.overdue}
-          dateSuffixForTask={hoyOverdueSuffix}
-          onToggle={onToggleTask}
-          onOpenList={onOpenList}
-        />
+          <HoyTaskSection
+            title="Hoy"
+            variant="today"
+            tasks={summary.today}
+            onToggle={onToggleTask}
+            onOpenList={onOpenList}
+          />
 
-        <HoyTaskSection
-          title="Próximamente"
-          tasks={summary.upcoming}
-          dateSuffixForTask={hoyUpcomingSuffix}
-          onToggle={onToggleTask}
-          onOpenList={onOpenList}
-        />
-      </div>
-
-      <HoyEmptyState show={isEmpty} />
+          <HoyTaskSection
+            title="Próximamente"
+            variant="upcoming"
+            tasks={summary.upcoming}
+            dateSuffixForTask={hoyUpcomingSuffix}
+            onToggle={onToggleTask}
+            onOpenList={onOpenList}
+          />
+        </div>
+      )}
     </div>
   );
 }
