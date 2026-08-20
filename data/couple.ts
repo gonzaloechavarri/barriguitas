@@ -15,23 +15,12 @@ export const coupleData = {
     startDate: "2026-10-27",
   },
 
-  milestones: [
-    {
-      id: "expediente-matrimonial",
-      title: "Expediente matrimonial",
-      completed: false,
-    },
-    {
-      id: "seleccion-del-baile",
-      title: "Selección del baile",
-      completed: false,
-    },
-    {
-      id: "eleccion-del-dj",
-      title: "Elección del DJ",
-      completed: false,
-    },
-  ] as const,
+  /** Reservado — los hitos visuales provienen de boda y viaje, no de tareas. */
+  milestones: [] as Array<{
+    id: string;
+    title: string;
+    completed: boolean;
+  }>,
 
   copilot: {
     icon: "❤️",

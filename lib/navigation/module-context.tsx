@@ -18,6 +18,9 @@ type ModuleNavigationContextValue = {
   activeModule: ModuleDefinition;
   activeModuleId: ModuleId;
   setActiveModule: (id: ModuleId) => void;
+  pendingListId: string | null;
+  openList: (listId: string) => void;
+  clearPendingListId: () => void;
 };
 
 const ModuleNavigationContext =
@@ -34,9 +37,19 @@ export function ModuleNavigationProvider({
 }: ModuleNavigationProviderProps) {
   const [activeModuleId, setActiveModuleId] =
     useState<ModuleId>(initialModuleId);
+  const [pendingListId, setPendingListId] = useState<string | null>(null);
 
   const setActiveModule = useCallback((id: ModuleId) => {
     setActiveModuleId(id);
+  }, []);
+
+  const openList = useCallback((listId: string) => {
+    setPendingListId(listId);
+    setActiveModuleId("listas");
+  }, []);
+
+  const clearPendingListId = useCallback(() => {
+    setPendingListId(null);
   }, []);
 
   const value = useMemo(
@@ -44,8 +57,17 @@ export function ModuleNavigationProvider({
       activeModule: getModule(activeModuleId),
       activeModuleId,
       setActiveModule,
+      pendingListId,
+      openList,
+      clearPendingListId,
     }),
-    [activeModuleId, setActiveModule],
+    [
+      activeModuleId,
+      setActiveModule,
+      pendingListId,
+      openList,
+      clearPendingListId,
+    ],
   );
 
   return (

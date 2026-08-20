@@ -24,7 +24,7 @@ export function PatrimonioModule() {
         assetLabels={{
           acwi: snapshot.wealth.strategy.assets.acwi.label,
           oro: snapshot.wealth.strategy.assets.oro.label,
-          momentum: snapshot.wealth.strategy.assets.momentum.label,
+          nasdaq: snapshot.wealth.strategy.assets.nasdaq.label,
         }}
         onOpenUpdate={() => setUpdateOpen(true)}
         onCloseUpdate={() => setUpdateOpen(false)}

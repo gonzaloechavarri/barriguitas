@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSharedLists } from "@/lib/hooks/use-shared-lists";
+import { useModuleNavigation } from "@/lib/navigation/module-context";
 import { CreateListSheet } from "./components/create-list-sheet";
 import { ListDetailView } from "./list-detail-view";
 import { ListasView } from "./listas-view";
 
 export function ListasModule() {
+  const { pendingListId, clearPendingListId } = useModuleNavigation();
   const {
     lists,
     status,
@@ -19,6 +21,15 @@ export function ListasModule() {
   } = useSharedLists();
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [showCreateSheet, setShowCreateSheet] = useState(false);
+
+  useEffect(() => {
+    if (!pendingListId) {
+      return;
+    }
+
+    setSelectedListId(pendingListId);
+    clearPendingListId();
+  }, [pendingListId, clearPendingListId]);
 
   const selectedList = lists.find((list) => list.id === selectedListId);
 

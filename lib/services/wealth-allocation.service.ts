@@ -13,6 +13,16 @@ export function formatDeviation(value: number): string {
   return `${value.toFixed(1).replace(".", ",")} %`;
 }
 
+function migrateStrategyDistribution(
+  distribution: Record<string, number>,
+): StrategyDistribution {
+  return {
+    acwi: distribution.acwi ?? 0,
+    oro: distribution.oro ?? 0,
+    nasdaq: distribution.nasdaq ?? distribution.momentum ?? 0,
+  };
+}
+
 /** Distribución actual guardada en la última actualización manual. */
 export function resolveWealthAllocation(
   wealth: BarriguitasWealthData,
@@ -31,7 +41,7 @@ export function resolveWealthAllocation(
 }
 
 export function isValidDistributionSum(distribution: StrategyDistribution): boolean {
-  return distribution.acwi + distribution.oro + distribution.momentum === 100;
+  return distribution.acwi + distribution.oro + distribution.nasdaq === 100;
 }
 
 /** Convierte snapshots legacy con holdings monetarios a porcentajes. */
@@ -49,6 +59,19 @@ export function normalizePortfolioSnapshot(
     holdings?: Array<{ assetClass: string; value: number }>;
   };
 
+  if (candidate.distribution) {
+    const migrated = migrateStrategyDistribution(
+      candidate.distribution as Record<string, number>,
+    );
+
+    if (isValidDistributionSum(migrated)) {
+      return {
+        updatedAt: candidate.updatedAt ?? fallback.updatedAt,
+        distribution: migrated,
+      };
+    }
+  }
+
   if (
     candidate.distribution &&
     isValidDistributionSum(candidate.distribution)
@@ -60,15 +83,17 @@ export function normalizePortfolioSnapshot(
   }
 
   if (candidate.holdings?.length) {
-    const totals = { acwi: 0, oro: 0, momentum: 0 };
+    const totals = { acwi: 0, oro: 0, nasdaq: 0 };
 
     for (const holding of candidate.holdings) {
-      if (holding.assetClass in totals) {
-        totals[holding.assetClass as keyof typeof totals] += holding.value;
+      const key =
+        holding.assetClass === "momentum" ? "nasdaq" : holding.assetClass;
+      if (key in totals) {
+        totals[key as keyof typeof totals] += holding.value;
       }
     }
 
-    const total = totals.acwi + totals.oro + totals.momentum;
+    const total = totals.acwi + totals.oro + totals.nasdaq;
 
     if (total > 0) {
       const acwi = Math.round((totals.acwi / total) * 100);
@@ -79,7 +104,7 @@ export function normalizePortfolioSnapshot(
         distribution: {
           acwi,
           oro,
-          momentum: 100 - acwi - oro,
+          nasdaq: 100 - acwi - oro,
         },
       };
     }

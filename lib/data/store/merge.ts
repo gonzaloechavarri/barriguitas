@@ -2,6 +2,22 @@ import type { BarriguitasOverrides, BarriguitasSnapshot } from "./types";
 import { createDefaultSnapshot } from "./types";
 import { normalizePortfolioSnapshot } from "@/lib/services/wealth-allocation.service";
 
+function migrateWealthTarget(
+  defaults: BarriguitasSnapshot["wealth"]["strategy"]["target"],
+  overrides?: Record<string, number>,
+) {
+  const merged = {
+    ...defaults,
+    ...overrides,
+  } as Record<string, number>;
+
+  return {
+    acwi: merged.acwi ?? defaults.acwi,
+    oro: merged.oro ?? defaults.oro,
+    nasdaq: merged.nasdaq ?? merged.momentum ?? defaults.nasdaq,
+  };
+}
+
 export function mergeSnapshot(
   overrides: BarriguitasOverrides | null,
 ): BarriguitasSnapshot {
@@ -35,10 +51,10 @@ export function mergeSnapshot(
       ...defaults.wealth,
       strategy: {
         ...defaults.wealth.strategy,
-        target: {
-          ...defaults.wealth.strategy.target,
-          ...overrides.wealth?.strategy?.target,
-        },
+        target: migrateWealthTarget(
+          defaults.wealth.strategy.target,
+          overrides.wealth?.strategy?.target as Record<string, number> | undefined,
+        ),
       },
       portfolioSnapshot: normalizePortfolioSnapshot(
         overrides.wealth?.portfolioSnapshot,

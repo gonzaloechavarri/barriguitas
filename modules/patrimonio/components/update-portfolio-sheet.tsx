@@ -14,7 +14,7 @@ type UpdatePortfolioSheetProps = {
   labels: {
     acwi: string;
     oro: string;
-    momentum: string;
+    nasdaq: string;
   };
   onClose: () => void;
 };
@@ -32,9 +32,7 @@ export function UpdatePortfolioSheet({
   const [updatedAt, setUpdatedAt] = useState(initialValues.updatedAt);
   const [acwi, setAcwi] = useState(String(initialValues.distribution.acwi));
   const [oro, setOro] = useState(String(initialValues.distribution.oro));
-  const [momentum, setMomentum] = useState(
-    String(initialValues.distribution.momentum),
-  );
+  const [nasdaq, setNasdaq] = useState(String(initialValues.distribution.nasdaq));
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,16 +41,16 @@ export function UpdatePortfolioSheet({
     setUpdatedAt(initialValues.updatedAt);
     setAcwi(String(initialValues.distribution.acwi));
     setOro(String(initialValues.distribution.oro));
-    setMomentum(String(initialValues.distribution.momentum));
+    setNasdaq(String(initialValues.distribution.nasdaq));
     setError(null);
   }, [open, initialValues]);
 
   const currentSum = useMemo(() => {
     const parsedAcwi = Number(acwi) || 0;
     const parsedOro = Number(oro) || 0;
-    const parsedMomentum = Number(momentum) || 0;
-    return parsedAcwi + parsedOro + parsedMomentum;
-  }, [acwi, oro, momentum]);
+    const parsedNasdaq = Number(nasdaq) || 0;
+    return parsedAcwi + parsedOro + parsedNasdaq;
+  }, [acwi, oro, nasdaq]);
 
   if (!open) return null;
 
@@ -65,22 +63,22 @@ export function UpdatePortfolioSheet({
 
     const parsedAcwi = Number(acwi);
     const parsedOro = Number(oro);
-    const parsedMomentum = Number(momentum) || 0;
+    const parsedNasdaq = Number(nasdaq) || 0;
 
     if (
       !updatedAt ||
       Number.isNaN(parsedAcwi) ||
       Number.isNaN(parsedOro) ||
-      Number.isNaN(parsedMomentum) ||
+      Number.isNaN(parsedNasdaq) ||
       parsedAcwi < 0 ||
       parsedOro < 0 ||
-      parsedMomentum < 0
+      parsedNasdaq < 0
     ) {
       setError("Introduce porcentajes válidos.");
       return;
     }
 
-    const sum = parsedAcwi + parsedOro + parsedMomentum;
+    const sum = parsedAcwi + parsedOro + parsedNasdaq;
 
     if (sum !== 100) {
       setError(`Los porcentajes deben sumar exactamente 100 % (ahora: ${sum} %).`);
@@ -92,7 +90,7 @@ export function UpdatePortfolioSheet({
       distribution: {
         acwi: parsedAcwi,
         oro: parsedOro,
-        momentum: parsedMomentum,
+        nasdaq: parsedNasdaq,
       },
     });
 
@@ -182,16 +180,16 @@ export function UpdatePortfolioSheet({
 
           <label className="flex flex-col gap-2">
             <span className="text-xs font-light tracking-[-0.01em] text-white/35">
-              {labels.momentum} (%)
+              {labels.nasdaq} (%)
             </span>
             <input
               type="number"
               min={0}
               max={100}
               step={1}
-              value={momentum}
+              value={nasdaq}
               onChange={(event) => {
-                setMomentum(event.target.value);
+                setNasdaq(event.target.value);
                 setError(null);
               }}
               className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-[0.9375rem] font-light tabular-nums tracking-[-0.01em] text-white/85 outline-none focus:border-white/[0.14]"

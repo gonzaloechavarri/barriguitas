@@ -7,7 +7,7 @@ import {
   formatSnapshotDateLabel,
 } from "@/lib/services/wealth-snapshot.service";
 
-const STRATEGY_ASSET_KEYS = ["acwi", "oro", "momentum"] as const;
+const STRATEGY_ASSET_KEYS = ["acwi", "oro", "nasdaq"] as const;
 
 /** Construye la vista de Ahorro a partir de la distribución guardada. */
 export function buildWealthView(): WealthView {

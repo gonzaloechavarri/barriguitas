@@ -36,7 +36,7 @@ export type SettingsAhorroView = {
   labels: {
     acwi: string;
     oro: string;
-    momentum: string;
+    nasdaq: string;
   };
 };
 
@@ -119,7 +119,7 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
       labels: {
         acwi: wealth.strategy.assets.acwi.label,
         oro: wealth.strategy.assets.oro.label,
-        momentum: wealth.strategy.assets.momentum.label,
+        nasdaq: wealth.strategy.assets.nasdaq.label,
       },
     },
     agenda: {

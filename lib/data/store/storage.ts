@@ -34,6 +34,22 @@ export function readOverrides(): BarriguitasOverrides | null {
       if (parsed.wealth) {
         delete parsed.wealth.currentDistribution;
         delete parsed.wealth.holdings;
+
+        const target = parsed.wealth.strategy?.target as
+          | Record<string, number>
+          | undefined;
+        if (target && "momentum" in target && !("nasdaq" in target)) {
+          target.nasdaq = target.momentum;
+          delete target.momentum;
+        }
+
+        const distribution = parsed.wealth.portfolioSnapshot?.distribution as
+          | Record<string, number>
+          | undefined;
+        if (distribution && "momentum" in distribution && !("nasdaq" in distribution)) {
+          distribution.nasdaq = distribution.momentum;
+          delete distribution.momentum;
+        }
       }
       return parsed;
     }

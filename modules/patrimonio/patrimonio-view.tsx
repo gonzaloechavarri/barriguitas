@@ -11,7 +11,7 @@ type PatrimonioViewProps = {
   assetLabels: {
     acwi: string;
     oro: string;
-    momentum: string;
+    nasdaq: string;
   };
   onOpenUpdate: () => void;
   onCloseUpdate: () => void;

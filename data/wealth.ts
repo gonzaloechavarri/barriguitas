@@ -7,20 +7,20 @@ export const wealthData = {
   subtitle: "La cartera sigue su camino.",
   strategy: {
     cardTitle: "Estrategia",
-    target: { acwi: 85, oro: 10, momentum: 5 },
+    target: { acwi: 85, oro: 10, nasdaq: 5 },
     deviationThreshold: 3,
     transitionMessage:
       "La estrategia está evolucionando hacia el nuevo objetivo.",
     assets: {
-      acwi: { icon: "🌍", label: "Global" },
+      acwi: { icon: "🌍", label: "ACWI" },
       oro: { icon: "🥇", label: "Oro" },
-      momentum: { icon: "⚡", label: "Momentum" },
+      nasdaq: { icon: "📈", label: "Nasdaq" },
     },
   },
   /** Distribución demo — porcentajes ficticios. */
   portfolioSnapshot: {
     updatedAt: "2026-02-18",
-    distribution: { acwi: 80, oro: 20, momentum: 0 },
+    distribution: { acwi: 80, oro: 20, nasdaq: 0 },
   },
   rebalancePhilosophy: "contributions-only" as const,
   copilot: {

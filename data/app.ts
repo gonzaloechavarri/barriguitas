@@ -47,18 +47,12 @@ export const appData = {
     nosotros: "Quedan {days} días para decir sí.",
     casa: "El cuidado de nuestra casa.",
     patrimonio: "",
-    agenda: "No hay nada urgente.",
     listas: "Lo que falta por hacer juntos.",
     ia: "Hoy puedes olvidarte de mí.",
     ajustes: "Cómo funciona Barriguitas para nosotros.",
   },
 
   modules: {
-    agenda: {
-      icon: "📅",
-      title: "Agenda",
-      description: "Organización y alivio de carga mental",
-    },
     patrimonio: {
       icon: "🌱",
       title: "Ahorro",

@@ -57,16 +57,16 @@ function TargetFields({ values, labels, onChange }: TargetFieldsProps) {
         />
       </SettingsField>
 
-      <SettingsField label={labels.momentum}>
+      <SettingsField label={labels.nasdaq}>
         <SettingsInput
           type="number"
           min={0}
           max={100}
-          value={values.momentum}
+          value={values.nasdaq}
           onChange={(event) =>
             onChange({
               ...values,
-              momentum: Number(event.target.value),
+              nasdaq: Number(event.target.value),
             })
           }
         />
@@ -100,7 +100,7 @@ function CurrentDistributionSummary({
           {labels.oro}: {current.oro} %
         </p>
         <p>
-          {labels.momentum}: {current.momentum} %
+          {labels.nasdaq}: {current.nasdaq} %
         </p>
       </div>
     </div>
@@ -112,7 +112,7 @@ export function AhorroSettingsSection({ data }: AhorroSettingsSectionProps) {
     <SettingsSection
       icon="🌱"
       title="Ahorro"
-      summary={`Objetivo ${data.target.acwi}/${data.target.oro}/${data.target.momentum}`}
+      summary={`Objetivo ${data.target.acwi}/${data.target.oro}/${data.target.nasdaq}`}
       delay={240}
     >
       <TargetFields

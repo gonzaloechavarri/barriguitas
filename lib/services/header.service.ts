@@ -3,7 +3,6 @@ import { getAppData, getCoupleData } from "@/lib/data/providers/local";
 import { daysUntil } from "@/lib/data/utils";
 import type { ModuleId } from "@/lib/modules/types";
 import { getCopilotModuleHeader } from "./copilot";
-import { getTodayHeaderMessage } from "./greeting.service";
 
 function resolveHeaderMessage(
   moduleId: ModuleId,
@@ -28,7 +27,7 @@ export function getModuleHeader(
   }
 
   if (moduleId === "documentos") {
-    return { message: getTodayHeaderMessage(referenceDate) };
+    return { message: "" };
   }
 
   const { moduleHeaders } = getAppData();

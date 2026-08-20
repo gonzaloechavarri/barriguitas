@@ -2,7 +2,7 @@
 
 import type { SettingsNosotrosView } from "@/lib/services/settings.service";
 import { updateTrip, updateWeddingDate } from "@/lib/services/settings.service";
-import { MilestonesEditor } from "./milestones-editor";
+import { getCoupleEvents } from "@/lib/services/couple-events.service";
 import {
   SettingsDivider,
   SettingsField,
@@ -14,14 +14,17 @@ type NosotrosSettingsSectionProps = {
   data: SettingsNosotrosView;
 };
 
-export function NosotrosSettingsSection({ data }: NosotrosSettingsSectionProps) {
-  const topMilestone = data.milestones[0]?.title ?? "Sin hitos pendientes";
+function buildNosotrosSummary(): string {
+  const nextEvent = getCoupleEvents()[0];
+  return nextEvent?.title ?? "Nuestros momentos";
+}
 
+export function NosotrosSettingsSection({ data }: NosotrosSettingsSectionProps) {
   return (
     <SettingsSection
       icon="❤️"
       title="Nosotros"
-      summary={topMilestone}
+      summary={buildNosotrosSummary()}
       delay={80}
     >
       <div className="flex flex-col gap-4">
@@ -74,10 +77,6 @@ export function NosotrosSettingsSection({ data }: NosotrosSettingsSectionProps) 
             }
           />
         </SettingsField>
-
-        <SettingsDivider />
-
-        <MilestonesEditor milestones={data.milestones} />
       </div>
     </SettingsSection>
   );

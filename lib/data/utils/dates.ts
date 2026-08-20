@@ -140,3 +140,31 @@ export function isDueDateToday(
   const date = parseIsoDate(isoDate);
   return startOfDay(date).getTime() === startOfDay(referenceDate).getTime();
 }
+
+/** Encabezado de la vista Hoy — fecha local civil. */
+export function formatHoyDateLabel(referenceDate: Date = new Date()): string {
+  const formatted = referenceDate.toLocaleDateString("es-ES", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
+  const cleaned = formatted.replace(/\bde\b/g, "").replace(/\s+/g, " ").trim();
+  return cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+}
+
+/** Etiqueta relativa para tareas vencidas en Hoy. */
+export function formatHoyOverdueLabel(
+  isoDate: string,
+  referenceDate: Date = new Date(),
+): string {
+  const diffDays = Math.round(
+    (startOfDay(parseIsoDate(isoDate)).getTime() -
+      startOfDay(referenceDate).getTime()) /
+      86_400_000,
+  );
+
+  if (diffDays === -1) return "ayer";
+
+  return formatListItemDueDate(isoDate, referenceDate);
+}

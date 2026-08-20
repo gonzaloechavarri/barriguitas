@@ -1,6 +1,6 @@
 import type { WeddingData } from "@/lib/data/types";
 import { getCoupleData } from "@/lib/data/providers/local";
-import { getMilestoneTitles } from "./milestones.service";
+import { getCoupleEvents } from "./couple-events.service";
 
 export function getWeddingData(): WeddingData {
   const { wedding, nextTrip } = getCoupleData();
@@ -11,7 +11,7 @@ export function getWeddingData(): WeddingData {
     cardTitle: wedding.cardTitle,
     countdownLabel: wedding.countdownLabel,
     progressMessage: wedding.progressMessage,
-    milestones: getMilestoneTitles(),
+    upcomingEvents: getCoupleEvents(),
     nextPlan: {
       cardTitle: nextTrip.cardTitle,
       destination: nextTrip.destination,

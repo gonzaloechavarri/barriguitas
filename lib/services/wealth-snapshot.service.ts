@@ -68,8 +68,8 @@ export function buildDistributionSummary(
     parts.push(`${distribution.oro} % ${assets.oro.label}`);
   }
 
-  if (distribution.momentum > 0) {
-    parts.push(`${distribution.momentum} % ${assets.momentum.label}`);
+  if (distribution.nasdaq > 0) {
+    parts.push(`${distribution.nasdaq} % ${assets.nasdaq.label}`);
   }
 
   return parts.join(" · ");
@@ -87,5 +87,5 @@ export function getDefaultPortfolioUpdateInput(
 export function sumDistributionPercentages(
   distribution: StrategyDistribution,
 ): number {
-  return distribution.acwi + distribution.oro + distribution.momentum;
+  return distribution.acwi + distribution.oro + distribution.nasdaq;
 }

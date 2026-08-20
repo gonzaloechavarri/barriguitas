@@ -1,5 +1,4 @@
 import { AjustesModule } from "@/modules/ajustes/ajustes-module";
-import { AgendaModule } from "@/modules/agenda/agenda-module";
 import { CasaModule } from "@/modules/casa/casa-module";
 import { DocumentosModule } from "@/modules/documentos/documentos-module";
 import { IaModule } from "@/modules/ia/ia-module";
@@ -38,13 +37,6 @@ export const modules: ModuleDefinition[] = [
     component: PatrimonioModule,
   },
   {
-    id: "agenda",
-    icon: "📅",
-    title: "Agenda",
-    description: "Organización y alivio de carga mental",
-    component: AgendaModule,
-  },
-  {
     id: "listas",
     icon: "📝",
     title: "Listas",
@@ -80,7 +72,5 @@ export function getModule(id: ModuleId): ModuleDefinition {
 }
 
 export function getDockModules(): ModuleDefinition[] {
-  return modules.filter(
-    (module) => module.id !== "ajustes" && module.id !== "agenda",
-  );
+  return modules.filter((module) => module.id !== "ajustes");
 }

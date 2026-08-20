@@ -13,7 +13,10 @@ export {
   resolveTodayAttentionState,
 } from "./greeting.service";
 export { getModuleHeader } from "./header.service";
-export { getTodaySummary } from "./today.service";
+export { buildHoySummary, hasHoyContent } from "./hoy.service";
+export type { HoySummary, HoyTask } from "./hoy.service";
+export { getCoupleEvents } from "./couple-events.service";
+export type { CoupleEvent } from "./couple-events.service";
 export { getMilestoneTitles, getMilestones, getTopMilestone } from "./milestones.service";
 export { getWeddingData } from "./wedding.service";
 

@@ -7,5 +7,5 @@ export type MilestoneEntry = {
 export type StrategyDistribution = {
   acwi: number;
   oro: number;
-  momentum: number;
+  nasdaq: number;
 };

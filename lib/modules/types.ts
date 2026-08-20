@@ -5,7 +5,6 @@ export type ModuleId =
   | "nosotros"
   | "patrimonio"
   | "documentos"
-  | "agenda"
   | "listas"
   | "ia"
   | "ajustes";

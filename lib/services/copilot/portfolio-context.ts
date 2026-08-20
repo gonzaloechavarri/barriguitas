@@ -13,7 +13,7 @@ import type {
   CopilotPortfolioWeightShift,
 } from "./portfolio-types";
 
-const PORTFOLIO_POSITION_KEYS = ["acwi", "oro", "momentum"] as const;
+const PORTFOLIO_POSITION_KEYS = ["acwi", "oro", "nasdaq"] as const;
 
 /**
  * Cartera conceptual del Copiloto — misma distribución porcentual que Ahorro.
@@ -38,7 +38,7 @@ export function getCopilotPortfolio(): CopilotPortfolio {
     target: {
       acwi: target.acwi,
       oro: target.oro,
-      momentum: target.momentum,
+      nasdaq: target.nasdaq,
     },
   };
 }

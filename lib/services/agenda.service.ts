@@ -1,12 +1,10 @@
 import type { AgendaData } from "@/lib/data/types";
-import { getAppData } from "@/lib/data/providers/local";
 
+/** @deprecated Módulo Agenda retirado — stub conservado por compatibilidad interna. */
 export async function getAgenda(): Promise<AgendaData> {
-  const { modules } = getAppData();
-
   return {
-    icon: modules.agenda.icon,
-    title: modules.agenda.title,
-    description: modules.agenda.description,
+    icon: "📅",
+    title: "Agenda",
+    description: "Organización y alivio de carga mental",
   };
 }
