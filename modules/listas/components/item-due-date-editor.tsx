@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
-import { formatListItemDueDate } from "@/lib/data/utils/dates";
 import { ListDueDateInput } from "./list-due-date-input";
 
 type ItemDueDateEditorProps = {
@@ -16,15 +14,11 @@ export function ItemDueDateEditor({
   onSave,
   onClose,
 }: ItemDueDateEditorProps) {
-  const [value, setValue] = useState(dueDate ?? "");
-
-  useEffect(() => {
-    setValue(dueDate ?? "");
-  }, [dueDate]);
-
-  function handleSave() {
-    onSave(value || null);
-    onClose();
+  function handleChange(isoValue: string) {
+    if (isoValue) {
+      onSave(isoValue);
+      onClose();
+    }
   }
 
   function handleRemove() {
@@ -33,23 +27,14 @@ export function ItemDueDateEditor({
   }
 
   return (
-    <div className="ml-8 flex flex-wrap items-end gap-3 pb-1 pt-1">
-      <ListDueDateInput value={value} onChange={setValue} />
-
-      <button
-        type="button"
-        onClick={handleSave}
-        disabled={!value}
-        className={`rounded-full px-3 py-1.5 text-xs font-light tracking-[-0.01em] text-white/70 disabled:opacity-30 touch-manipulation ${pressTextControlClasses}`}
-      >
-        Guardar
-      </button>
+    <div className="ml-8 flex flex-wrap items-end gap-3 pb-1 pt-1 sm:ml-9">
+      <ListDueDateInput value={dueDate ?? ""} onChange={handleChange} />
 
       {dueDate ? (
         <button
           type="button"
           onClick={handleRemove}
-          className={`rounded-full px-3 py-1.5 text-xs font-light tracking-[-0.01em] text-white/40 touch-manipulation ${pressTextControlClasses}`}
+          className={`min-h-[2.75rem] rounded-full px-3 py-1.5 text-xs font-light tracking-[-0.01em] text-white/40 touch-manipulation sm:min-h-0 ${pressTextControlClasses}`}
         >
           Quitar fecha
         </button>
@@ -58,30 +43,10 @@ export function ItemDueDateEditor({
       <button
         type="button"
         onClick={onClose}
-        className={`rounded-full px-3 py-1.5 text-xs font-light tracking-[-0.01em] text-white/30 touch-manipulation ${pressTextControlClasses}`}
+        className={`min-h-[2.75rem] rounded-full px-3 py-1.5 text-xs font-light tracking-[-0.01em] text-white/30 touch-manipulation sm:min-h-0 ${pressTextControlClasses}`}
       >
         Cancelar
       </button>
     </div>
-  );
-}
-
-type ItemDueDateLabelProps = {
-  dueDate: string;
-  onEdit: () => void;
-};
-
-export function ItemDueDateLabel({ dueDate, onEdit }: ItemDueDateLabelProps) {
-  return (
-    <button
-      type="button"
-      onClick={(event) => {
-        event.stopPropagation();
-        onEdit();
-      }}
-      className={`shrink-0 text-sm font-light tabular-nums tracking-[-0.01em] text-white/35 touch-manipulation ${pressTextControlClasses}`}
-    >
-      {formatListItemDueDate(dueDate)}
-    </button>
   );
 }

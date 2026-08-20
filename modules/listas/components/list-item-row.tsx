@@ -1,14 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import { pressTextControlClasses } from "@/components/motion/press-motion";
+import { formatListItemDueDate } from "@/lib/data/utils/dates";
 import type { SharedListItem } from "@/lib/data/types/lists";
-import { ItemDueDateEditor, ItemDueDateLabel } from "./item-due-date-editor";
+import { ItemDueDateEditor } from "./item-due-date-editor";
 
 type ListItemRowProps = {
   item: SharedListItem;
   onToggle: () => void;
   onDueDateChange: (dueDate: string | null) => void;
 };
+
+type ItemDueDateControlProps = {
+  dueDate: string | null;
+  editing: boolean;
+  onEdit: () => void;
+};
+
+function ItemDueDateControl({ dueDate, editing, onEdit }: ItemDueDateControlProps) {
+  if (editing) {
+    return null;
+  }
+
+  if (dueDate) {
+    return (
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onEdit();
+        }}
+        aria-label="Cambiar fecha"
+        className={`shrink-0 min-h-[2.75rem] px-2 text-sm font-light tabular-nums tracking-[-0.01em] text-white/35 touch-manipulation sm:min-h-0 ${pressTextControlClasses}`}
+      >
+        · {formatListItemDueDate(dueDate)}
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        event.stopPropagation();
+        onEdit();
+      }}
+      aria-label="Añadir fecha"
+      className={`shrink-0 min-h-[2.75rem] px-2 text-sm font-light tracking-[-0.01em] text-white/30 touch-manipulation sm:min-h-0 ${pressTextControlClasses}`}
+    >
+      Añadir fecha
+    </button>
+  );
+}
 
 export function ListItemRow({
   item,
@@ -19,13 +63,13 @@ export function ListItemRow({
 
   return (
     <div>
-      <div className="group flex w-full items-center gap-3.5 rounded-2xl px-1 py-3">
+      <div className="group flex w-full items-center gap-2 rounded-2xl px-1 py-2.5 sm:gap-3 sm:py-3">
         <button
           type="button"
           onClick={onToggle}
           aria-pressed={item.completed}
           aria-label={item.completed ? "Marcar pendiente" : "Marcar completado"}
-          className="flex min-w-0 flex-1 items-center gap-3.5 text-left"
+          className="flex min-w-0 flex-1 items-center gap-3 text-left touch-manipulation"
         >
           <span
             aria-hidden
@@ -65,12 +109,11 @@ export function ListItemRow({
           </span>
         </button>
 
-        {item.dueDate != null && item.dueDate !== "" ? (
-          <ItemDueDateLabel
-            dueDate={item.dueDate}
-            onEdit={() => setEditingDate(true)}
-          />
-        ) : null}
+        <ItemDueDateControl
+          dueDate={item.dueDate}
+          editing={editingDate}
+          onEdit={() => setEditingDate(true)}
+        />
       </div>
 
       {editingDate ? (
