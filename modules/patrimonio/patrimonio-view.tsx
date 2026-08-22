@@ -1,5 +1,6 @@
 import type { WealthView } from "@/lib/data/types";
 import type { PortfolioUpdateInput } from "@/lib/services/wealth-snapshot.service";
+import { FinancialPrinciplesCard } from "./components/financial-principles-card";
 import { PortfolioSnapshotCard } from "./components/portfolio-snapshot-card";
 import { StrategyCard } from "./components/strategy-card";
 import { UpdatePortfolioSheet } from "./components/update-portfolio-sheet";
@@ -34,6 +35,7 @@ export function PatrimonioView({
             onUpdate={onOpenUpdate}
           />
           <StrategyCard strategy={data.strategy} />
+          <FinancialPrinciplesCard />
         </div>
       </div>
 
