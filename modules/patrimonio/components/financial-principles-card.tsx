@@ -65,28 +65,42 @@ export function FinancialPrinciplesCard() {
       <CardTitle icon="🧘">Principios de tranquilidad financiera</CardTitle>
 
       <ul className="mt-8 flex flex-col">
-        {PRINCIPLES.map((principle, index) => (
-          <li
-            key={principle.title}
-            className={
-              index === 0
-                ? "pb-5"
-                : "border-t border-white/[0.05] py-5 last:pb-0"
-            }
-          >
-            <p className="flex gap-2.5 text-[0.9375rem] font-light leading-snug tracking-[-0.01em] text-white/65">
-              <span className="shrink-0" role="img" aria-hidden>
-                {principle.icon}
-              </span>
-              <span>
-                <span className="font-medium text-white/75">
-                  {principle.title}:
-                </span>{" "}
-                {principle.text}
-              </span>
-            </p>
-          </li>
-        ))}
+        {PRINCIPLES.map((principle, index) => {
+          const isFinale = principle.title === "Regla definitiva";
+
+          return (
+            <li
+              key={principle.title}
+              className={
+                index === 0
+                  ? "pb-5"
+                  : isFinale
+                    ? "mt-1 border-t border-white/[0.09] pb-0 pt-7"
+                    : "border-t border-white/[0.05] py-5"
+              }
+            >
+              <p
+                className={`flex gap-2.5 text-[0.9375rem] font-light leading-snug tracking-[-0.01em] ${
+                  isFinale ? "text-white/72" : "text-white/65"
+                }`}
+              >
+                <span className="shrink-0" role="img" aria-hidden>
+                  {principle.icon}
+                </span>
+                <span>
+                  <span
+                    className={`font-medium ${
+                      isFinale ? "text-white/85" : "text-white/75"
+                    }`}
+                  >
+                    {principle.title}:
+                  </span>{" "}
+                  {principle.text}
+                </span>
+              </p>
+            </li>
+          );
+        })}
       </ul>
     </GlassCard>
   );
