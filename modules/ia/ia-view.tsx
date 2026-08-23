@@ -1,6 +1,5 @@
 "use client";
 
-import { pressTextControlClasses } from "@/components/motion/press-motion";
 import type { CopilotObservation } from "@/lib/data/types";
 import {
   COPILOT_QUICK_QUESTIONS,
@@ -56,11 +55,11 @@ export function IaView({
               type="button"
               onClick={() => onSelectQuestion(question.id)}
               aria-pressed={isActive}
-              className={`rounded-2xl border px-4 py-3.5 text-left text-sm font-light tracking-[-0.01em] touch-manipulation motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 ${
+              className={`rounded-2xl border px-4 py-3.5 text-left text-sm font-light tracking-[-0.01em] touch-manipulation motion-safe:transition-[background-color,border-color,color,transform,opacity] motion-safe:duration-200 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] motion-safe:active:scale-[0.985] motion-safe:active:border-white/[0.14] motion-safe:active:bg-white/[0.08] motion-safe:active:text-white/70 ${
                 isActive
-                  ? "border-white/[0.12] bg-white/[0.06] text-white/75"
+                  ? "border-white/[0.14] bg-white/[0.075] text-white/80"
                   : "border-white/[0.06] bg-white/[0.02] text-white/45"
-              } ${pressTextControlClasses}`}
+              }`}
             >
               {question.label}
             </button>
@@ -69,7 +68,10 @@ export function IaView({
       </div>
 
       {response ? (
-        <div className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 sm:p-6">
+        <div
+          key={activeQuestion ?? "response"}
+          className="mt-6 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 opacity-0 animate-content-enter sm:p-6"
+        >
           <p className="whitespace-pre-line text-[0.9375rem] font-light leading-relaxed tracking-[-0.01em] text-white/65">
             {response}
           </p>

@@ -28,6 +28,16 @@ export function DocumentosView({
   onOpenList,
 }: DocumentosViewProps) {
   const isEmpty = !hasHoyContent(summary);
+  const visibleSectionCount =
+    Number(summary.overdue.length > 0) +
+    Number(summary.today.length > 0) +
+    Number(summary.upcoming.length > 0);
+  const emphasizeHierarchy = visibleSectionCount > 1;
+  const primaryVariant = summary.overdue.length
+    ? "overdue"
+    : summary.today.length
+      ? "today"
+      : "upcoming";
 
   return (
     <div className="mx-auto w-full max-w-xl px-5 pb-8 pt-2 sm:px-10 sm:pb-10 sm:pt-4">
@@ -42,10 +52,17 @@ export function DocumentosView({
       {isEmpty ? (
         <HoyEmptyState />
       ) : (
-        <div className="mt-8 flex flex-col gap-7 sm:mt-10 sm:gap-9">
+        <div
+          className={`mt-8 flex flex-col sm:mt-10 ${
+            emphasizeHierarchy
+              ? "gap-8 sm:gap-10"
+              : "gap-7 sm:gap-9"
+          }`}
+        >
           <HoyTaskSection
             title="Vencidas"
             variant="overdue"
+            emphasized={emphasizeHierarchy && primaryVariant === "overdue"}
             tasks={summary.overdue}
             dateSuffixForTask={hoyOverdueSuffix}
             onToggle={onToggleTask}
@@ -55,6 +72,7 @@ export function DocumentosView({
           <HoyTaskSection
             title="Hoy"
             variant="today"
+            emphasized={emphasizeHierarchy && primaryVariant === "today"}
             tasks={summary.today}
             onToggle={onToggleTask}
             onOpenList={onOpenList}
@@ -63,6 +81,7 @@ export function DocumentosView({
           <HoyTaskSection
             title="Próximamente"
             variant="upcoming"
+            emphasized={emphasizeHierarchy && primaryVariant === "upcoming"}
             tasks={summary.upcoming}
             dateSuffixForTask={hoyUpcomingSuffix}
             onToggle={onToggleTask}
