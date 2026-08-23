@@ -137,7 +137,7 @@ export function HoyTaskRow({
           <span
             className={`block text-[1rem] font-light leading-snug tracking-[-0.01em] motion-safe:transition-[color,opacity] motion-safe:duration-250 motion-safe:ease-[cubic-bezier(0.25,0.1,0.25,1)] sm:text-[0.9375rem] ${
               isDone
-                ? "text-white/30 line-through decoration-white/20"
+                ? "text-white/28 line-through decoration-white/35"
                 : styles.text
             }`}
           >
