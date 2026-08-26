@@ -31,7 +31,11 @@ export function DocumentosView({
 
   return (
     <div className="mx-auto w-full max-w-xl px-5 pb-8 pt-2 sm:px-10 sm:pb-10 sm:pt-4">
-      <HoyHeader dateLabel={summary.dateLabel} />
+      <HoyHeader
+        dateLabel={summary.dateLabel}
+        personalGreeting={summary.personalGreeting}
+        weekContextLine={summary.weekContextLine}
+      />
 
       {syncError && status !== "ready" ? (
         <p className="mt-4 text-sm font-light tracking-[-0.01em] text-amber-300/70">

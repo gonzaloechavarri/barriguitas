@@ -48,6 +48,18 @@ export function getTimeBasedGreeting(
   };
 }
 
+/** Saludo personal para ☀️ Hoy — "Buenos días, Victoria y Gonzalo ❤️". */
+export function getPersonalFamilyGreeting(
+  referenceDate: Date = new Date(),
+): string {
+  const period = resolveGreetingPeriod(referenceDate.getHours());
+  const names = getFamilyNames();
+
+  if (period === "morning") return `Buenos días, ${names} ❤️`;
+  if (period === "afternoon") return `Buenas tardes, ${names} ❤️`;
+  return `Buenas noches, ${names} ❤️`;
+}
+
 export function getAttentionSubtitle(state: TodayAttentionState): string {
   return ATTENTION_SUBTITLES[state.level];
 }

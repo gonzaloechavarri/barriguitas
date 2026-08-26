@@ -4,9 +4,12 @@ import {
   isDueDateToday,
   formatHoyDateLabel,
 } from "@/lib/data/utils/dates";
+import { getPersonalFamilyGreeting } from "@/lib/services/greeting.service";
 import {
   getItemsDueToday,
   getOverdueItems,
+  getPendingItemsDueThisWeek,
+  getPendingItemsWithoutDueDate,
   getUpcomingItems,
 } from "@/lib/services/lists.service";
 
@@ -19,10 +22,49 @@ export type HoyTask = {
 
 export type HoySummary = {
   dateLabel: string;
+  personalGreeting: string;
+  weekContextLine: string;
   today: HoyTask[];
   overdue: HoyTask[];
   upcoming: HoyTask[];
 };
+
+function formatUndatedSuffix(count: number): string {
+  return count === 1 ? "1 sin fecha" : `${count} sin fecha`;
+}
+
+/** Línea contextual de carga semanal para ☀️ Hoy. */
+export function formatHoyWeekContextLine(
+  weeklyCount: number,
+  undatedCount: number,
+): string {
+  let main: string;
+
+  if (weeklyCount <= 2) {
+    main = "Semana tranquila.";
+  } else if (weeklyCount <= 5) {
+    main =
+      weeklyCount === 1
+        ? "Esta semana: 1 pendiente"
+        : `Esta semana: ${weeklyCount} pendientes`;
+  } else if (weeklyCount <= 8) {
+    main = `La semana viene cargada · ${weeklyCount} pendientes`;
+  } else {
+    main = `Ojo, se están acumulando · ${weeklyCount} pendientes`;
+  }
+
+  if (undatedCount <= 0) {
+    return main;
+  }
+
+  const undated = formatUndatedSuffix(undatedCount);
+
+  if (weeklyCount <= 2) {
+    return `Semana tranquila · ${undated}`;
+  }
+
+  return `${main} · ${undated}`;
+}
 
 function flattenLists(lists: SharedList[]): HoyTask[] {
   return lists.flatMap((list) =>
@@ -59,9 +101,13 @@ export function buildHoySummary(
     0,
     upcomingLimit,
   );
+  const weeklyCount = getPendingItemsDueThisWeek(allItems, referenceDate).length;
+  const undatedCount = getPendingItemsWithoutDueDate(allItems).length;
 
   return {
     dateLabel: formatHoyDateLabel(referenceDate),
+    personalGreeting: getPersonalFamilyGreeting(referenceDate),
+    weekContextLine: formatHoyWeekContextLine(weeklyCount, undatedCount),
     today: mapItemsToTasks(lists, todayItems),
     overdue: mapItemsToTasks(lists, overdueItems),
     upcoming: mapItemsToTasks(lists, upcomingItems),
