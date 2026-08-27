@@ -68,10 +68,30 @@ export function skyEmojiFromDescription(description: string): string {
   return "🌤️";
 }
 
+const SKY_PERIOD_PRIORITY = ["00-24", "12-18", "06-12", "00-12"] as const;
+
+function selectSkyEntry(entries: AemetDay["estadoCielo"]) {
+  if (!entries?.length) {
+    return undefined;
+  }
+
+  const described = (entry: NonNullable<AemetDay["estadoCielo"]>[number]) =>
+    Boolean(entry.descripcion?.trim());
+
+  for (const periodo of SKY_PERIOD_PRIORITY) {
+    const match = entries.find(
+      (entry) => entry.periodo === periodo && described(entry),
+    );
+    if (match) {
+      return match;
+    }
+  }
+
+  return entries.find(described) ?? entries[0];
+}
+
 export function parseAemetDay(day: AemetDay): ParsedAemetDay | null {
-  const skyEntry =
-    day.estadoCielo?.find((entry) => entry.descripcion?.trim()) ??
-    day.estadoCielo?.[0];
+  const skyEntry = selectSkyEntry(day.estadoCielo);
   const rainEntry =
     day.probPrecipitacion?.find((entry) => entry.periodo === "00-24") ??
     day.probPrecipitacion?.[0];
