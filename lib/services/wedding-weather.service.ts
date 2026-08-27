@@ -1,12 +1,18 @@
 import { getCoupleData } from "@/lib/data/providers/local";
 import { daysRemaining } from "@/lib/data/utils";
+import {
+  fetchMunicipalityDayForecast,
+  formatAemetSourceLine,
+  getAemetApiKey,
+  normalizeIsoDate,
+  type ParsedAemetDay,
+} from "@/lib/services/aemet.service";
 import type {
   WeddingWeatherForecast,
   WeddingWeatherPayload,
   WeddingWeatherPhase,
 } from "@/lib/services/wedding-weather.types";
 
-const AEMET_BASE = "https://opendata.aemet.es/opendata/api";
 const FORECAST_RELIABLE_DAYS = 7;
 const APPROACHING_DAYS = 21;
 
@@ -21,27 +27,6 @@ const APPROACHING_MESSAGES = [
   "Ya casi llega el momento de conocer el pronóstico.",
   "El gran día se acerca — el tiempo aún no está escrito.",
 ] as const;
-
-type AemetDay = {
-  fecha?: string;
-  temperatura?: { minima?: number; maxima?: number };
-  probPrecipitacion?: Array<{ value?: string | number; periodo?: string }>;
-  estadoCielo?: Array<{
-    value?: string;
-    periodo?: string;
-    descripcion?: string;
-  }>;
-  viento?: Array<{
-    direccion?: string;
-    velocidad?: number;
-  }>;
-};
-
-type AemetMunicipioForecast = {
-  nombre?: string;
-  elaborado?: string;
-  prediccion?: { dia?: AemetDay[] };
-};
 
 function pickRotatingMessage(
   messages: readonly string[],
@@ -66,61 +51,14 @@ function resolvePhase(daysUntilWedding: number): WeddingWeatherPhase {
   return "distant";
 }
 
-function normalizeIsoDate(value: string): string {
-  return value.slice(0, 10);
-}
-
-function skyEmojiFromDescription(description: string): string {
-  const text = description.toLowerCase();
-
-  if (text.includes("tormenta")) return "⛈️";
-  if (text.includes("lluvia") || text.includes("llovizna")) return "🌧️";
-  if (text.includes("nieve")) return "❄️";
-  if (text.includes("nuboso") || text.includes("cubierto")) return "☁️";
-  if (text.includes("intervalos") || text.includes("poco nuboso")) return "⛅";
-  if (text.includes("despejado") || text.includes("soleado")) return "☀️";
-  return "🌤️";
-}
-
-function parseAemetDay(day: AemetDay): WeddingWeatherForecast | null {
-  const skyEntry =
-    day.estadoCielo?.find((entry) => entry.periodo === "00-24") ??
-    day.estadoCielo?.[0];
-  const rainEntry =
-    day.probPrecipitacion?.find((entry) => entry.periodo === "00-24") ??
-    day.probPrecipitacion?.[0];
-  const windEntry = day.viento?.[0];
-
-  const condition = skyEntry?.descripcion?.trim();
-  if (!condition) {
-    return null;
-  }
-
-  const maxTemp = day.temperatura?.maxima;
-  const minTemp = day.temperatura?.minima;
-  const temperatureC =
-    typeof maxTemp === "number"
-      ? maxTemp
-      : typeof minTemp === "number"
-        ? minTemp
-        : null;
-
-  const precipitationRaw = rainEntry?.value;
-  const precipitationPercent =
-    precipitationRaw === undefined || precipitationRaw === ""
-      ? null
-      : Number(precipitationRaw);
-
+function toWeddingForecast(parsed: ParsedAemetDay): WeddingWeatherForecast {
   return {
-    condition,
-    conditionEmoji: skyEmojiFromDescription(condition),
-    temperatureC: Number.isFinite(temperatureC) ? temperatureC : null,
-    precipitationPercent: Number.isFinite(precipitationPercent)
-      ? precipitationPercent
-      : null,
-    windKmh:
-      typeof windEntry?.velocidad === "number" ? windEntry.velocidad : null,
-    windDirection: windEntry?.direccion?.trim() ?? null,
+    condition: parsed.condition,
+    conditionEmoji: parsed.conditionEmoji,
+    temperatureC: parsed.temperatureC,
+    precipitationPercent: parsed.precipitationPercent,
+    windKmh: parsed.windKmh,
+    windDirection: parsed.windDirection,
   };
 }
 
@@ -150,87 +88,6 @@ function formatForecastDetail(forecast: WeddingWeatherForecast): string {
   }
 
   return parts.join(" · ");
-}
-
-function formatSourceLine(elaborado: string | null): string | null {
-  if (!elaborado) {
-    return "Fuente: AEMET";
-  }
-
-  const parsed = new Date(elaborado);
-  if (Number.isNaN(parsed.getTime())) {
-    return "Fuente: AEMET";
-  }
-
-  const formatted = parsed.toLocaleString("es-ES", {
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  return `AEMET · ${formatted.replace(/\bde\b/g, "").trim()}`;
-}
-
-async function fetchAemetJson<T>(url: string, apiKey: string): Promise<T> {
-  const response = await fetch(url, {
-    headers: { api_key: apiKey },
-    next: { revalidate: 3600 },
-  });
-
-  if (!response.ok) {
-    throw new Error(`AEMET respondió con ${response.status}`);
-  }
-
-  const envelope = (await response.json()) as {
-    estado?: number;
-    descripcion?: string;
-    datos?: string;
-  };
-
-  if (envelope.estado !== 200 || !envelope.datos) {
-    throw new Error(envelope.descripcion ?? "Respuesta AEMET incompleta");
-  }
-
-  const dataResponse = await fetch(envelope.datos, {
-    next: { revalidate: 3600 },
-  });
-
-  if (!dataResponse.ok) {
-    throw new Error(`AEMET datos respondió con ${dataResponse.status}`);
-  }
-
-  return (await dataResponse.json()) as T;
-}
-
-async function fetchWeddingDayForecast(
-  municipalityCode: string,
-  weddingDate: string,
-  apiKey: string,
-): Promise<{ forecast: WeddingWeatherForecast; sourceLine: string | null } | null> {
-  const payload = await fetchAemetJson<AemetMunicipioForecast[] | AemetMunicipioForecast>(
-    `${AEMET_BASE}/prediccion/especifica/municipio/diaria/${municipalityCode}`,
-    apiKey,
-  );
-
-  const root = Array.isArray(payload) ? payload[0] : payload;
-  const targetDay = root?.prediccion?.dia?.find(
-    (day) => day.fecha && normalizeIsoDate(day.fecha) === weddingDate,
-  );
-
-  if (!targetDay) {
-    return null;
-  }
-
-  const forecast = parseAemetDay(targetDay);
-  if (!forecast) {
-    return null;
-  }
-
-  return {
-    forecast,
-    sourceLine: formatSourceLine(root.elaborado ?? null),
-  };
 }
 
 function buildPlaceholderPayload(
@@ -329,7 +186,7 @@ export async function getWeddingWeather(
     return buildPlaceholderPayload(phase, locationName, referenceDate);
   }
 
-  const apiKey = process.env.AEMET_API_KEY?.trim();
+  const apiKey = getAemetApiKey();
   if (!apiKey) {
     return buildPlaceholderPayload(
       phase === "wedding-day" ? "unavailable" : "approaching",
@@ -342,9 +199,9 @@ export async function getWeddingWeather(
   }
 
   try {
-    const result = await fetchWeddingDayForecast(
+    const result = await fetchMunicipalityDayForecast(
       wedding.location.municipalityCode,
-      wedding.date,
+      normalizeIsoDate(wedding.date),
       apiKey,
     );
 
@@ -362,8 +219,8 @@ export async function getWeddingWeather(
     return buildForecastPayload(
       phase,
       locationName,
-      result.forecast,
-      result.sourceLine,
+      toWeddingForecast(result.parsed),
+      formatAemetSourceLine(result.elaborado),
     );
   } catch {
     return buildPlaceholderPayload("unavailable", locationName, referenceDate);

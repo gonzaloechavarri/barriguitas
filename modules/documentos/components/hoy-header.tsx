@@ -1,3 +1,5 @@
+import { HoyWeatherContext } from "./hoy-weather-context";
+
 type HoyHeaderProps = {
   dateLabel: string;
   personalGreeting: string;
@@ -23,6 +25,8 @@ export function HoyHeader({
       <p className="mt-1.5 text-[0.8125rem] font-light tracking-[-0.01em] text-white/28 sm:text-sm">
         {weekContextLine}
       </p>
+
+      <HoyWeatherContext />
 
       <p className="mt-3 text-[0.8125rem] font-light tracking-[-0.01em] text-white/32 sm:mt-3.5 sm:text-[0.9375rem]">
         {dateLabel}
