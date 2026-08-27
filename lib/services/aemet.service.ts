@@ -64,7 +64,7 @@ export function skyEmojiFromDescription(description: string): string {
 
 export function parseAemetDay(day: AemetDay): ParsedAemetDay | null {
   const skyEntry =
-    day.estadoCielo?.find((entry) => entry.periodo === "00-24") ??
+    day.estadoCielo?.find((entry) => entry.descripcion?.trim()) ??
     day.estadoCielo?.[0];
   const rainEntry =
     day.probPrecipitacion?.find((entry) => entry.periodo === "00-24") ??
