@@ -54,10 +54,16 @@ export function skyEmojiFromDescription(description: string): string {
   const text = description.toLowerCase();
 
   if (text.includes("tormenta")) return "⛈️";
-  if (text.includes("lluvia") || text.includes("llovizna")) return "🌧️";
-  if (text.includes("nieve")) return "❄️";
+  if (
+    text.includes("lluvia") ||
+    text.includes("llovizna") ||
+    text.includes("chubasc")
+  ) {
+    return "🌧️";
+  }
+  if (text.includes("intervalos")) return "⛅";
+  if (text.includes("poco nuboso")) return "🌤️";
   if (text.includes("nuboso") || text.includes("cubierto")) return "☁️";
-  if (text.includes("intervalos") || text.includes("poco nuboso")) return "⛅";
   if (text.includes("despejado") || text.includes("soleado")) return "☀️";
   return "🌤️";
 }

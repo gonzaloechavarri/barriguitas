@@ -15,7 +15,6 @@ import type {
 const VALENCIA_MUNICIPALITY_CODE = "46250";
 
 type HoyWeatherTarget = {
-  icon: string;
   label: string;
   municipalityCode: string;
 };
@@ -25,12 +24,10 @@ function getHoyWeatherTargets(): HoyWeatherTarget[] {
 
   return [
     {
-      icon: "☀️",
       label: "Valencia",
       municipalityCode: VALENCIA_MUNICIPALITY_CODE,
     },
     {
-      icon: "🌊",
       label: "Jávea",
       municipalityCode: wedding.location.municipalityCode,
     },
@@ -68,7 +65,7 @@ export async function getHoyWeather(
           }
 
           return {
-            icon: target.icon,
+            icon: result.parsed.conditionEmoji,
             label: target.label,
             temperature: formatTemperatureBadge(result.parsed.temperatureC),
           };
