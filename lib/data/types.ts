@@ -36,6 +36,10 @@ export type WeddingData = {
   cardTitle: string;
   countdownLabel: string;
   progressMessage: string;
+  location: {
+    name: string;
+    municipalityCode: string;
+  };
   upcomingEvents: Array<{
     id: string;
     title: string;

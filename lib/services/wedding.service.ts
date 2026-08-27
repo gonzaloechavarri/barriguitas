@@ -11,6 +11,7 @@ export function getWeddingData(): WeddingData {
     cardTitle: wedding.cardTitle,
     countdownLabel: wedding.countdownLabel,
     progressMessage: wedding.progressMessage,
+    location: wedding.location,
     upcomingEvents: getCoupleEvents(),
     nextPlan: {
       cardTitle: nextTrip.cardTitle,

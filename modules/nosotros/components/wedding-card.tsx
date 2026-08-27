@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import { AnimatedCounter } from "@/components/motion/animated-counter";
 import type { WeddingData } from "@/lib/services";
 import {
-  formatCoupleEventDate,
-  formatEventDaysRemaining,
   formatWeddingDate,
   getWeddingProgress,
   parseLocalDate,
 } from "@/lib/data/utils";
 import { CardTitle, GlassCard } from "./glass-card";
+import { WeddingWeather } from "./wedding-weather";
 
 type WeddingCardProps = {
   data: WeddingData;
@@ -61,6 +60,8 @@ export function WeddingCard({ data }: WeddingCardProps) {
       <p className="mt-7 text-[0.9375rem] font-light tracking-[-0.01em] text-white/48 sm:mt-8 sm:text-base">
         {formatWeddingDate(data.date)}
       </p>
+
+      <WeddingWeather locationName={data.location.name} />
 
       <div className="mt-8 sm:mt-9">
         <div

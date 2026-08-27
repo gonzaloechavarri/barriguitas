@@ -7,6 +7,11 @@ export const coupleData = {
     cardTitle: "Nuestra boda",
     countdownLabel: "días para decir \"sí quiero\"",
     progressMessage: "Se acerca el mejor día de nuestra vida❤️",
+    location: {
+      name: "Jávea / Xàbia",
+      /** Código INE AEMET — Jávea/Xàbia (Alicante), no Valencia ni Alicante ciudad. */
+      municipalityCode: "03082",
+    },
   },
 
   nextTrip: {

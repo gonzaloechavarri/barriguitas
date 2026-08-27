@@ -14,6 +14,10 @@ export type BarriguitasCoupleData = {
     cardTitle: string;
     countdownLabel: string;
     progressMessage: string;
+    location: {
+      name: string;
+      municipalityCode: string;
+    };
   };
   nextTrip: {
     cardTitle: string;
