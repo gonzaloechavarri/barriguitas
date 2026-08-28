@@ -100,7 +100,7 @@ export const houseData = {
   city: "Valencia",
   phases: HOME_PHASES,
   phase: "preparacion" as HomePhaseId,
-  nextStep: "Definir qué buscamos en nuestra casa.",
+  nextStep: "🔎 Elegir inmobiliarias.",
   criteria: {
     essentials: DEFAULT_ESSENTIALS,
     preferences: DEFAULT_PREFERENCES,
