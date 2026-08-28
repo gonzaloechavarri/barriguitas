@@ -115,16 +115,14 @@ export function applyPortfolioAllocationStep(
 ): StrategyDistribution | null {
   const next = adjustStrategyAllocation(distribution, key, delta);
 
-  if (!next) {
+  if (!next || !isValidDistributionSum(next)) {
     return null;
   }
 
-  if (isValidDistributionSum(next)) {
-    const saved = persistPortfolioAllocationStep(next, referenceDate);
+  const saved = persistPortfolioAllocationStep(next, referenceDate);
 
-    if (!saved) {
-      return null;
-    }
+  if (!saved) {
+    return null;
   }
 
   return next;

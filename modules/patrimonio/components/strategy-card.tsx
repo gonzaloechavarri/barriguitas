@@ -1,13 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import { pressControlClasses } from "@/components/motion/press-motion";
 import type { WealthView } from "@/lib/data/types";
 import type { StrategyDistribution } from "@/lib/data/types/editable";
+import { getBarriguitasSnapshot } from "@/lib/data/store/snapshot";
 import {
   canDecreaseAllocation,
   canIncreaseAllocation,
-  sumStrategyDistribution,
   type StrategyAssetKey,
 } from "@/lib/services/wealth-allocation.service";
 import { applyPortfolioAllocationStep } from "@/lib/services/wealth-snapshot.service";
@@ -21,10 +20,12 @@ type StrategyCardProps = {
 const stepButtonClassName = `inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-base font-light leading-none tracking-[-0.02em] text-white/45 transition-colors hover:border-white/[0.12] hover:bg-white/[0.05] hover:text-white/65 disabled:pointer-events-none disabled:border-white/[0.04] disabled:bg-transparent disabled:text-white/15 touch-manipulation ${pressControlClasses}`;
 
 function AllocationStepButton({
+  direction,
   label,
   disabled,
   onClick,
 }: {
+  direction: "decrease" | "increase";
   label: string;
   disabled: boolean;
   onClick: () => void;
@@ -37,25 +38,16 @@ function AllocationStepButton({
       onClick={onClick}
       className={stepButtonClassName}
     >
-      {label === "Reducir" ? "−" : "+"}
+      {direction === "decrease" ? "−" : "+"}
     </button>
   );
 }
 
 export function StrategyCard({ strategy, distribution }: StrategyCardProps) {
-  const [draft, setDraft] = useState<StrategyDistribution | null>(null);
-
-  const current = draft ?? distribution;
-  const total = useMemo(() => sumStrategyDistribution(current), [current]);
-
   function handleAdjust(key: StrategyAssetKey, delta: 1 | -1) {
-    const next = applyPortfolioAllocationStep(current, key, delta);
-
-    if (!next) {
-      return;
-    }
-
-    setDraft(sumStrategyDistribution(next) === 100 ? null : next);
+    const current =
+      getBarriguitasSnapshot().wealth.portfolioSnapshot.distribution;
+    applyPortfolioAllocationStep(current, key, delta);
   }
 
   return (
@@ -69,7 +61,7 @@ export function StrategyCard({ strategy, distribution }: StrategyCardProps) {
       <ul className="mt-4 flex flex-col gap-3.5">
         {strategy.allocations.map((allocation) => {
           const key = allocation.key;
-          const value = current[key];
+          const value = distribution[key];
 
           return (
             <li
@@ -87,8 +79,9 @@ export function StrategyCard({ strategy, distribution }: StrategyCardProps) {
 
               <div className="flex shrink-0 items-center gap-2 sm:gap-2.5">
                 <AllocationStepButton
+                  direction="decrease"
                   label={`Reducir ${allocation.label}`}
-                  disabled={!canDecreaseAllocation(current, key)}
+                  disabled={!canDecreaseAllocation(distribution, key)}
                   onClick={() => handleAdjust(key, -1)}
                 />
                 <span
@@ -98,8 +91,9 @@ export function StrategyCard({ strategy, distribution }: StrategyCardProps) {
                   {value} %
                 </span>
                 <AllocationStepButton
+                  direction="increase"
                   label={`Aumentar ${allocation.label}`}
-                  disabled={!canIncreaseAllocation(current)}
+                  disabled={!canIncreaseAllocation(distribution, key)}
                   onClick={() => handleAdjust(key, 1)}
                 />
               </div>
@@ -108,12 +102,8 @@ export function StrategyCard({ strategy, distribution }: StrategyCardProps) {
         })}
       </ul>
 
-      <p
-        className={`mt-5 text-xs font-light tabular-nums tracking-[-0.01em] ${
-          total === 100 ? "text-white/25" : "text-white/40"
-        }`}
-      >
-        Total · {total} %
+      <p className="mt-5 text-xs font-light tabular-nums tracking-[-0.01em] text-white/25">
+        Total · 100 %
       </p>
 
       <div className="mt-8 border-t border-white/[0.05] pt-6">
