@@ -1,3 +1,4 @@
+import { isLegacyHomeNextStep } from "@/data/house";
 import { extractOverrides, mergeSnapshot } from "./merge";
 import { readOverrides, writeOverrides } from "./storage";
 import { SERVER_SNAPSHOT, type BarriguitasSnapshot } from "./types";
@@ -26,8 +27,14 @@ export function hydrateBarriguitasSnapshot(): boolean {
 
   hydrated = true;
 
-  const next = mergeSnapshot(readOverrides());
+  const overrides = readOverrides();
+  const next = mergeSnapshot(overrides);
   snapshot = next;
+
+  if (isLegacyHomeNextStep(overrides?.house?.nextStep)) {
+    persistBarriguitasSnapshot(next);
+  }
+
   return !Object.is(next, SERVER_SNAPSHOT);
 }
 

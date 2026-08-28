@@ -23,6 +23,29 @@ export function isHomePhaseId(value: unknown): value is HomePhaseId {
   return HOME_PHASES.some((phase) => phase.id === value);
 }
 
+/** Retired default — migrate persisted copies, never overwrite custom next steps. */
+export const LEGACY_HOME_NEXT_STEP = "Definir qué buscamos en nuestra casa.";
+
+export function isLegacyHomeNextStep(value: unknown): boolean {
+  return typeof value === "string" && value.trim() === LEGACY_HOME_NEXT_STEP;
+}
+
+export function resolveHomeNextStep(
+  value: unknown,
+  currentDefault: string,
+): string {
+  if (typeof value !== "string") {
+    return currentDefault;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed || trimmed === LEGACY_HOME_NEXT_STEP) {
+    return currentDefault;
+  }
+
+  return trimmed;
+}
+
 const DEFAULT_ESSENTIALS: HomeSearchCriterion[] = [
   { id: "size", label: "📐 >130 m²" },
   { id: "floor", label: "🏙️ 6.º piso o más" },
