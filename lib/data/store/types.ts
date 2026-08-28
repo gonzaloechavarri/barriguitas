@@ -1,6 +1,6 @@
 import { appData, type AppData } from "@/data/app";
 import { coupleData } from "@/data/couple";
-import { houseData } from "@/data/house";
+import { houseData, type HomePhaseId } from "@/data/house";
 import { listsData } from "@/data/lists";
 import { wealthData } from "@/data/wealth";
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
@@ -30,12 +30,10 @@ export type BarriguitasCoupleData = {
 };
 
 export type BarriguitasHouseData = {
-  cuidado: (typeof houseData)["cuidado"] & {
-    lastCleaningAt: string | null;
-  };
-  nuevoHogar: (typeof houseData)["nuevoHogar"];
-  mantenimiento: (typeof houseData)["mantenimiento"];
-  menu: (typeof houseData)["menu"];
+  city: (typeof houseData)["city"];
+  phases: (typeof houseData)["phases"];
+  phase: HomePhaseId;
+  nextStep: string;
   copilot: (typeof houseData)["copilot"];
 };
 
@@ -66,7 +64,8 @@ export type BarriguitasOverrides = {
     milestones: MilestoneEntry[];
   }>;
   house?: Partial<{
-    cuidado: Partial<Pick<BarriguitasHouseData["cuidado"], "lastCleaningAt">>;
+    phase: HomePhaseId;
+    nextStep: string;
   }>;
   wealth?: Partial<{
     strategy: Partial<{ target: StrategyDistribution }>;
@@ -82,10 +81,6 @@ export const SERVER_SNAPSHOT: BarriguitasSnapshot = {
   },
   house: {
     ...houseData,
-    cuidado: {
-      ...houseData.cuidado,
-      lastCleaningAt: null,
-    },
   },
   wealth: {
     ...wealthData,

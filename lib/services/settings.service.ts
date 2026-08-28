@@ -1,14 +1,13 @@
+import {
+  HOME_PHASES,
+  isHomePhaseId,
+  type HomePhaseId,
+} from "@/data/house";
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
 import { updateBarriguitas } from "@/lib/data/store/barriguitas-store";
 import type { BarriguitasSnapshot } from "@/lib/data/store/types";
 import { resolveWealthAllocation } from "@/lib/services/wealth-allocation.service";
 import { formatSnapshotDateLabel } from "@/lib/services/wealth-snapshot.service";
-import {
-  daysSince,
-  formatDaysElapsed,
-  formatShortDate,
-  resolveCleaningDate,
-} from "@/lib/data/utils/dates";
 
 export type SettingsMilestoneView = MilestoneEntry & {
   priority: number;
@@ -23,10 +22,10 @@ export type SettingsNosotrosView = {
 };
 
 export type SettingsCasaView = {
-  itemLabel: string;
-  lastCleaningLabel: string;
-  daysElapsedLabel: string;
-  markDoneLabel: string;
+  phase: HomePhaseId;
+  phaseLabel: string;
+  nextStep: string;
+  phases: typeof HOME_PHASES;
 };
 
 export type SettingsAhorroView = {
@@ -87,11 +86,9 @@ function withUniqueMilestoneId(
 
 export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
   const { couple, house, wealth, app } = snapshot;
-  const cleaningDate = resolveCleaningDate(
-    house.cuidado.lastCleaningAt,
-    house.cuidado.defaultDaysAgo,
-  );
-  const elapsedDays = daysSince(cleaningDate);
+  const phaseLabel =
+    HOME_PHASES.find((phase) => phase.id === house.phase)?.label ??
+    HOME_PHASES[0].label;
 
   return {
     nosotros: {
@@ -107,10 +104,10 @@ export function buildSettingsView(snapshot: BarriguitasSnapshot): SettingsView {
       ),
     },
     casa: {
-      itemLabel: house.cuidado.itemLabel,
-      lastCleaningLabel: formatShortDate(cleaningDate),
-      daysElapsedLabel: formatDaysElapsed(elapsedDays),
-      markDoneLabel: house.cuidado.markDoneLabel,
+      phase: house.phase,
+      phaseLabel,
+      nextStep: house.nextStep,
+      phases: HOME_PHASES,
     },
     ahorro: {
       target: { ...wealth.strategy.target },
@@ -250,15 +247,27 @@ export function moveMilestone(id: string, direction: "up" | "down"): void {
   });
 }
 
-export function registerCleaning(): void {
+export function updateHomePhase(phase: HomePhaseId): void {
+  if (!isHomePhaseId(phase)) return;
+
   updateBarriguitas((current) => ({
     ...current,
     house: {
       ...current.house,
-      cuidado: {
-        ...current.house.cuidado,
-        lastCleaningAt: new Date().toISOString(),
-      },
+      phase,
+    },
+  }));
+}
+
+export function updateHomeNextStep(nextStep: string): void {
+  const trimmed = nextStep.trim();
+  if (!trimmed) return;
+
+  updateBarriguitas((current) => ({
+    ...current,
+    house: {
+      ...current.house,
+      nextStep: trimmed,
     },
   }));
 }

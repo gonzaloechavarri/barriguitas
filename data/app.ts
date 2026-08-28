@@ -26,8 +26,8 @@ export const appData = {
     attentionItems: [
       {
         icon: "🏡",
-        title: "Villa Barriguita",
-        subtitle: "No hay tareas pendientes.",
+        title: "Casa",
+        subtitle: "Nuestro futuro hogar en Valencia.",
       },
       {
         icon: "🌱",
@@ -45,7 +45,7 @@ export const appData = {
   moduleHeaders: {
     documentos: "",
     nosotros: "Quedan {days} días para decir sí.",
-    casa: "El cuidado de nuestra casa.",
+    casa: "Nuestro futuro hogar en Valencia.",
     patrimonio: "",
     listas: "Lo que falta por hacer juntos.",
     ia: "Hoy puedes olvidarte de mí.",

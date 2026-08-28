@@ -1,6 +1,7 @@
+import { isHomePhaseId } from "@/data/house";
+import { normalizePortfolioSnapshot } from "@/lib/services/wealth-allocation.service";
 import type { BarriguitasOverrides, BarriguitasSnapshot } from "./types";
 import { createDefaultSnapshot } from "./types";
-import { normalizePortfolioSnapshot } from "@/lib/services/wealth-allocation.service";
 
 function migrateWealthTarget(
   defaults: BarriguitasSnapshot["wealth"]["strategy"]["target"],
@@ -27,6 +28,9 @@ export function mergeSnapshot(
     return defaults;
   }
 
+  const nextPhase = overrides.house?.phase;
+  const nextStep = overrides.house?.nextStep;
+
   return {
     couple: {
       ...defaults.couple,
@@ -42,10 +46,11 @@ export function mergeSnapshot(
     },
     house: {
       ...defaults.house,
-      cuidado: {
-        ...defaults.house.cuidado,
-        ...overrides.house?.cuidado,
-      },
+      phase: isHomePhaseId(nextPhase) ? nextPhase : defaults.house.phase,
+      nextStep:
+        typeof nextStep === "string" && nextStep.trim()
+          ? nextStep.trim()
+          : defaults.house.nextStep,
     },
     wealth: {
       ...defaults.wealth,
@@ -77,9 +82,8 @@ export function extractOverrides(
       milestones: snapshot.couple.milestones,
     },
     house: {
-      cuidado: {
-        lastCleaningAt: snapshot.house.cuidado.lastCleaningAt,
-      },
+      phase: snapshot.house.phase,
+      nextStep: snapshot.house.nextStep,
     },
     wealth: {
       strategy: {

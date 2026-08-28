@@ -19,20 +19,6 @@ export function formatDaysElapsed(days: number): string {
   return `(${days} días)`;
 }
 
-export function resolveCleaningDate(
-  lastCleaningAt: string | null,
-  defaultDaysAgo: number,
-  referenceDate: Date = new Date(),
-): Date {
-  if (lastCleaningAt) {
-    return new Date(lastCleaningAt);
-  }
-
-  const date = new Date(referenceDate);
-  date.setDate(date.getDate() - defaultDaysAgo);
-  return date;
-}
-
 /** Parsea YYYY-MM-DD sin desfase de zona horaria. */
 export function parseIsoDate(isoDate: string): Date {
   return new Date(`${isoDate}T12:00:00`);

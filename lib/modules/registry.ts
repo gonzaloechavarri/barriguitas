@@ -25,8 +25,8 @@ export const modules: ModuleDefinition[] = [
   {
     id: "casa",
     icon: "🏡",
-    title: "Villa Barriguita",
-    description: "Las cositas de la casa",
+    title: "Casa",
+    description: "Nuestro futuro hogar en Valencia",
     component: CasaModule,
   },
   {
