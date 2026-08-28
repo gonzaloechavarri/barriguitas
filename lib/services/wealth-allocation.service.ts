@@ -3,6 +3,10 @@ import type { PortfolioSnapshot } from "@/lib/data/types/portfolio";
 import type { BarriguitasWealthData } from "@/lib/data/store/types";
 import { calculateDeviationFromCurrent } from "@/lib/services/wealth.utils";
 
+export const STRATEGY_ASSET_KEYS = ["acwi", "oro", "nasdaq"] as const;
+
+export type StrategyAssetKey = (typeof STRATEGY_ASSET_KEYS)[number];
+
 export type WealthAllocation = {
   current: StrategyDistribution;
   maxDeviation: number;
@@ -42,6 +46,61 @@ export function resolveWealthAllocation(
 
 export function isValidDistributionSum(distribution: StrategyDistribution): boolean {
   return distribution.acwi + distribution.oro + distribution.nasdaq === 100;
+}
+
+export function sumStrategyDistribution(
+  distribution: StrategyDistribution,
+): number {
+  return distribution.acwi + distribution.oro + distribution.nasdaq;
+}
+
+/** Permite sumar 1 % mientras el total siga por debajo de 100. */
+export function canIncreaseAllocation(
+  distribution: StrategyDistribution,
+): boolean {
+  return sumStrategyDistribution(distribution) < 100;
+}
+
+/**
+ * Permite restar 1 % si el activo tiene margen y el total no quedaría
+ * por debajo de 100 % (salvo el paso intermedio al mover peso entre activos).
+ */
+export function canDecreaseAllocation(
+  distribution: StrategyDistribution,
+  key: StrategyAssetKey,
+): boolean {
+  if (distribution[key] <= 0) {
+    return false;
+  }
+
+  return sumStrategyDistribution(distribution) >= 100;
+}
+
+export function adjustStrategyAllocation(
+  distribution: StrategyDistribution,
+  key: StrategyAssetKey,
+  delta: 1 | -1,
+): StrategyDistribution | null {
+  const nextValue = distribution[key] + delta;
+
+  if (nextValue < 0) {
+    return null;
+  }
+
+  const next = {
+    ...distribution,
+    [key]: nextValue,
+  };
+
+  if (delta > 0 && !canIncreaseAllocation(distribution)) {
+    return null;
+  }
+
+  if (delta < 0 && !canDecreaseAllocation(distribution, key)) {
+    return null;
+  }
+
+  return next;
 }
 
 /** Convierte snapshots legacy con holdings monetarios a porcentajes. */

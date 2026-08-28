@@ -66,9 +66,11 @@ export type PerformanceMetric = {
 };
 
 export type StrategyAllocationLine = {
+  key: "acwi" | "oro" | "nasdaq";
   icon: string;
   label: string;
   percentage: string;
+  value: number;
 };
 
 export type WealthPortfolioSnapshotView = {
@@ -76,7 +78,6 @@ export type WealthPortfolioSnapshotView = {
   distributionSummary: string;
   lastUpdatedLabel: string;
   ageLabel: string | null;
-  updateActionLabel: string;
 };
 
 export type WealthView = {
