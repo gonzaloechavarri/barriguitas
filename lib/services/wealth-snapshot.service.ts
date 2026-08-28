@@ -1,9 +1,12 @@
 import { updateBarriguitas } from "@/lib/data/store/barriguitas-store";
-import type { PortfolioSnapshot } from "@/lib/data/types/portfolio";
 import type { StrategyDistribution } from "@/lib/data/types/editable";
 import type { BarriguitasWealthData } from "@/lib/data/store/types";
-import { formatShortDate, daysSince } from "@/lib/data/utils/dates";
-import { isValidDistributionSum } from "@/lib/services/wealth-allocation.service";
+import { formatShortDate, daysSince, toIsoDateString } from "@/lib/data/utils/dates";
+import {
+  adjustStrategyAllocation,
+  isValidDistributionSum,
+  type StrategyAssetKey,
+} from "@/lib/services/wealth-allocation.service";
 
 export type PortfolioUpdateInput = {
   updatedAt: string;
@@ -88,4 +91,41 @@ export function sumDistributionPercentages(
   distribution: StrategyDistribution,
 ): number {
   return distribution.acwi + distribution.oro + distribution.nasdaq;
+}
+
+export function persistPortfolioAllocationStep(
+  distribution: StrategyDistribution,
+  referenceDate: Date = new Date(),
+): boolean {
+  if (!isValidDistributionSum(distribution)) {
+    return false;
+  }
+
+  return updatePortfolioSnapshot({
+    updatedAt: toIsoDateString(referenceDate),
+    distribution: { ...distribution },
+  });
+}
+
+export function applyPortfolioAllocationStep(
+  distribution: StrategyDistribution,
+  key: StrategyAssetKey,
+  delta: 1 | -1,
+  referenceDate: Date = new Date(),
+): StrategyDistribution | null {
+  const next = adjustStrategyAllocation(distribution, key, delta);
+
+  if (!next) {
+    return null;
+  }
+
+  if (isValidDistributionSum(next)) {
+    const saved = persistPortfolioAllocationStep(next, referenceDate);
+
+    if (!saved) {
+      return null;
+    }
+  }
+
+  return next;
 }

@@ -3,13 +3,9 @@ import { CardTitle, GlassCard } from "@/modules/nosotros/components/glass-card";
 
 type PortfolioSnapshotCardProps = {
   portfolio: WealthView["portfolio"];
-  onUpdate: () => void;
 };
 
-export function PortfolioSnapshotCard({
-  portfolio,
-  onUpdate,
-}: PortfolioSnapshotCardProps) {
+export function PortfolioSnapshotCard({ portfolio }: PortfolioSnapshotCardProps) {
   return (
     <GlassCard className="p-6 sm:p-7" delay={80}>
       <CardTitle icon="🌱">{portfolio.cardTitle}</CardTitle>
@@ -31,14 +27,6 @@ export function PortfolioSnapshotCard({
           </p>
         ) : null}
       </div>
-
-      <button
-        type="button"
-        onClick={onUpdate}
-        className="mt-8 w-full rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3.5 text-sm font-light tracking-[-0.01em] text-white/75 transition-colors hover:border-white/[0.12] hover:bg-white/[0.06] touch-manipulation"
-      >
-        {portfolio.updateActionLabel}
-      </button>
     </GlassCard>
   );
 }
