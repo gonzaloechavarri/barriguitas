@@ -3,6 +3,8 @@ import {
   canDecreaseAllocation,
   canIncreaseAllocation,
   isValidDistributionSum,
+  pickAllocationDonorKey,
+  pickAllocationRecipientKey,
   sumStrategyDistribution,
 } from "../lib/services/wealth-allocation.service.ts";
 
@@ -12,34 +14,41 @@ function assert(condition, message) {
   }
 }
 
-const base = { acwi: 85, oro: 10, nasdaq: 5 };
+const base = { acwi: 80, oro: 20, nasdaq: 0 };
 
 assert(sumStrategyDistribution(base) === 100, "base sum should be 100");
-assert(!canIncreaseAllocation(base), "+ blocked at 100% total");
-assert(canDecreaseAllocation(base, "oro"), "− allowed at 100% when asset > 0");
+assert(canDecreaseAllocation(base, "oro"), "− allowed on oro at 20%");
+assert(canIncreaseAllocation(base, "oro"), "+ allowed on oro when acwi can donate");
 
-const afterDecrease = adjustStrategyAllocation(base, "oro", -1);
-assert(afterDecrease !== null, "− step should apply");
-assert(afterDecrease.oro === 9, "oro should decrease by 1");
-assert(sumStrategyDistribution(afterDecrease) === 99, "intermediate total is 99");
-assert(!isValidDistributionSum(afterDecrease), "99% should not persist");
+const firstDecrease = adjustStrategyAllocation(base, "oro", -1);
+assert(firstDecrease !== null, "first − step should apply");
+assert(firstDecrease.oro === 19, "oro should decrease to 19%");
+assert(isValidDistributionSum(firstDecrease), "total stays at 100%");
+assert(canDecreaseAllocation(firstDecrease, "oro"), "− still allowed on same asset");
 
-assert(!canDecreaseAllocation(afterDecrease, "oro"), "− blocked below 100% total");
-assert(canIncreaseAllocation(afterDecrease), "+ allowed below 100% total");
+const secondDecrease = adjustStrategyAllocation(firstDecrease, "oro", -1);
+assert(secondDecrease !== null, "second − step should apply");
+assert(secondDecrease.oro === 18, "oro should decrease to 18%");
+assert(isValidDistributionSum(secondDecrease), "total stays at 100% after repeat −");
 
-const rebalanced = adjustStrategyAllocation(afterDecrease, "acwi", 1);
-assert(rebalanced !== null, "+ step should apply");
-assert(rebalanced.acwi === 86 && rebalanced.oro === 9, "rebalanced values");
-assert(isValidDistributionSum(rebalanced), "returns to 100%");
+const increase = adjustStrategyAllocation(base, "oro", 1);
+assert(increase !== null, "+ step should apply");
+assert(increase.oro === 21 && increase.acwi === 79, "donor should be the heaviest other asset");
+assert(isValidDistributionSum(increase), "total stays at 100% after +");
 
 assert(
-  adjustStrategyAllocation(base, "acwi", 1) === null,
-  "+ blocked when total is already 100%",
+  pickAllocationRecipientKey(base, "oro") === "nasdaq",
+  "recipient should be the lightest other asset",
+);
+assert(
+  pickAllocationDonorKey(base, "oro") === "acwi",
+  "donor should be the heaviest other asset",
 );
 
+assert(!canDecreaseAllocation({ acwi: 0, oro: 50, nasdaq: 50 }, "acwi"), "− blocked at 0%");
 assert(
-  adjustStrategyAllocation({ acwi: 0, oro: 50, nasdaq: 50 }, "acwi", -1) === null,
-  "− blocked when asset is 0",
+  !canIncreaseAllocation({ acwi: 100, oro: 0, nasdaq: 0 }, "acwi"),
+  "+ blocked when no donor exists",
 );
 
 console.log("wealth allocation stepper checks passed");

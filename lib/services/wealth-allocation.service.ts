@@ -54,53 +54,99 @@ export function sumStrategyDistribution(
   return distribution.acwi + distribution.oro + distribution.nasdaq;
 }
 
-/** Permite sumar 1 % mientras el total siga por debajo de 100. */
-export function canIncreaseAllocation(
-  distribution: StrategyDistribution,
-): boolean {
-  return sumStrategyDistribution(distribution) < 100;
+function otherAssetKeys(key: StrategyAssetKey): StrategyAssetKey[] {
+  return STRATEGY_ASSET_KEYS.filter((assetKey) => assetKey !== key);
 }
 
-/**
- * Permite restar 1 % si el activo tiene margen y el total no quedaría
- * por debajo de 100 % (salvo el paso intermedio al mover peso entre activos).
- */
+/** Activo donante: mayor peso entre los demás (orden fijo en empates). */
+export function pickAllocationDonorKey(
+  distribution: StrategyDistribution,
+  key: StrategyAssetKey,
+): StrategyAssetKey | null {
+  let donor: StrategyAssetKey | null = null;
+
+  for (const assetKey of otherAssetKeys(key)) {
+    if (distribution[assetKey] <= 0) {
+      continue;
+    }
+
+    if (
+      donor === null ||
+      distribution[assetKey] > distribution[donor]
+    ) {
+      donor = assetKey;
+    }
+  }
+
+  return donor;
+}
+
+/** Activo receptor: menor peso entre los demás (orden fijo en empates). */
+export function pickAllocationRecipientKey(
+  distribution: StrategyDistribution,
+  key: StrategyAssetKey,
+): StrategyAssetKey | null {
+  let recipient: StrategyAssetKey | null = null;
+
+  for (const assetKey of otherAssetKeys(key)) {
+    if (
+      recipient === null ||
+      distribution[assetKey] < distribution[recipient]
+    ) {
+      recipient = assetKey;
+    }
+  }
+
+  return recipient;
+}
+
+/** Permite sumar 1 % si el activo no está al 100 % y hay otro con margen para ceder. */
+export function canIncreaseAllocation(
+  distribution: StrategyDistribution,
+  key: StrategyAssetKey,
+): boolean {
+  return distribution[key] < 100 && pickAllocationDonorKey(distribution, key) !== null;
+}
+
+/** Permite restar 1 % si el activo tiene peso y hay otro que pueda recibirlo. */
 export function canDecreaseAllocation(
   distribution: StrategyDistribution,
   key: StrategyAssetKey,
 ): boolean {
-  if (distribution[key] <= 0) {
-    return false;
-  }
-
-  return sumStrategyDistribution(distribution) >= 100;
+  return distribution[key] > 0 && pickAllocationRecipientKey(distribution, key) !== null;
 }
 
+/** Ajusta un activo ±1 % redistribuyendo el punto en otro activo para mantener 100 %. */
 export function adjustStrategyAllocation(
   distribution: StrategyDistribution,
   key: StrategyAssetKey,
   delta: 1 | -1,
 ): StrategyDistribution | null {
-  const nextValue = distribution[key] + delta;
+  if (delta > 0) {
+    const donor = pickAllocationDonorKey(distribution, key);
 
-  if (nextValue < 0) {
+    if (!canIncreaseAllocation(distribution, key) || !donor) {
+      return null;
+    }
+
+    return {
+      ...distribution,
+      [key]: distribution[key] + 1,
+      [donor]: distribution[donor] - 1,
+    };
+  }
+
+  const recipient = pickAllocationRecipientKey(distribution, key);
+
+  if (!canDecreaseAllocation(distribution, key) || !recipient) {
     return null;
   }
 
-  const next = {
+  return {
     ...distribution,
-    [key]: nextValue,
+    [key]: distribution[key] - 1,
+    [recipient]: distribution[recipient] + 1,
   };
-
-  if (delta > 0 && !canIncreaseAllocation(distribution)) {
-    return null;
-  }
-
-  if (delta < 0 && !canDecreaseAllocation(distribution, key)) {
-    return null;
-  }
-
-  return next;
 }
 
 /** Convierte snapshots legacy con holdings monetarios a porcentajes. */
