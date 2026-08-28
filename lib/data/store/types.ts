@@ -1,6 +1,11 @@
 import { appData, type AppData } from "@/data/app";
 import { coupleData } from "@/data/couple";
-import { houseData, type HomePhaseId } from "@/data/house";
+import {
+  cloneHomeCriteria,
+  houseData,
+  type HomePhaseId,
+  type HomeSearchCriteria,
+} from "@/data/house";
 import { listsData } from "@/data/lists";
 import { wealthData } from "@/data/wealth";
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
@@ -34,6 +39,7 @@ export type BarriguitasHouseData = {
   phases: (typeof houseData)["phases"];
   phase: HomePhaseId;
   nextStep: string;
+  criteria: HomeSearchCriteria;
   copilot: (typeof houseData)["copilot"];
 };
 
@@ -66,6 +72,7 @@ export type BarriguitasOverrides = {
   house?: Partial<{
     phase: HomePhaseId;
     nextStep: string;
+    criteria: HomeSearchCriteria;
   }>;
   wealth?: Partial<{
     strategy: Partial<{ target: StrategyDistribution }>;
@@ -81,6 +88,7 @@ export const SERVER_SNAPSHOT: BarriguitasSnapshot = {
   },
   house: {
     ...houseData,
+    criteria: cloneHomeCriteria(houseData.criteria),
   },
   wealth: {
     ...wealthData,

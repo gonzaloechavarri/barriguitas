@@ -13,8 +13,11 @@ export function CasaModule() {
         phases={project.phases}
         phase={project.phase}
         nextStep={project.nextStep}
+        criteria={project.criteria}
         onPhaseChange={project.setPhase}
         onNextStepChange={project.setNextStep}
+        onCriterionChange={project.updateCriterion}
+        onCriterionAdd={project.addCriterion}
       />
     </div>
   );

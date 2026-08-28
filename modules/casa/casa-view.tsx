@@ -1,9 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import type { HomePhaseId } from "@/data/house";
+import type {
+  HomeCriteriaGroup,
+  HomePhaseId,
+  HomeSearchCriteria,
+} from "@/data/house";
 import { pressTextControlClasses } from "@/components/motion/press-motion";
 import { CasaBlockCard } from "./components/casa-block-card";
+import { CasaSearchCriteriaCard } from "./components/casa-search-criteria-card";
 
 type CasaPhase = {
   id: HomePhaseId;
@@ -15,8 +20,15 @@ type CasaViewProps = {
   phases: readonly CasaPhase[];
   phase: HomePhaseId;
   nextStep: string;
+  criteria: HomeSearchCriteria;
   onPhaseChange: (phase: HomePhaseId) => void;
   onNextStepChange: (nextStep: string) => void;
+  onCriterionChange: (
+    group: HomeCriteriaGroup,
+    id: string,
+    label: string,
+  ) => void;
+  onCriterionAdd: (group: HomeCriteriaGroup, label: string) => void;
 };
 
 function NextStepInput({
@@ -69,8 +81,11 @@ export function CasaView({
   phases,
   phase,
   nextStep,
+  criteria,
   onPhaseChange,
   onNextStepChange,
+  onCriterionChange,
+  onCriterionAdd,
 }: CasaViewProps) {
   return (
     <div className="mx-auto w-full max-w-xl px-5 pb-8 pt-2 sm:px-10 sm:pb-10 sm:pt-4">
@@ -84,45 +99,53 @@ export function CasaView({
         </p>
       </header>
 
-      <CasaBlockCard icon="🏡" title="El proyecto" delay={80}>
-        <div className="flex flex-col gap-8">
-          <div>
-            <p className="text-xs font-light tracking-[-0.01em] text-white/32">
-              Fase
-            </p>
-            <div
-              role="radiogroup"
-              aria-label="Fase del proyecto"
-              className="mt-3 flex flex-wrap gap-x-5 gap-y-2"
-            >
-              {phases.map((item) => {
-                const selected = item.id === phase;
+      <div className="flex flex-col gap-4 sm:gap-5">
+        <CasaBlockCard icon="🏡" title="El proyecto" delay={80}>
+          <div className="flex flex-col gap-8">
+            <div>
+              <p className="text-xs font-light tracking-[-0.01em] text-white/32">
+                Fase
+              </p>
+              <div
+                role="radiogroup"
+                aria-label="Fase del proyecto"
+                className="mt-3 flex flex-wrap gap-x-5 gap-y-2"
+              >
+                {phases.map((item) => {
+                  const selected = item.id === phase;
 
-                return (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    onClick={() => onPhaseChange(item.id)}
-                    className={`border-0 bg-transparent p-0 text-left text-[0.9375rem] font-light tracking-[-0.01em] transition-colors duration-200 ease-[cubic-bezier(0.25,0.1,0.25,1)] touch-manipulation ${pressTextControlClasses} ${
-                      selected ? "text-white/80" : "text-white/28 hover:text-white/45"
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
+                  return (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() => onPhaseChange(item.id)}
+                      className={`border-0 bg-transparent p-0 text-left text-[0.9375rem] font-light tracking-[-0.01em] transition-colors duration-200 ease-[cubic-bezier(0.25,0.1,0.25,1)] touch-manipulation ${pressTextControlClasses} ${
+                        selected ? "text-white/80" : "text-white/28 hover:text-white/45"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
 
-          <NextStepInput
-            key={nextStep}
-            nextStep={nextStep}
-            onCommit={onNextStepChange}
-          />
-        </div>
-      </CasaBlockCard>
+            <NextStepInput
+              key={nextStep}
+              nextStep={nextStep}
+              onCommit={onNextStepChange}
+            />
+          </div>
+        </CasaBlockCard>
+
+        <CasaSearchCriteriaCard
+          criteria={criteria}
+          onUpdate={onCriterionChange}
+          onAdd={onCriterionAdd}
+        />
+      </div>
     </div>
   );
 }

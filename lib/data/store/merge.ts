@@ -1,4 +1,4 @@
-import { isHomePhaseId } from "@/data/house";
+import { isHomePhaseId, normalizeHomeCriteria } from "@/data/house";
 import { normalizePortfolioSnapshot } from "@/lib/services/wealth-allocation.service";
 import type { BarriguitasOverrides, BarriguitasSnapshot } from "./types";
 import { createDefaultSnapshot } from "./types";
@@ -51,6 +51,10 @@ export function mergeSnapshot(
         typeof nextStep === "string" && nextStep.trim()
           ? nextStep.trim()
           : defaults.house.nextStep,
+      criteria: normalizeHomeCriteria(
+        overrides.house?.criteria,
+        defaults.house.criteria,
+      ),
     },
     wealth: {
       ...defaults.wealth,
@@ -84,6 +88,7 @@ export function extractOverrides(
     house: {
       phase: snapshot.house.phase,
       nextStep: snapshot.house.nextStep,
+      criteria: snapshot.house.criteria,
     },
     wealth: {
       strategy: {
