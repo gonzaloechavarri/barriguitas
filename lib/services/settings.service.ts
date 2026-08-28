@@ -1,6 +1,7 @@
 import {
   HOME_PHASES,
   isHomePhaseId,
+  type HomeCriteriaGroup,
   type HomePhaseId,
 } from "@/data/house";
 import type { MilestoneEntry, StrategyDistribution } from "@/lib/data/types/editable";
@@ -270,6 +271,68 @@ export function updateHomeNextStep(nextStep: string): void {
       nextStep: trimmed,
     },
   }));
+}
+
+export function updateHomeCriterion(
+  group: HomeCriteriaGroup,
+  id: string,
+  label: string,
+): void {
+  const trimmed = label.trim();
+
+  updateBarriguitas((current) => {
+    const items = current.house.criteria[group];
+    if (!items.some((item) => item.id === id)) return current;
+
+    const nextItems = trimmed
+      ? items.map((item) =>
+          item.id === id ? { ...item, label: trimmed } : item,
+        )
+      : items.filter((item) => item.id !== id);
+
+    return {
+      ...current,
+      house: {
+        ...current.house,
+        criteria: {
+          essentials:
+            group === "essentials" ? nextItems : current.house.criteria.essentials,
+          preferences:
+            group === "preferences"
+              ? nextItems
+              : current.house.criteria.preferences,
+        },
+      },
+    };
+  });
+}
+
+export function addHomeCriterion(group: HomeCriteriaGroup, label: string): void {
+  const trimmed = label.trim();
+  if (!trimmed) return;
+
+  updateBarriguitas((current) => {
+    const items = current.house.criteria[group];
+    const nextItems = [
+      ...items,
+      { id: `criterio-${group}-${Date.now()}`, label: trimmed },
+    ];
+
+    return {
+      ...current,
+      house: {
+        ...current.house,
+        criteria: {
+          essentials:
+            group === "essentials" ? nextItems : current.house.criteria.essentials,
+          preferences:
+            group === "preferences"
+              ? nextItems
+              : current.house.criteria.preferences,
+        },
+      },
+    };
+  });
 }
 
 export function updateWealthTarget(target: StrategyDistribution): void {
