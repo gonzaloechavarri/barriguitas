@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { AnimatedCounter } from "@/components/motion/animated-counter";
 import type { WeddingData } from "@/lib/services";
 import {
+  daysRemaining,
   formatCoupleEventDate,
-  formatEventDaysRemaining,
   parseLocalDate,
 } from "@/lib/data/utils";
 import { CardTitle, GlassCard } from "./glass-card";
@@ -34,10 +34,8 @@ export function NextPlanCard({ plan }: NextPlanCardProps) {
     return () => window.clearInterval(interval);
   }, []);
 
-  if (now && formatEventDaysRemaining(plan.startDate, now) === null) {
-    return null;
-  }
-
+  const remaining = now ? daysRemaining(plan.startDate, now) : null;
+  const isPast = remaining !== null && remaining < 0;
   const countdownDays = now ? getCountdownDays(plan.startDate, now) : null;
 
   return (
@@ -48,21 +46,27 @@ export function NextPlanCard({ plan }: NextPlanCardProps) {
         {plan.destination}
       </p>
 
-      <div className="mt-7 min-h-[4rem] sm:mt-8">
-        <div
-          className={`transition-opacity duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
-            countdownDays !== null ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <AnimatedCounter
-            value={countdownDays}
-            className="block text-[2.75rem] font-light tabular-nums leading-none tracking-[-0.04em] text-white/88 sm:text-5xl"
-          />
-          <p className="mt-2 text-[0.9375rem] font-light tracking-[-0.01em] text-white/35">
-            días para despegar
-          </p>
+      {isPast ? (
+        <p className="mt-7 text-[0.9375rem] font-light leading-relaxed tracking-[-0.01em] text-white/40 sm:mt-8">
+          Un viaje que ya es parte de nuestra historia.
+        </p>
+      ) : (
+        <div className="mt-7 min-h-[4rem] sm:mt-8">
+          <div
+            className={`transition-opacity duration-300 ease-[cubic-bezier(0.25,0.1,0.25,1)] ${
+              countdownDays !== null ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <AnimatedCounter
+              value={countdownDays}
+              className="block text-[2.75rem] font-light tabular-nums leading-none tracking-[-0.04em] text-white/88 sm:text-5xl"
+            />
+            <p className="mt-2 text-[0.9375rem] font-light tracking-[-0.01em] text-white/35">
+              días para despegar
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <p className="mt-6 text-[0.9375rem] font-light tracking-[-0.01em] text-white/42">
         {formatCoupleEventDate(plan.startDate)}

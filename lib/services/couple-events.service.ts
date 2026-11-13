@@ -9,7 +9,10 @@ export type CoupleEvent = {
   detail?: string;
 };
 
-/** Acontecimientos de pareja derivados de la configuración existente — sin duplicar datos. */
+/**
+ * Acontecimientos de pareja derivados de la configuración existente.
+ * Conserva boda y viaje como memoria; los consumidores filtran lo ya pasado.
+ */
 export function getCoupleEvents(): CoupleEvent[] {
   const { wedding, nextTrip } = getCoupleData();
 
@@ -19,6 +22,7 @@ export function getCoupleEvents(): CoupleEvent[] {
       title: wedding.cardTitle,
       icon: "💍",
       date: wedding.date,
+      detail: wedding.location.name,
     },
     {
       id: "honeymoon",

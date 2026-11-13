@@ -16,8 +16,7 @@ export type CopilotQuickQuestion =
   | "pending"
   | "overdue"
   | "upcoming"
-  | "busiestList"
-  | "beforeWedding";
+  | "busiestList";
 
 export type CopilotPendingListGroup = {
   listId: string;
@@ -371,8 +370,6 @@ export function answerCopilotQuestion(
       return answerUpcomingQuestion(context, lists);
     case "busiestList":
       return answerBusiestListQuestion(context);
-    case "beforeWedding":
-      return answerBeforeWeddingQuestion(context, lists);
   }
 }
 
@@ -501,44 +498,6 @@ function answerBusiestListQuestion(context: CopilotContext): string {
   return lines.join("\n").trim();
 }
 
-function answerBeforeWeddingQuestion(
-  context: CopilotContext,
-  lists: SharedList[],
-): string {
-  const wedding = getWeddingEvent(context.upcomingEvents);
-
-  if (!wedding) {
-    return "No hay una boda próxima en el calendario.";
-  }
-
-  const tasks = getTasksBeforeEvent(lists, wedding.date, context.referenceDate);
-  const countdown = formatEventCountdown(wedding, context.referenceDate);
-
-  if (tasks.length === 0) {
-    return countdown
-      ? `No hay tareas fechadas antes de la boda. ${countdown.charAt(0).toUpperCase()}${countdown.slice(1)}.`
-      : "No hay tareas fechadas antes de la boda.";
-  }
-
-  const lines = [
-    tasks.length === 1
-      ? "Tenéis 1 tarea fechada antes de la boda:"
-      : `Tenéis ${tasks.length} tareas fechadas antes de la boda:`,
-    "",
-    ...tasks.slice(0, RESPONSE_ITEM_LIMIT).map((task) => `• ${task.text}`),
-  ];
-
-  if (tasks.length > RESPONSE_ITEM_LIMIT) {
-    lines.push(`…y ${tasks.length - RESPONSE_ITEM_LIMIT} más.`);
-  }
-
-  if (countdown) {
-    lines.push("", `${countdown.charAt(0).toUpperCase()}${countdown.slice(1)}.`);
-  }
-
-  return lines.join("\n").trim();
-}
-
 export const COPILOT_QUICK_QUESTIONS: Array<{
   id: CopilotQuickQuestion;
   label: string;
@@ -547,5 +506,4 @@ export const COPILOT_QUICK_QUESTIONS: Array<{
   { id: "overdue", label: "¿Qué está vencido?" },
   { id: "upcoming", label: "¿Qué viene próximamente?" },
   { id: "busiestList", label: "¿Qué lista está más cargada?" },
-  { id: "beforeWedding", label: "¿Qué tenemos antes de la boda?" },
 ];

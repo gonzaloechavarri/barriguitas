@@ -20,7 +20,7 @@ export const coupleData = {
     startDate: "2026-10-27",
   },
 
-  /** Reservado — los hitos visuales provienen de boda y viaje, no de tareas. */
+  /** Reservado — hitos futuros de vida compartida (viajes, aniversarios…). */
   milestones: [] as Array<{
     id: string;
     title: string;

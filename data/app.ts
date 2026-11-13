@@ -21,13 +21,13 @@ export const appData = {
     nosotrosAttention: {
       icon: "❤️",
       title: "Nosotros",
-      subtitleTemplate: '{days} días para decir el "sí quiero"',
+      subtitleTemplate: "Nuestra vida juntos.",
     },
     attentionItems: [
       {
         icon: "🏡",
         title: "Casa",
-        subtitle: "Nuestro futuro hogar en Valencia.",
+        subtitle: "Buscamos nuestro hogar en Valencia.",
       },
       {
         icon: "🌱",
@@ -44,8 +44,8 @@ export const appData = {
 
   moduleHeaders: {
     documentos: "",
-    nosotros: "Quedan {days} días para decir sí.",
-    casa: "Nuestro futuro hogar en Valencia.",
+    nosotros: "Nuestra vida juntos.",
+    casa: "Buscamos nuestro hogar en Valencia.",
     patrimonio: "",
     listas: "Lo que falta por hacer juntos.",
     ia: "Hoy puedes olvidarte de mí.",
