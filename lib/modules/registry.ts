@@ -26,7 +26,7 @@ export const modules: ModuleDefinition[] = [
     id: "casa",
     icon: "🏡",
     title: "Casa",
-    description: "Nuestro futuro hogar en Valencia",
+    description: "Buscamos nuestro hogar en Valencia",
     component: CasaModule,
   },
   {

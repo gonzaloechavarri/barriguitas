@@ -15,7 +15,7 @@ export function NosotrosView({ weddingData }: NosotrosViewProps) {
           Nosotros
         </h1>
         <p className="mt-2.5 text-[0.9375rem] font-light tracking-[-0.01em] text-white/38 sm:mt-3">
-          Lo que se acerca en nuestra vida
+          Nuestra vida juntos
         </p>
       </header>
 

@@ -95,7 +95,7 @@ export function CasaView({
           Casa
         </h1>
         <p className="mt-2.5 text-[0.9375rem] font-light tracking-[-0.01em] text-white/38 sm:mt-3">
-          Nuestro futuro hogar en {city}
+          Buscamos nuestro hogar en {city}
         </p>
       </header>
 

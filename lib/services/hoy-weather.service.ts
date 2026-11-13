@@ -1,4 +1,3 @@
-import { getCoupleData } from "@/lib/data/providers/local";
 import {
   fetchMunicipalityDayForecast,
   formatAemetSourceLine,
@@ -19,17 +18,12 @@ type HoyWeatherTarget = {
   municipalityCode: string;
 };
 
+/** Tiempo de Hoy: Valencia, donde estamos construyendo nuestra vida. */
 function getHoyWeatherTargets(): HoyWeatherTarget[] {
-  const { wedding } = getCoupleData();
-
   return [
     {
       label: "Valencia",
       municipalityCode: VALENCIA_MUNICIPALITY_CODE,
-    },
-    {
-      label: "Jávea",
-      municipalityCode: wedding.location.municipalityCode,
     },
   ];
 }
